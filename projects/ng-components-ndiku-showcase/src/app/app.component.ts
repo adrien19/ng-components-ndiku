@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { NgComponentsNdikuService } from 'projects/ng-components-ndiku/src/public-api';
+import { FormGroup, FormBuilder } from '@angular/forms';
 
 @Component({
   selector: 'app-root',
@@ -7,4 +9,50 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'ng-components-ndiku-showcase';
+
+  editBaseForm: FormGroup;
+  enteredEmail: string = "";
+
+  constructor(
+    fb: FormBuilder,
+    private ngComponentsNdikuService: NgComponentsNdikuService
+  ){
+    this.editBaseForm = fb.group({
+      name: [''],
+    });
+  }
+
+  // ngAfterViewInit(): void {
+  //   this.ngComponentsNdikuService.createEmailInput(
+  //     true, 
+  //     false, 
+  //     'email', 
+  //     'email', 
+  //     'enter email'
+  //   );
+  // }
+
+  onAddItem(){
+    
+  }
+
+  createEmailInputControl(){
+    this.ngComponentsNdikuService.createEmailInput(
+      true, 
+      false, 
+      'email', 
+      'email', 
+      'enter email'
+    );
+  }
+
+  public addChild(childName:string, childGroup: FormGroup) {
+    this.editBaseForm.addControl(childName, childGroup);
+  }
+
+  public showenteredEmail(value: any) {
+    this.enteredEmail = value;
+  }
+
+  
 }

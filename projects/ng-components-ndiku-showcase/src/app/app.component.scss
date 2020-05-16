@@ -1,0 +1,12 @@
+.container-fluid {
+    height: 100% !important;
+    > .content-row {
+        height: inherit !important;
+        padding: 15px;
+
+        > ng-ndiku-input {
+            min-height: 50px;
+        }
+    }
+
+}

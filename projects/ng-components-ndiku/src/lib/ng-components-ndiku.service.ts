@@ -1,12 +1,14 @@
 import { Injectable } from '@angular/core';
+import { Subject } from 'rxjs';
 
 
-export interface SelectInputConfigs {
-  required: string;
-  notEmpty: string;
-  type: string;
-  id: string;
-  
+export interface InputControlConfigs {
+  required: boolean;
+  notEmpty: boolean;
+  inputId: string;
+  inputType: string;
+  inputLabel: string;
+  inputPlaceholder: string;
 }
 
 @Injectable({
@@ -14,5 +16,27 @@ export interface SelectInputConfigs {
 })
 export class NgComponentsNdikuService {
 
-  constructor() { }
+  public inputControl$ = new Subject<InputControlConfigs>();
+
+  public createEmailInput(required: boolean, notEmpty: boolean, inputId: string, inputLabel: string, inputPlaceholder: string): void {
+    this.inputControl$.next(this.createInputControl(
+      required, 
+      notEmpty, 
+      inputId, 
+      'email', 
+      inputLabel, 
+      inputPlaceholder)
+    );
+  }
+
+  private createInputControl(required: boolean, notEmpty: boolean, inputId: string, inputType: string,  inputLabel: string, inputPlaceholder: string): InputControlConfigs {
+    return {
+      required,
+      notEmpty,
+      inputId,
+      inputType,
+      inputLabel,
+      inputPlaceholder,
+    };
+  }
 }

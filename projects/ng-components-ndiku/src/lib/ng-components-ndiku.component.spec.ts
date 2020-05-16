@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { NgComponentsNdikuComponent } from './ng-components-ndiku.component';
+import { NgComponentsNdikuComponent } from './ng-components-ndiku.input.component';
 
 describe('NgComponentsNdikuComponent', () => {
   let component: NgComponentsNdikuComponent;
