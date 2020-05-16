@@ -14,7 +14,13 @@
     "lib": [
       "es2018",
       "dom"
-    ]
+    ],
+    "paths": {
+      "ng-components-ndiku": [
+        "dist/ng-components-ndiku/ng-components-ndiku",
+        "dist/ng-components-ndiku"
+      ]
+    }
   },
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,
