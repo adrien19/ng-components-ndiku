@@ -5,10 +5,10 @@ import { Subject } from 'rxjs';
 export interface InputControlConfigs {
   required: boolean;
   notEmpty: boolean;
-  inputId: string;
-  inputType: string;
-  inputLabel: string;
-  inputPlaceholder: string;
+  inputId?: string;
+  inputType?: string;
+  inputLabel?: string;
+  inputPlaceholder?: string;
 }
 
 @Injectable({
@@ -18,7 +18,7 @@ export class NgComponentsNdikuService {
 
   public inputControl$ = new Subject<InputControlConfigs>();
 
-  public createEmailInput(required: boolean, notEmpty: boolean, inputId: string, inputLabel: string, inputPlaceholder: string): void {
+  public createEmailInput(required: boolean, notEmpty: boolean, inputId?: string, inputLabel?: string, inputPlaceholder?: string): void {
     this.inputControl$.next(this.createInputControl(
       required, 
       notEmpty, 
@@ -29,7 +29,7 @@ export class NgComponentsNdikuService {
     );
   }
 
-  private createInputControl(required: boolean, notEmpty: boolean, inputId: string, inputType: string,  inputLabel: string, inputPlaceholder: string): InputControlConfigs {
+  private createInputControl(required: boolean, notEmpty: boolean, inputId?: string, inputType?: string,  inputLabel?: string, inputPlaceholder?: string): InputControlConfigs {
     return {
       required,
       notEmpty,

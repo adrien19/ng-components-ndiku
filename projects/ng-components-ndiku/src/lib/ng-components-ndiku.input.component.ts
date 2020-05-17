@@ -34,8 +34,8 @@ export class NgComponentsNdikuComponent implements OnInit, OnDestroy {
 
   inputType: string='text';
   inputId: string='input';
-  inputLabel: string='inputLabel was EMPTY';
-  inputPlaceholder: string='inputPlaceholder was EMPTY';
+  inputLabel: string;
+  inputPlaceholder: string='';
   
   inputSub: Subscription;
   serviceSub: Subscription;
@@ -66,14 +66,11 @@ export class NgComponentsNdikuComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
 
-    console.log(`[2] We are in ng-components-ndiku.input ${this.ngComponentsNdikuService.inputControl$}`);
-
     this.buildInputControl$ = this.ngComponentsNdikuService.inputControl$.pipe(
       tap( (inputControlConfigs) => {
         // construct validators based on component input properties
       this.inputLabel = inputControlConfigs.inputLabel;
       this.inputId = inputControlConfigs.inputId;
-      console.log(`This are the configs: ${inputControlConfigs}`);
       
       const validators = [];
       if (inputControlConfigs.required) {
@@ -100,11 +97,6 @@ export class NgComponentsNdikuComponent implements OnInit, OnDestroy {
       this.onComponentReady.emit(this.componentFormGroup);
       }));
 
-
-  }
-
-
-  closeAlert(){
 
   }
 

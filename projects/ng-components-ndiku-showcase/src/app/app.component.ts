@@ -22,16 +22,6 @@ export class AppComponent {
     });
   }
 
-  // ngAfterViewInit(): void {
-  //   this.ngComponentsNdikuService.createEmailInput(
-  //     true, 
-  //     false, 
-  //     'email', 
-  //     'email', 
-  //     'enter email'
-  //   );
-  // }
-
   onAddItem(){
     
   }
