@@ -11,7 +11,7 @@ export class AppComponent {
   title = 'ng-components-ndiku-showcase';
 
   editBaseForm: FormGroup;
-  enteredEmail: string = '';
+  enteredEmail = '';
 
   constructor(
     fb: FormBuilder,
