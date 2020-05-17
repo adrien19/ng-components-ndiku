@@ -17,13 +17,13 @@ describe('NgComponentsNdikuService', () => {
   });
 
   it('should create an input control of type email', () => {
-    const inputType = 'email';
+    // const inputType = 'email';
 
     const expectedConfig = {
       required: false,
       notEmpty: true,
       inputId: 'email',
-      inputType: inputType,
+      inputType: 'email',
       inputLabel: 'Name',
       inputPlaceholder: 'enter email',
     };

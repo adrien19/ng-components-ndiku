@@ -6,15 +6,15 @@
       <p>{{ enteredEmail }}</p>
 
       <form [formGroup]="editBaseForm" (ngSubmit)="onAddItem()">
-        <ng-ndiku-input 
-          (onComponentReady)="addChild('nameGroup', $event)"
+        <lib-ng-ndiku-input
+          (inputComponentReady)="addChild('nameGroup', $event)"
           (inputChanged)="showenteredEmail($event)"
           >
-        </ng-ndiku-input>
+        </lib-ng-ndiku-input>
       </form>
       <button mat-flat-button color="primary" (click)="createEmailInputControl()">Create email input control</button>
     </div>
   </div>
-</div>  
+</div>
 
 

@@ -38,39 +38,39 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
 }
 
 @Component({
-  selector: 'ng-ndiku-input',
+  selector: 'lib-ng-ndiku-input',
   templateUrl: './ng-components-ndiku.input.component.html',
   styleUrls: ['./ng-components-ndiku.input.component.scss'],
 })
 export class NgComponentsNdikuComponent implements OnInit, OnDestroy {
-  matcher = new MyErrorStateMatcher();
+   matcher = new MyErrorStateMatcher();
 
-  private _required: boolean = false;
-  private _notEmpty: boolean = false;
+  private _REQUIRED = false;
+  private _NOTEMPTY = false;
   get required() {
-    return this._required;
+    return this._REQUIRED;
   }
   set required(value: any) {
-    this._required = coerceBooleanProperty(value);
+    this._REQUIRED = coerceBooleanProperty(value);
   }
 
   get notEmpty() {
-    return this._notEmpty;
+    return this._NOTEMPTY;
   }
   set notEmpty(value: any) {
-    this._notEmpty = coerceBooleanProperty(value);
+    this._NOTEMPTY = coerceBooleanProperty(value);
   }
 
-  inputType: string = 'text';
-  inputId: string = 'input';
+  inputType = 'text';
+  inputId = 'input';
   inputLabel: string;
-  inputPlaceholder: string = '';
+  inputPlaceholder = '';
 
   inputSub: Subscription;
   serviceSub: Subscription;
 
   // onComponentReady: Subject<FormGroup> = new Subject<FormGroup>();
-  @Output() onComponentReady: EventEmitter<FormGroup> = new EventEmitter<
+  @Output() inputComponentReady: EventEmitter<FormGroup> = new EventEmitter<
     FormGroup
   >();
 
@@ -125,7 +125,7 @@ export class NgComponentsNdikuComponent implements OnInit, OnDestroy {
           }
         );
         // this.onComponentReady.next(this.componentFormGroup);
-        this.onComponentReady.emit(this.componentFormGroup);
+        this.inputComponentReady.emit(this.componentFormGroup);
       })
     );
   }
