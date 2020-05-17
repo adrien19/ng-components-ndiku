@@ -8,9 +8,8 @@ describe('NgComponentsNdikuComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ NgComponentsNdikuComponent ]
-    })
-    .compileComponents();
+      declarations: [NgComponentsNdikuComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

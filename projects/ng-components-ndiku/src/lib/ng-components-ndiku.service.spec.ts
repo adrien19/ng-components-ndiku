@@ -15,18 +15,17 @@ describe('NgComponentsNdikuService', () => {
   it('should create', () => {
     expect(service).toBeTruthy();
   });
-  
-  it('should create an input control of type email', () => {
 
-    const inputType = 'email'
+  it('should create an input control of type email', () => {
+    const inputType = 'email';
 
     const expectedConfig = {
-      required: false, 
-      notEmpty: true, 
+      required: false,
+      notEmpty: true,
       inputId: 'email',
-      inputType: inputType, 
-      inputLabel: 'Name', 
-      inputPlaceholder: 'enter email'
+      inputType: inputType,
+      inputLabel: 'Name',
+      inputPlaceholder: 'enter email',
     };
 
     service.createEmailInput(
@@ -36,7 +35,8 @@ describe('NgComponentsNdikuService', () => {
       expectedConfig.inputLabel,
       expectedConfig.inputPlaceholder
     );
-    scheduler.expectObservable(service.inputControl$).toBe('a', { a: expectedConfig });
+    scheduler
+      .expectObservable(service.inputControl$)
+      .toBe('a', { a: expectedConfig });
   });
-
 });

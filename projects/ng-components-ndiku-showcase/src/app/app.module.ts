@@ -9,9 +9,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialModule } from 'projects/ng-components-ndiku/src/lib/material.module';
 
 @NgModule({
-  declarations: [
-    AppComponent
-  ],
+  declarations: [AppComponent],
   imports: [
     BrowserModule,
     CommonModule,
@@ -22,6 +20,6 @@ import { MaterialModule } from 'projects/ng-components-ndiku/src/lib/material.mo
     NgComponentsNdikuModule,
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}
