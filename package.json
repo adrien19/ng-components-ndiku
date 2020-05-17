@@ -8,6 +8,7 @@
     "test": "ng test",
     "test:lib": "ng test ng-components-ndiku",
     "test:lib-coverage": "ng test ng-components-ndiku --code-coverage --watch=false",
+    "report-coverage:lib": "cat ./coverage/ng-components-ndiku/lcov.info | codecov",
     "lint": "ng lint",
     "e2e": "ng e2e",
     "format:check": "prettier --list-different 'projects/**/*.ts'",
@@ -37,6 +38,7 @@
     "@types/jasmine": "~3.5.0",
     "@types/jasminewd2": "~2.0.3",
     "@types/node": "^12.11.1",
+    "codecov": "^3.6.5",
     "codelyzer": "^5.1.2",
     "husky": "^4.2.5",
     "jasmine-core": "~3.5.0",
@@ -65,5 +67,4 @@
       "git add"
     ]
   }
-
 }
