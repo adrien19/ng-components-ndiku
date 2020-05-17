@@ -14,7 +14,7 @@
     "adjust-version:main": "rjp package.json version $VERSION",
     "test": "ng test",
     "test:lib": "ng test ng-components-ndiku",
-    "test:lib-coverage": "ng test ng-components-ndiku --code-coverage --watch=false",
+    "test:lib-coverage": "ng test ng-components-ndiku --code-coverage --watch=true",
     "report-coverage:lib": "cat ./coverage/ng-components-ndiku/lcov.info | codecov",
     "publish:demo": "npx angular-cli-ghpages --dir=./dist/ng-components-ndiku-showcase",
     "lint": "ng lint",
