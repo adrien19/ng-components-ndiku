@@ -18,8 +18,10 @@ export class NgComponentsNdikuService {
 
   public inputControl$ = new Subject<InputControlConfigs>();
 
-  public createEmailInput(required: boolean, notEmpty: boolean, inputId?: string, inputLabel?: string, inputPlaceholder?: string): void {
-    this.inputControl$.next(this.createInputControl(
+  public createEmailInput(required: boolean, notEmpty: boolean, inputId?: string, inputLabel?: string, inputPlaceholder?: string) {
+    console.log("I AM BEING CALLED!");
+    
+     this.inputControl$.next(this.createInputControl(
       required, 
       notEmpty, 
       inputId, 
@@ -27,6 +29,7 @@ export class NgComponentsNdikuService {
       inputLabel, 
       inputPlaceholder)
     );
+
   }
 
   private createInputControl(required: boolean, notEmpty: boolean, inputId?: string, inputType?: string,  inputLabel?: string, inputPlaceholder?: string): InputControlConfigs {
