@@ -1,6 +1,7 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { NgComponentsNdikuService } from 'projects/ng-components-ndiku/src/public-api';
 import { FormGroup, FormBuilder } from '@angular/forms';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -12,6 +13,8 @@ export class AppComponent {
 
   editBaseForm: FormGroup;
   enteredEmail = '';
+  enteredPassword = '';
+  inputValueSubscription: Subscription;
 
   constructor(
     fb: FormBuilder,
@@ -24,21 +27,29 @@ export class AppComponent {
 
   onAddItem() {}
 
-  createEmailInputControl() {
-    this.ngComponentsNdikuService.createEmailInput(
-      true,
-      false,
-      'email',
-      'email',
-      'enter email'
+  subscribeToInputValue() {
+    this.inputValueSubscription = this.ngComponentsNdikuService.inputValueChanged$.subscribe(
+      (value) => {
+        this.enteredPassword = value;
+      }
     );
   }
 
-  public addChild(childName: string, childGroup: FormGroup) {
-    this.editBaseForm.addControl(childName, childGroup);
+  createPasswordInputControl() {
+    this.ngComponentsNdikuService.createInputControl({
+      parentForm: this.editBaseForm,
+      required: true,
+      notEmpty: true,
+      inputType: 'password',
+      inputId: 'myPassword',
+      inputLabel: 'Password',
+      inputPlaceholder: 'Enter Password',
+    });
   }
 
-  public showenteredEmail(value: any) {
-    this.enteredEmail = value;
+  unSubscribeToInputValue() {
+    if (this.inputValueSubscription) {
+      this.inputValueSubscription.unsubscribe();
+    }
   }
 }

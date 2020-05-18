@@ -1,22 +1,25 @@
-
-
 <div class="container-fluid">
   <div class="row content-row">
     <div class="col-12 content-col">
       <h2>CLICK THE BUTTON TO SEE MAGIC!</h2>
       <h3>This will create an input control.</h3>
-      <p>{{ enteredEmail }}</p>
-
       <form [formGroup]="editBaseForm" (ngSubmit)="onAddItem()">
-        <lib-ng-ndiku-input
-          (inputComponentReady)="addChild('nameGroup', $event)"
-          (inputChanged)="showenteredEmail($event)"
-          >
-        </lib-ng-ndiku-input>
+        <p>{{ enteredPassword }}</p>
+        <lib-ng-ndiku-input> </lib-ng-ndiku-input>
       </form>
-      <button mat-flat-button color="primary" (click)="createEmailInputControl()">Create email input control</button>
+      <button mat-flat-button color="primary" (click)="subscribeToInputValue()">
+        Subscribe to input value
+      </button>
+      <button
+        mat-flat-button
+        color="accent"
+        (click)="createPasswordInputControl()"
+      >
+        Create Password input control
+      </button>
+      <button mat-flat-button color="warn" (click)="unSubscribeToInputValue()">
+        Unsubscribe to input value
+      </button>
     </div>
   </div>
 </div>
-
-

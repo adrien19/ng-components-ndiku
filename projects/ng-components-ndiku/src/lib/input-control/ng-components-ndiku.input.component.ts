@@ -6,7 +6,7 @@ import {
   EventEmitter,
 } from '@angular/core';
 import { Subscription, Subject, Observable } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { map, tap, take } from 'rxjs/operators';
 import {
   FormControl,
   FormGroupDirective,
@@ -43,7 +43,7 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
   styleUrls: ['./ng-components-ndiku.input.component.scss'],
 })
 export class NgComponentsNdikuComponent implements OnInit, OnDestroy {
-   matcher = new MyErrorStateMatcher();
+  matcher = new MyErrorStateMatcher();
 
   private _REQUIRED = false;
   private _NOTEMPTY = false;
@@ -69,13 +69,13 @@ export class NgComponentsNdikuComponent implements OnInit, OnDestroy {
   inputSub: Subscription;
   serviceSub: Subscription;
 
-  // onComponentReady: Subject<FormGroup> = new Subject<FormGroup>();
+  // onComponentReady: provides method to bind to for adding the input control as child
+  // to a parent form.
   @Output() inputComponentReady: EventEmitter<FormGroup> = new EventEmitter<
     FormGroup
   >();
 
-  // inputChanged: Subject<any> = new Subject();
-  @Output() inputChanged: EventEmitter<any> = new EventEmitter();
+  // @Output() inputChanged: EventEmitter<any> = new EventEmitter();
 
   componentFormGroup: FormGroup;
 
@@ -120,12 +120,14 @@ export class NgComponentsNdikuComponent implements OnInit, OnDestroy {
         });
         this.inputSub = this.componentFormGroup.controls.input.valueChanges.subscribe(
           (value) => {
-            // this.inputChanged.next(value);
-            this.inputChanged.emit(value);
+            this.ngComponentsNdikuService.inputValueChanged$.next(value);
           }
         );
-        // this.onComponentReady.next(this.componentFormGroup);
-        this.inputComponentReady.emit(this.componentFormGroup);
+        this.ngComponentsNdikuService.attachInputControl(
+          inputControlConfigs.parentForm,
+          `${inputControlConfigs.inputType}Group`,
+          this.componentFormGroup
+        );
       })
     );
   }

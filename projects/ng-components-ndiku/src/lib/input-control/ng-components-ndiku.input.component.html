@@ -2,7 +2,7 @@
   [formGroup]="componentFormGroup"
   *ngIf="buildInputControl$ | async as buildInputControl"
 >
-  <mat-form-field class="w-100">
+  <mat-form-field>
     <mat-label *ngIf="buildInputControl.inputLabel">{{
       buildInputControl.inputLabel
     }}</mat-label>
@@ -17,7 +17,7 @@
 
     <mat-error
       *ngIf="
-        inputType === 'email' &&
+        buildInputControl.inputType === 'email' &&
         required &&
         componentFormGroup.controls.input.hasError('required')
       "
@@ -26,7 +26,7 @@
     </mat-error>
     <mat-error
       *ngIf="
-        inputType === 'email' &&
+        buildInputControl.inputType === 'email' &&
         required &&
         !componentFormGroup.controls.input.hasError('required') &&
         !componentFormGroup.controls.input.valid
@@ -36,7 +36,7 @@
     </mat-error>
     <mat-error
       *ngIf="
-        inputType === 'email' &&
+        buildInputControl.inputType === 'email' &&
         !required &&
         !componentFormGroup.controls.input.valid
       "
@@ -46,7 +46,7 @@
 
     <mat-error
       *ngIf="
-        inputType === 'password' &&
+        buildInputControl.inputType === 'password' &&
         required &&
         componentFormGroup.controls.input.hasError('required')
       "
@@ -56,7 +56,8 @@
 
     <mat-error
       *ngIf="
-        inputType === 'text' &&
+        buildInputControl.inputType !== 'email' &&
+        buildInputControl.inputType !== 'password' &&
         required &&
         componentFormGroup.controls.input.hasError('required')
       "
