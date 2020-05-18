@@ -1,3 +1,16 @@
+# [1.1.0](https://github.com/adrien19/ng-components-ndiku/compare/v1.0.0...v1.1.0) (2020-05-18)
+
+
+### Bug Fixes
+
+* **lib:** fixes lint const error  in spec.ts ([9f8cacc](https://github.com/adrien19/ng-components-ndiku/commit/9f8cacc5a2aa215a9c0cbf1a83b7f28a72e46161))
+* **lib:** fixes testing input creation in spec.ts ([d671073](https://github.com/adrien19/ng-components-ndiku/commit/d6710733eb9cab2d0c6d3ee2b1e15949053ee461))
+
+
+### Features
+
+* **lib:** restructures lib and adds new action buttons for demo-ing ([0b5f926](https://github.com/adrien19/ng-components-ndiku/commit/0b5f926693bf83a799007064c00f19914fc3849b))
+
 # 1.0.0 (2020-05-18)
 
 
