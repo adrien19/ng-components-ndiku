@@ -1,24 +1,24 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+// import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { NgComponentsNdikuComponent } from './ng-components-ndiku.input.component';
+// import { NgComponentsNdikuComponent } from './ng-components-ndiku.input.component';
 
-describe('NgComponentsNdikuComponent', () => {
-  let component: NgComponentsNdikuComponent;
-  let fixture: ComponentFixture<NgComponentsNdikuComponent>;
+// describe('NgComponentsNdikuComponent', () => {
+//   let component: NgComponentsNdikuComponent;
+//   let fixture: ComponentFixture<NgComponentsNdikuComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [NgComponentsNdikuComponent],
-    }).compileComponents();
-  }));
+//   beforeEach(async(() => {
+//     TestBed.configureTestingModule({
+//       declarations: [NgComponentsNdikuComponent],
+//     }).compileComponents();
+//   }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(NgComponentsNdikuComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+//   beforeEach(() => {
+//     fixture = TestBed.createComponent(NgComponentsNdikuComponent);
+//     component = fixture.componentInstance;
+//     fixture.detectChanges();
+//   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+//   it('should create', () => {
+//     expect(component).toBeTruthy();
+//   });
+// });

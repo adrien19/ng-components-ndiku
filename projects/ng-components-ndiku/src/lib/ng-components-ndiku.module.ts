@@ -13,8 +13,9 @@ import { BrowserModule } from '@angular/platform-browser';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    BrowserAnimationsModule,
     MaterialModule,
+    BrowserAnimationsModule,
+
   ],
   exports: [NgComponentsNdikuComponent],
 })
