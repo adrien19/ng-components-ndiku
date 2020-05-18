@@ -12,9 +12,9 @@ describe('NgComponentsNdikuService', () => {
     });
   });
 
-  it('should create', () => {
-    expect(service).toBeTruthy();
-  });
+  // it('should create', () => {
+  //   expect(service).toBeTruthy();
+  // });
 
   it('should create an input control of type email', () => {
     // const inputType = 'email';
