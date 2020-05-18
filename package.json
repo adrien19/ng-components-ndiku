@@ -72,6 +72,7 @@
     "npm-run-all": "^4.1.5",
     "prettier": "^2.0.5",
     "protractor": "~5.4.3",
+    "replace-json-property": "^1.4.3",
     "semantic-release": "^17.0.7",
     "ts-node": "~8.3.0",
     "tslint": "~6.1.0",
