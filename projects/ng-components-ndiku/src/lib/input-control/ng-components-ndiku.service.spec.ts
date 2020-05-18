@@ -1,11 +1,11 @@
 import { TestScheduler } from 'rxjs/testing';
 import { NgComponentsNdikuService } from './ng-components-ndiku.service';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { FormBuilder } from '@angular/forms';
 
 describe('NgComponentsNdikuService', () => {
   let service: NgComponentsNdikuService;
   let scheduler: TestScheduler;
-  let fb = new FormBuilder();
+  const fb = new FormBuilder();
 
   beforeEach(() => {
     service = new NgComponentsNdikuService();

@@ -5,8 +5,8 @@ import {
   Output,
   EventEmitter,
 } from '@angular/core';
-import { Subscription, Subject, Observable } from 'rxjs';
-import { map, tap, take } from 'rxjs/operators';
+import { Subscription, Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
 import {
   FormControl,
   FormGroupDirective,
