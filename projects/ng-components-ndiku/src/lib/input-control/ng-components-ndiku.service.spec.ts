@@ -1,9 +1,11 @@
 import { TestScheduler } from 'rxjs/testing';
 import { NgComponentsNdikuService } from './ng-components-ndiku.service';
+import { FormGroup, FormBuilder } from '@angular/forms';
 
 describe('NgComponentsNdikuService', () => {
   let service: NgComponentsNdikuService;
   let scheduler: TestScheduler;
+  let fb = new FormBuilder();
 
   beforeEach(() => {
     service = new NgComponentsNdikuService();
@@ -17,9 +19,10 @@ describe('NgComponentsNdikuService', () => {
   });
 
   it('should create an input control of type email', () => {
-    // const inputType = 'email';
-
     const expectedConfig = {
+      parentForm: fb.group({
+        name: [''],
+      }),
       required: false,
       notEmpty: true,
       inputId: 'email',
@@ -28,13 +31,7 @@ describe('NgComponentsNdikuService', () => {
       inputPlaceholder: 'enter email',
     };
 
-    service.createEmailInput(
-      expectedConfig.required,
-      expectedConfig.notEmpty,
-      expectedConfig.inputId,
-      expectedConfig.inputLabel,
-      expectedConfig.inputPlaceholder
-    );
+    service.createInputControl(expectedConfig);
     scheduler
       .expectObservable(service.inputControl$)
       .toBe('a', { a: expectedConfig });
