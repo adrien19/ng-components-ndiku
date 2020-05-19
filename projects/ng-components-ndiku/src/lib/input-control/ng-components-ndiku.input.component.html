@@ -18,7 +18,7 @@
     <mat-error
       *ngIf="
         buildInputControl.inputType === 'email' &&
-        required &&
+        buildInputControl.required &&
         componentFormGroup.controls.input.hasError('required')
       "
     >
@@ -27,7 +27,7 @@
     <mat-error
       *ngIf="
         buildInputControl.inputType === 'email' &&
-        required &&
+        buildInputControl.required &&
         !componentFormGroup.controls.input.hasError('required') &&
         !componentFormGroup.controls.input.valid
       "
@@ -37,7 +37,7 @@
     <mat-error
       *ngIf="
         buildInputControl.inputType === 'email' &&
-        !required &&
+        !buildInputControl.required &&
         !componentFormGroup.controls.input.valid
       "
     >
@@ -47,7 +47,7 @@
     <mat-error
       *ngIf="
         buildInputControl.inputType === 'password' &&
-        required &&
+        buildInputControl.required &&
         componentFormGroup.controls.input.hasError('required')
       "
     >
@@ -58,7 +58,7 @@
       *ngIf="
         buildInputControl.inputType !== 'email' &&
         buildInputControl.inputType !== 'password' &&
-        required &&
+        buildInputControl.required &&
         componentFormGroup.controls.input.hasError('required')
       "
     >
