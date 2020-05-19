@@ -1,3 +1,15 @@
+## [1.1.1](https://github.com/adrien19/ng-components-ndiku/compare/v1.1.0...v1.1.1) (2020-05-19)
+
+
+### Bug Fixes
+
+* **lib:** fixes linting issues ([674cc3f](https://github.com/adrien19/ng-components-ndiku/commit/674cc3f03d0a5a9181ec02c51b1f22d9668759ee))
+
+
+### Performance Improvements
+
+* **lib:** splits modules to improve perf ([3be666e](https://github.com/adrien19/ng-components-ndiku/commit/3be666e0bf0f8955a4d05bed4ccf44176d2cac79))
+
 # [1.1.0](https://github.com/adrien19/ng-components-ndiku/compare/v1.0.0...v1.1.0) (2020-05-18)
 
 
