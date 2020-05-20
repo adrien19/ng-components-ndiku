@@ -1,3 +1,11 @@
+## [1.1.2](https://github.com/adrien19/ng-components-ndiku/compare/v1.1.1...v1.1.2) (2020-05-20)
+
+
+### Bug Fixes
+
+* **lib:** fixes the secondary entry to improve performance ([b3adcc9](https://github.com/adrien19/ng-components-ndiku/commit/b3adcc9f00de10fc2155b438063c523e8eb85d1c))
+* **tslint:** changes component selector prefix ([a01bbd9](https://github.com/adrien19/ng-components-ndiku/commit/a01bbd973007b1b3de6230cff9c9ac29c8c99629))
+
 ## [1.1.1](https://github.com/adrien19/ng-components-ndiku/compare/v1.1.0...v1.1.1) (2020-05-19)
 
 
