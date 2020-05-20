@@ -8,27 +8,80 @@ import { InputControlConfigs } from './inputControlConfigs.model';
 
 @Component({
   selector: 'lib-ng-ndiku-input',
-  templateUrl: './ng-components-ndiku.input.component.html',
-  styleUrls: ['./ng-components-ndiku.input.component.scss'],
+  template: `
+    <form
+      [formGroup]="componentFormGroup"
+      *ngIf="buildInputControl$ | async as buildInputControl"
+    >
+      <mat-form-field>
+        <mat-label *ngIf="buildInputControl.inputLabel">{{
+          buildInputControl.inputLabel
+        }}</mat-label>
+        <input
+          matInput
+          [type]="buildInputControl.inputType"
+          [id]="buildInputControl.inputId"
+          [placeholder]="buildInputControl.inputPlaceholder"
+          formControlName="input"
+          [errorStateMatcher]="matcher"
+        />
+
+        <mat-error
+          *ngIf="
+            buildInputControl.inputType === 'email' &&
+            buildInputControl.required &&
+            componentFormGroup.controls.input.hasError('required')
+          "
+        >
+          email field is required.
+        </mat-error>
+        <mat-error
+          *ngIf="
+            buildInputControl.inputType === 'email' &&
+            buildInputControl.required &&
+            !componentFormGroup.controls.input.hasError('required') &&
+            !componentFormGroup.controls.input.valid
+          "
+        >
+          Please enter valid email.
+        </mat-error>
+        <mat-error
+          *ngIf="
+            buildInputControl.inputType === 'email' &&
+            !buildInputControl.required &&
+            !componentFormGroup.controls.input.valid
+          "
+        >
+          Please enter valid email.
+        </mat-error>
+
+        <mat-error
+          *ngIf="
+            buildInputControl.inputType === 'password' &&
+            buildInputControl.required &&
+            componentFormGroup.controls.input.hasError('required')
+          "
+        >
+          password field is required.
+        </mat-error>
+
+        <mat-error
+          *ngIf="
+            buildInputControl.inputType !== 'email' &&
+            buildInputControl.inputType !== 'password' &&
+            buildInputControl.required &&
+            componentFormGroup.controls.input.hasError('required')
+          "
+        >
+          Please enter valid input.
+        </mat-error>
+      </mat-form-field>
+    </form>
+  `,
+  styles:['']
 })
 export class NgComponentsNdikuComponent implements OnInit, OnDestroy {
   matcher = new MyErrorStateMatcher();
-
-  // private _REQUIRED = false;
-  // private _NOTEMPTY = false;
-  // get required() {
-  //   return this._REQUIRED;
-  // }
-  // set required(value: any) {
-  //   this._REQUIRED = coerceBooleanProperty(value);
-  // }
-
-  // get notEmpty() {
-  //   return this._NOTEMPTY;
-  // }
-  // set notEmpty(value: any) {
-  //   this._NOTEMPTY = coerceBooleanProperty(value);
-  // }
 
   inputType = 'text';
   inputId = 'input';
@@ -37,14 +90,6 @@ export class NgComponentsNdikuComponent implements OnInit, OnDestroy {
 
   inputSub: Subscription;
   serviceSub: Subscription;
-
-  // onComponentReady: provides method to bind to for adding the input control as child
-  // to a parent form.
-  // @Output() inputComponentReady: EventEmitter<FormGroup> = new EventEmitter<
-  //   FormGroup
-  // >();
-
-  // @Output() inputChanged: EventEmitter<any> = new EventEmitter();
 
   componentFormGroup: FormGroup;
 
@@ -73,7 +118,6 @@ export class NgComponentsNdikuComponent implements OnInit, OnDestroy {
 
         const validators = [];
         if (inputControlConfigs.required) {
-          // this.required = inputControlConfigs.required;
           validators.push(Validators.required);
         }
         if (inputControlConfigs.inputType === 'email') {
@@ -94,7 +138,7 @@ export class NgComponentsNdikuComponent implements OnInit, OnDestroy {
         );
         this.ngComponentsNdikuService.attachInputControl(
           inputControlConfigs.parentForm,
-          `${inputControlConfigs.inputType}Group`,
+          `${inputControlConfigs.inputId}Group`,
           this.componentFormGroup
         );
       })
