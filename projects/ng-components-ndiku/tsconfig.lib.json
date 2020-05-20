@@ -9,7 +9,15 @@
     "lib": [
       "dom",
       "es2018"
-    ]
+    ],
+    "paths": {
+      "ndiku-input": [
+        "dist/ng-components-ndiku/src/lib/input-control"
+      ],
+      "ndiku-select": [
+        "dist/ng-components-ndiku/src/lib/select-control"
+      ]
+    }
   },
   "angularCompilerOptions": {
     "skipTemplateCodegen": true,
