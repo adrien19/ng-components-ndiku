@@ -1,11 +1,12 @@
 <div class="container-fluid">
   <div class="row content-row">
     <div class="col-12 content-col">
+      <ndiku-ng-select [name]="'ng-components-ndiku'"></ndiku-ng-select>
       <h2>CLICK THE BUTTON TO SEE MAGIC!</h2>
       <h3>This will create an input control.</h3>
       <form [formGroup]="editBaseForm" (ngSubmit)="onAddItem()">
         <p>{{ enteredPassword }}</p>
-        <lib-ng-ndiku-input> </lib-ng-ndiku-input>
+        <ndiku-ng-input></ndiku-ng-input>
       </form>
       <button mat-flat-button color="primary" (click)="subscribeToInputValue()">
         Subscribe to input value

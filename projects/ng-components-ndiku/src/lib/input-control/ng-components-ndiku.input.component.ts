@@ -7,7 +7,7 @@ import { NgComponentsNdikuService } from './ng-components-ndiku.service';
 import { InputControlConfigs } from './inputControlConfigs.model';
 
 @Component({
-  selector: 'lib-ng-ndiku-input',
+  selector: 'ndiku-ng-input',
   template: `
     <form
       [formGroup]="componentFormGroup"

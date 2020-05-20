@@ -7,7 +7,7 @@
       "projectType": "library",
       "root": "projects/ng-components-ndiku",
       "sourceRoot": "projects/ng-components-ndiku/src",
-      "prefix": "lib",
+      "prefix": "ndiku",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-ng-packagr:build",
