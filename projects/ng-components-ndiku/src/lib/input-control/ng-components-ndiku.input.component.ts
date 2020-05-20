@@ -78,7 +78,7 @@ import { InputControlConfigs } from './inputControlConfigs.model';
       </mat-form-field>
     </form>
   `,
-  styles:['']
+  styles: [''],
 })
 export class NgComponentsNdikuComponent implements OnInit, OnDestroy {
   matcher = new MyErrorStateMatcher();
