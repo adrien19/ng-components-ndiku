@@ -1,3 +1,11 @@
+## [1.1.3](https://github.com/adrien19/ng-components-ndiku/compare/v1.1.2...v1.1.3) (2020-05-21)
+
+
+### Bug Fixes
+
+* **app:** aborts merging ([5342a41](https://github.com/adrien19/ng-components-ndiku/commit/5342a41e11cc3a24038b7aca5e6bbb8acf38edb1))
+* **lib:** fixes improper access to lib assets ([7548124](https://github.com/adrien19/ng-components-ndiku/commit/7548124970270d500c4e50364b6bb318be127747))
+
 ## [1.1.2](https://github.com/adrien19/ng-components-ndiku/compare/v1.1.1...v1.1.2) (2020-05-20)
 
 
