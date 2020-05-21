@@ -6,6 +6,27 @@
 * **lib:** fixes improper access to lib assets ([7548124](https://github.com/adrien19/ng-components-ndiku/commit/7548124970270d500c4e50364b6bb318be127747))
 * **lib:** fixes linting issues ([674cc3f](https://github.com/adrien19/ng-components-ndiku/commit/674cc3f03d0a5a9181ec02c51b1f22d9668759ee))
 * **lib:** fixes the secondary entry to improve performance ([b3adcc9](https://github.com/adrien19/ng-components-ndiku/commit/b3adcc9f00de10fc2155b438063c523e8eb85d1c))
+* **package:** fix versionning in  package.json ([c09b3bd](https://github.com/adrien19/ng-components-ndiku/commit/c09b3bdd8bf953754c76776641e7686485fb8d2d))
+* **package:** fixes version in  package-lock.json ([9c772c8](https://github.com/adrien19/ng-components-ndiku/commit/9c772c846b0c50f2817772e9ab1b8958c149382c))
+* **package:** fixes version in  package.json ([13fa1b9](https://github.com/adrien19/ng-components-ndiku/commit/13fa1b9b9014550465a0fc2d843d6139238d1478))
+* **package:** fixes versionning issue ([5f7b4e3](https://github.com/adrien19/ng-components-ndiku/commit/5f7b4e3e4055e80995e10ee1280260d5daf134e3))
+* **package:** merges fix for versionning ([b99d863](https://github.com/adrien19/ng-components-ndiku/commit/b99d863d61870e34d84f33a500e70da488a2ebbb))
+* **travis:** fixes travis script order ([aa43e76](https://github.com/adrien19/ng-components-ndiku/commit/aa43e76ff4d4868fb110213d84b8a6c5f883bc9f))
+* **tslint:** changes component selector prefix ([a01bbd9](https://github.com/adrien19/ng-components-ndiku/commit/a01bbd973007b1b3de6230cff9c9ac29c8c99629))
+
+
+### Performance Improvements
+
+* **lib:** splits modules to improve perf ([3be666e](https://github.com/adrien19/ng-components-ndiku/commit/3be666e0bf0f8955a4d05bed4ccf44176d2cac79))
+
+## [1.1.1](https://github.com/adrien19/ng-components-ndiku/compare/v1.1.0...v1.1.1) (2020-05-21)
+
+
+### Bug Fixes
+
+* **lib:** fixes improper access to lib assets ([7548124](https://github.com/adrien19/ng-components-ndiku/commit/7548124970270d500c4e50364b6bb318be127747))
+* **lib:** fixes linting issues ([674cc3f](https://github.com/adrien19/ng-components-ndiku/commit/674cc3f03d0a5a9181ec02c51b1f22d9668759ee))
+* **lib:** fixes the secondary entry to improve performance ([b3adcc9](https://github.com/adrien19/ng-components-ndiku/commit/b3adcc9f00de10fc2155b438063c523e8eb85d1c))
 * **package:** fixes version in  package-lock.json ([9c772c8](https://github.com/adrien19/ng-components-ndiku/commit/9c772c846b0c50f2817772e9ab1b8958c149382c))
 * **package:** fixes version in  package.json ([13fa1b9](https://github.com/adrien19/ng-components-ndiku/commit/13fa1b9b9014550465a0fc2d843d6139238d1478))
 * **package:** fixes versionning issue ([5f7b4e3](https://github.com/adrien19/ng-components-ndiku/commit/5f7b4e3e4055e80995e10ee1280260d5daf134e3))
