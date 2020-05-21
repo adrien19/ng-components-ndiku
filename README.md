@@ -1,7 +1,7 @@
 
 # ng-components-ndiku
 
-> Provides Angular components designed to fit functionality. Ex.: email input form control.
+> Provides Angular components designed to fit functionality. Ex.: email input form controls.
 
  [![Build Status](https://travis-ci.com/adrien19/ng-components-ndiku.svg?branch=master)](https://travis-ci.com/adrien19/ng-components-ndiku) 
 
