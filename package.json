@@ -1,5 +1,5 @@
 {
-  "name": "ng-components-ndiku",
+  "name": "@n.adrien/ng-components-ndiku",
   "version": "1.1.2",
   "scripts": {
     "ng": "ng",
