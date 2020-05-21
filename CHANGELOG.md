@@ -1,3 +1,19 @@
+## [1.1.4](https://github.com/adrien19/ng-components-ndiku/compare/v1.1.3...v1.1.4) (2020-05-21)
+
+
+### Bug Fixes
+
+* **app:** merges fixes ([38b761e](https://github.com/adrien19/ng-components-ndiku/commit/38b761e97922075bab2110c2edefde371ec8f12b))
+* **lib:** fix for release ([743471a](https://github.com/adrien19/ng-components-ndiku/commit/743471a29ca3e9a17b5f949cf058869ea536635d))
+* **package:** adds missing npm scripts ([1b2c8ee](https://github.com/adrien19/ng-components-ndiku/commit/1b2c8eefdac1634b8138a0c10cc94778f786d580))
+* **package:** fix versionning in  package.json ([c09b3bd](https://github.com/adrien19/ng-components-ndiku/commit/c09b3bdd8bf953754c76776641e7686485fb8d2d))
+* **package:** fixes version in  package-lock.json ([9c772c8](https://github.com/adrien19/ng-components-ndiku/commit/9c772c846b0c50f2817772e9ab1b8958c149382c))
+* **package:** fixes version in  package.json ([13fa1b9](https://github.com/adrien19/ng-components-ndiku/commit/13fa1b9b9014550465a0fc2d843d6139238d1478))
+* **package:** fixes versionning issue ([5f7b4e3](https://github.com/adrien19/ng-components-ndiku/commit/5f7b4e3e4055e80995e10ee1280260d5daf134e3))
+* **package:** merges fix for versionning ([b99d863](https://github.com/adrien19/ng-components-ndiku/commit/b99d863d61870e34d84f33a500e70da488a2ebbb))
+* **travis:** fixes travis script order ([aa43e76](https://github.com/adrien19/ng-components-ndiku/commit/aa43e76ff4d4868fb110213d84b8a6c5f883bc9f))
+* **travis:** reorders jobs to build lib first ([e99dd4c](https://github.com/adrien19/ng-components-ndiku/commit/e99dd4cfd81dc157925e606e56dd2b79cd5dde60))
+
 ## [1.1.3](https://github.com/adrien19/ng-components-ndiku/compare/v1.1.2...v1.1.3) (2020-05-21)
 
 
