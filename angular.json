@@ -62,7 +62,7 @@
             "main": "projects/ng-components-ndiku-showcase/src/main.ts",
             "polyfills": "projects/ng-components-ndiku-showcase/src/polyfills.ts",
             "tsConfig": "projects/ng-components-ndiku-showcase/tsconfig.app.json",
-            "aot": true,
+            "aot": false,
             "assets": [
               "projects/ng-components-ndiku-showcase/src/favicon.ico",
               "projects/ng-components-ndiku-showcase/src/assets"
