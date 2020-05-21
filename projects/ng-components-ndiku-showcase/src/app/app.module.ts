@@ -2,8 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
-import { NgComponentsNdikuModule } from 'projects/ng-components-ndiku/src/lib/input-control';
-import { NgComponentsNdikuSelectModule } from 'projects/ng-components-ndiku/src/lib/select-control';
+import { NgComponentsNdikuModule, NgComponentsNdikuSelectModule } from 'ng-components-ndiku';
 
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
