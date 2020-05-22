@@ -1,24 +1,10 @@
-# NgComponentsNdiku
 
-This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 9.1.7.
+# ng-components-ndiku
 
-## Code scaffolding
+> Provides Angular components designed to fit functionality. Ex.: email input form controls.
 
-Run `ng generate component component-name --project ng-components-ndiku` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module --project ng-components-ndiku`.
-> Note: Don't forget to add `--project ng-components-ndiku` or else it will be added to the default project in your `angular.json` file. 
+ [![Build Status](https://travis-ci.com/adrien19/ng-components-ndiku.svg?branch=master)](https://travis-ci.com/adrien19/ng-components-ndiku) 
 
-## Build
+## MORE INFO COMING SOON
 
-Run `ng build ng-components-ndiku` to build the project. The build artifacts will be stored in the `dist/` directory.
-
-## Publishing
-
-After building your library with `ng build ng-components-ndiku`, go to the dist folder `cd dist/ng-components-ndiku` and run `npm publish`.
-
-## Running unit tests
-
-Run `ng test ng-components-ndiku` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+### Want to see a DEMO -> [ng-components-ndiku](https://adrien19.github.io/ng-components-ndiku/)

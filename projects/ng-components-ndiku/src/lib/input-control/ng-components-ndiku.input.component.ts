@@ -1,35 +1,29 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Subscription, Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MyErrorStateMatcher } from './ng-component-ndiku.errormatcher.service';
 import { NgComponentsNdikuService } from './ng-components-ndiku.service';
-import { InputControlConfigs } from './inputControlConfigs.model';
+import { coerceBooleanProperty } from '@angular/cdk/coercion';
 
 @Component({
   selector: 'ndiku-ng-input',
   template: `
-    <form
-      [formGroup]="componentFormGroup"
-      *ngIf="buildInputControl$ | async as buildInputControl"
-    >
+    <form [formGroup]="componentFormGroup">
       <mat-form-field>
-        <mat-label *ngIf="buildInputControl.inputLabel">{{
-          buildInputControl.inputLabel
-        }}</mat-label>
+        <mat-label *ngIf="label">{{ label }}</mat-label>
         <input
           matInput
-          [type]="buildInputControl.inputType"
-          [id]="buildInputControl.inputId"
-          [placeholder]="buildInputControl.inputPlaceholder"
+          [type]="type"
+          [id]="id"
+          [placeholder]="placeholder"
           formControlName="input"
           [errorStateMatcher]="matcher"
         />
 
         <mat-error
           *ngIf="
-            buildInputControl.inputType === 'email' &&
-            buildInputControl.required &&
+            type === 'email' &&
+            required &&
             componentFormGroup.controls.input.hasError('required')
           "
         >
@@ -37,8 +31,8 @@ import { InputControlConfigs } from './inputControlConfigs.model';
         </mat-error>
         <mat-error
           *ngIf="
-            buildInputControl.inputType === 'email' &&
-            buildInputControl.required &&
+            type === 'email' &&
+            required &&
             !componentFormGroup.controls.input.hasError('required') &&
             !componentFormGroup.controls.input.valid
           "
@@ -47,8 +41,8 @@ import { InputControlConfigs } from './inputControlConfigs.model';
         </mat-error>
         <mat-error
           *ngIf="
-            buildInputControl.inputType === 'email' &&
-            !buildInputControl.required &&
+            type === 'email' &&
+            !required &&
             !componentFormGroup.controls.input.valid
           "
         >
@@ -57,8 +51,8 @@ import { InputControlConfigs } from './inputControlConfigs.model';
 
         <mat-error
           *ngIf="
-            buildInputControl.inputType === 'password' &&
-            buildInputControl.required &&
+            type === 'password' &&
+            required &&
             componentFormGroup.controls.input.hasError('required')
           "
         >
@@ -67,9 +61,9 @@ import { InputControlConfigs } from './inputControlConfigs.model';
 
         <mat-error
           *ngIf="
-            buildInputControl.inputType !== 'email' &&
-            buildInputControl.inputType !== 'password' &&
-            buildInputControl.required &&
+            type !== 'email' &&
+            type !== 'password' &&
+            required &&
             componentFormGroup.controls.input.hasError('required')
           "
         >
@@ -83,65 +77,109 @@ import { InputControlConfigs } from './inputControlConfigs.model';
 export class NgComponentsNdikuComponent implements OnInit, OnDestroy {
   matcher = new MyErrorStateMatcher();
 
-  inputType = 'text';
-  inputId = 'input';
-  inputLabel: string;
-  inputPlaceholder = '';
+  private _REQUIRED = false;
+  private _NOTEMPTY = false;
+
+  private _INTPUT_TYPE = 'text';
+  private _INPUT_ID = '';
+  private _INPUT_LABEL = '';
+  private _INPUT_PLACEHOLDER = '';
+  private _ON_COMPONENT_READY = new EventEmitter<FormGroup>();
+
+  @Input()
+  get required() {
+    return this._REQUIRED;
+  }
+  set required(value: any) {
+    this._REQUIRED = coerceBooleanProperty(value);
+  }
+
+  @Input()
+  get notEmpty() {
+    return this._NOTEMPTY;
+  }
+  set notEmpty(value: any) {
+    this._NOTEMPTY = coerceBooleanProperty(value);
+  }
+
+  @Input()
+  get type() {
+    return this._INTPUT_TYPE;
+  }
+  set type(value: string) {
+    this._INTPUT_TYPE = value;
+  }
+
+  @Input()
+  get id() {
+    return this._INPUT_ID;
+  }
+  set id(value: string) {
+    this._INPUT_ID = value;
+  }
+
+  @Input()
+  get label() {
+    return this._INPUT_LABEL;
+  }
+  set label(value: string) {
+    this._INPUT_LABEL = value;
+  }
+
+  @Input()
+  get placeholder() {
+    return this._INPUT_PLACEHOLDER;
+  }
+  set placeholder(value: string) {
+    this._INPUT_PLACEHOLDER = value;
+  }
+
+  @Output()
+  get onComponentReady() {
+    return this._ON_COMPONENT_READY;
+  }
+  set onComponentReady(value: EventEmitter<FormGroup>) {
+    this._ON_COMPONENT_READY = value;
+  }
 
   inputSub: Subscription;
-  serviceSub: Subscription;
 
   componentFormGroup: FormGroup;
-
-  buildInputControl$: Observable<InputControlConfigs>;
 
   constructor(
     private fb: FormBuilder,
     private ngComponentsNdikuService: NgComponentsNdikuService
   ) {}
 
+  ngOnInit(): void {
+    // construct validators based on component input properties
+    const validators = [];
+    if (this.required) {
+      validators.push(Validators.required);
+    }
+    if (this.type === 'email') {
+      validators.push(Validators.email);
+    }
+    if (this.type === 'password') {
+      validators.push(Validators.minLength(6));
+    }
+    this.componentFormGroup = this.fb.group({
+      input: ['', validators],
+    });
+    this.inputSub = this.componentFormGroup.controls.input.valueChanges.subscribe(
+      (value) => {
+        this.ngComponentsNdikuService.inputValueChanged$.next(value);
+      }
+    );
+    this.onComponentReady.emit(this.componentFormGroup);
+  }
+
   ngOnDestroy(): void {
+    if (this.ngComponentsNdikuService.inputValueChanged$) {
+      this.ngComponentsNdikuService.inputValueChanged$.unsubscribe();
+    }
     if (this.inputSub) {
       this.inputSub.unsubscribe();
     }
-    if (this.serviceSub) {
-      this.serviceSub.unsubscribe();
-    }
-  }
-
-  ngOnInit() {
-    this.buildInputControl$ = this.ngComponentsNdikuService.inputControl$.pipe(
-      tap((inputControlConfigs) => {
-        // construct validators based on component input properties
-        this.inputLabel = inputControlConfigs.inputLabel;
-        this.inputId = inputControlConfigs.inputId;
-
-        const validators = [];
-        if (inputControlConfigs.required) {
-          validators.push(Validators.required);
-        }
-        if (inputControlConfigs.inputType === 'email') {
-          this.inputType = inputControlConfigs.inputType;
-          validators.push(Validators.email);
-        }
-        if (inputControlConfigs.inputType === 'password') {
-          this.inputType = inputControlConfigs.inputType;
-          validators.push(Validators.minLength(6));
-        }
-        this.componentFormGroup = this.fb.group({
-          input: ['', validators],
-        });
-        this.inputSub = this.componentFormGroup.controls.input.valueChanges.subscribe(
-          (value) => {
-            this.ngComponentsNdikuService.inputValueChanged$.next(value);
-          }
-        );
-        this.ngComponentsNdikuService.attachInputControl(
-          inputControlConfigs.parentForm,
-          `${inputControlConfigs.inputId}Group`,
-          this.componentFormGroup
-        );
-      })
-    );
   }
 }

@@ -14,7 +14,8 @@ export class AppComponent {
   editBaseForm: FormGroup;
   enteredEmail = '';
   enteredPassword = '';
-  inputValueSubscription: Subscription;
+  emailValueSubscription: Subscription;
+  passwordValueSubscription: Subscription;
 
   constructor(
     fb: FormBuilder,
@@ -27,29 +28,33 @@ export class AppComponent {
 
   onAddItem() {}
 
-  subscribeToInputValue() {
-    this.inputValueSubscription = this.ngComponentsNdikuService.inputValueChanged$.subscribe(
+  subscribeToEmailValue() {
+    this.emailValueSubscription = this.ngComponentsNdikuService.inputValueChanged$.subscribe(
+      (value) => {
+        this.enteredEmail = value;
+      }
+    );
+  }
+
+  subscribeToPasswordValue() {
+    this.passwordValueSubscription = this.ngComponentsNdikuService.inputValueChanged$.subscribe(
       (value) => {
         this.enteredPassword = value;
       }
     );
   }
 
-  createPasswordInputControl() {
-    this.ngComponentsNdikuService.createInputControl({
-      parentForm: this.editBaseForm,
-      required: true,
-      notEmpty: true,
-      inputType: 'password',
-      inputId: 'myPassword',
-      inputLabel: 'Password',
-      inputPlaceholder: 'Enter Password',
-    });
+  unSubscribeToInputValue() {
+    if (this.emailValueSubscription) {
+      this.emailValueSubscription.unsubscribe();
+    }
+
+    if (this.passwordValueSubscription) {
+      this.passwordValueSubscription.unsubscribe();
+    }
   }
 
-  unSubscribeToInputValue() {
-    if (this.inputValueSubscription) {
-      this.inputValueSubscription.unsubscribe();
-    }
+  addChild(childName: string, childGroup: FormGroup){
+    this.editBaseForm.addControl(childName, childGroup);
   }
 }

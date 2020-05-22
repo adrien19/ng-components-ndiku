@@ -5,21 +5,32 @@
       <h2>CLICK THE BUTTON TO SEE MAGIC!</h2>
       <h3>This will create an input control.</h3>
       <form [formGroup]="editBaseForm" (ngSubmit)="onAddItem()">
+        <p>{{ enteredEmail }}</p>
+        <ndiku-ng-input
+          required notEmpty parentForm="editBaseForm" type="email" id="email" label="Email"
+          placeholder="Enter email" onComponentReady="addChild('emailGroup', $event)"
+        ></ndiku-ng-input>
+
         <p>{{ enteredPassword }}</p>
-        <ndiku-ng-input></ndiku-ng-input>
+        <ndiku-ng-input
+          required notEmpty parentForm="editBaseForm" type="password" id="password" label="Password"
+          placeholder="Enter password" onComponentReady="addChild('passwordGroup', $event)"
+        ></ndiku-ng-input>
       </form>
-      <button mat-flat-button color="primary" (click)="subscribeToInputValue()">
-        Subscribe to input value
+
+      <button mat-flat-button color="primary"
+        (click)="subscribeToEmailValue()">
+        Subscribe to Email value
       </button>
       <button
         mat-flat-button
         color="accent"
-        (click)="createPasswordInputControl()"
+        (click)="subscribeToPasswordValue()"
       >
-        Create Password input control
+        Subscribe to Password value
       </button>
       <button mat-flat-button color="warn" (click)="unSubscribeToInputValue()">
-        Unsubscribe to input value
+        Unsubscribe to input values
       </button>
     </div>
   </div>
