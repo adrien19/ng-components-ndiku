@@ -1,4 +1,5 @@
 import { Component, OnInit, Input, OnChanges } from "@angular/core";
+import { ColumnSetting } from './table-layout-conf.model';
 
 
 @Component({
@@ -8,12 +9,12 @@ import { Component, OnInit, Input, OnChanges } from "@angular/core";
     <caption *ngIf="caption">{{ caption }}</caption>
     <thead>
         <tr>
-            <th *ngFor="let key of keys">{{ key }}</th>
+            <th *ngFor="let map of columnMaps">{{ map.header }}</th>
         </tr>
     </thead>
     <tbody>
         <tr *ngFor="let record of records">
-            <td *ngFor="let key of keys">{{ record[key] }}</td>
+            <td *ngFor="let map of columnMaps">{{ record[ map.primaryKey] | formatCell }}</td>
         </tr>
     </tbody>
   </table>
@@ -26,6 +27,8 @@ export class TableLayoutComponent implements OnChanges {
   private _RECORDS: any[];
   private _CAPTION: string;
   private _KEYS: string[];
+  private _SETTINGS: ColumnSetting[];
+  columnMaps: ColumnSetting[];
 
   @Input()
   public get records() : any[] {
@@ -50,13 +53,30 @@ export class TableLayoutComponent implements OnChanges {
     this._KEYS = value;
   }
 
+  @Input()
+  public get settings() : ColumnSetting[] {
+    return this._SETTINGS;
+  }
+  public set settings(value : ColumnSetting[]) {
+    this._SETTINGS = value;
+  }
 
 
   constructor(){}
 
   ngOnChanges() {
-    this.keys = Object.keys(this.records[0]);
-    console.log(this.keys);
+    if (this.settings) { // when settings provided
+      this.columnMaps = this.settings;
+    } else { // no settings, create column maps with defaults
+        this.columnMaps = Object.keys(this.records[0])
+            .map( key => {
+                return {
+                    primaryKey: key,
+                    header: key.slice(0, 1).toUpperCase() +
+                        key.replace(/_/g, ' ' ).slice(1)
+            }
+        });
+    }
   }
 
 
