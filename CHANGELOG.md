@@ -1,3 +1,11 @@
+## [1.1.5](https://github.com/adrien19/ng-components-ndiku/compare/v1.1.4...v1.1.5) (2020-05-22)
+
+
+### Bug Fixes
+
+* **lib:** fixes duplication of event emitting ([bbf8de1](https://github.com/adrien19/ng-components-ndiku/commit/bbf8de1728130af5822202d60b69981478951c95))
+* **package:** removes unused package path link ([adf6f3e](https://github.com/adrien19/ng-components-ndiku/commit/adf6f3e1fe42f19653a087886b6c7337eedbc07a))
+
 ## [1.1.4](https://github.com/adrien19/ng-components-ndiku/compare/v1.1.3...v1.1.4) (2020-05-21)
 
 
