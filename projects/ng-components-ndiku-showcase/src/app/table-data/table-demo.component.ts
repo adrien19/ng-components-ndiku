@@ -32,7 +32,8 @@ export class TableDemoComponent implements OnInit {
       },
       {
           primaryKey: 'cost',
-          header: 'Cost'
+          header: 'Cost',
+          format: 'currency'
       }
   ];
 

@@ -14,7 +14,7 @@ import { ColumnSetting } from './table-layout-conf.model';
     </thead>
     <tbody>
         <tr *ngFor="let record of records">
-            <td *ngFor="let map of columnMaps">{{ record[ map.primaryKey] | formatCell }}</td>
+            <td *ngFor="let map of columnMaps">{{ record[ map.primaryKey] | formatCell:map.format }}</td>
         </tr>
     </tbody>
   </table>
@@ -66,14 +66,17 @@ export class TableLayoutComponent implements OnChanges {
 
   ngOnChanges() {
     if (this.settings) { // when settings provided
-      this.columnMaps = this.settings;
+      this.columnMaps = this.settings;// TODO
+      // if no format provided - initialize to 'default'
+
     } else { // no settings, create column maps with defaults
         this.columnMaps = Object.keys(this.records[0])
             .map( key => {
                 return {
                     primaryKey: key,
                     header: key.slice(0, 1).toUpperCase() +
-                        key.replace(/_/g, ' ' ).slice(1)
+                      key.replace(/_/g, ' ' ).slice(1),
+                    format: 'default'
             }
         });
     }

@@ -1,6 +1,6 @@
 import { NgModule } from "@angular/core";
 import { TableLayoutComponent } from './table-layout.component';
-import { CommonModule } from '@angular/common';
+import { CommonModule, CurrencyPipe } from '@angular/common';
 import { FormatCellPipe } from './table-format-cell.pipe';
 
 
@@ -9,14 +9,16 @@ import { FormatCellPipe } from './table-format-cell.pipe';
     TableLayoutComponent,
     FormatCellPipe
   ],
+
   imports: [
     CommonModule
   ],
-
   exports: [
     TableLayoutComponent,
     FormatCellPipe
-  ]
+  ],
+
+  providers: [ CurrencyPipe ]
 })
 
 export class TableLayoutModule {}
