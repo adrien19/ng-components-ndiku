@@ -14,7 +14,10 @@ import { ColumnSetting } from './table-layout-conf.model';
     </thead>
     <tbody>
         <tr *ngFor="let record of records">
-            <td *ngFor="let map of columnMaps">{{ record[ map.primaryKey] | formatCell:map.format }}</td>
+            <td *ngFor="let map of columnMaps"
+              [ndikuStyleCell]="record[map.primaryKey]">
+              {{ record[ map.primaryKey] | formatCell:map.format }}
+            </td>
         </tr>
     </tbody>
   </table>

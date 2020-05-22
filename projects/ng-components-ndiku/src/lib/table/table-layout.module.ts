@@ -2,12 +2,14 @@ import { NgModule } from "@angular/core";
 import { TableLayoutComponent } from './table-layout.component';
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { FormatCellPipe } from './table-format-cell.pipe';
+import { StyleCellDirective } from './table-style-cell.directive';
 
 
 @NgModule({
   declarations: [
     TableLayoutComponent,
-    FormatCellPipe
+    FormatCellPipe,
+    StyleCellDirective
   ],
 
   imports: [
@@ -15,7 +17,8 @@ import { FormatCellPipe } from './table-format-cell.pipe';
   ],
   exports: [
     TableLayoutComponent,
-    FormatCellPipe
+    FormatCellPipe,
+    StyleCellDirective
   ],
 
   providers: [ CurrencyPipe ]
