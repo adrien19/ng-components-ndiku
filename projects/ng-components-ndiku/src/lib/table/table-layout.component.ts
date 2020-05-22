@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, OnChanges } from "@angular/core";
-import { ColumnSetting } from './table-layout-conf.model';
+import { ColumnSetting, ColumnMap } from './table-layout-conf.model';
 
 
 @Component({
@@ -15,8 +15,8 @@ import { ColumnSetting } from './table-layout-conf.model';
     <tbody>
         <tr *ngFor="let record of records">
             <td *ngFor="let map of columnMaps"
-              [ndikuStyleCell]="record[map.primaryKey]">
-              {{ record[ map.primaryKey] | formatCell:map.format }}
+              [ndikuStyleCell]="record[ map.access(record) ]">
+              {{ record[ map.access(record) ] | formatCell:map.format }}
             </td>
         </tr>
     </tbody>
@@ -31,7 +31,7 @@ export class TableLayoutComponent implements OnChanges {
   private _CAPTION: string;
   private _KEYS: string[];
   private _SETTINGS: ColumnSetting[];
-  columnMaps: ColumnSetting[];
+  columnMaps: ColumnMap[];
 
   @Input()
   public get records() : any[] {
@@ -69,19 +69,12 @@ export class TableLayoutComponent implements OnChanges {
 
   ngOnChanges() {
     if (this.settings) { // when settings provided
-      this.columnMaps = this.settings;// TODO
-      // if no format provided - initialize to 'default'
+      this.columnMaps = this.settings.map( col => new ColumnMap(col) );
 
     } else { // no settings, create column maps with defaults
-        this.columnMaps = Object.keys(this.records[0])
-            .map( key => {
-                return {
-                    primaryKey: key,
-                    header: key.slice(0, 1).toUpperCase() +
-                      key.replace(/_/g, ' ' ).slice(1),
-                    format: 'default'
-            }
-        });
+      this.columnMaps = Object.keys(this.records[0]).map( key => {
+          return new ColumnMap( { primaryKey: key });
+      });
     }
   }
 
