@@ -7,19 +7,30 @@
       <form [formGroup]="editBaseForm" (ngSubmit)="onAddItem()">
         <p>{{ enteredEmail }}</p>
         <ndiku-ng-input
-          required notEmpty parentForm="editBaseForm" type="email" id="email" label="Email"
-          placeholder="Enter email" onComponentReady="addChild('emailGroup', $event)"
+          required
+          notEmpty
+          parentForm="editBaseForm"
+          type="email"
+          id="email"
+          label="Email"
+          placeholder="Enter email"
+          onComponentReady="addChild('emailGroup', $event)"
         ></ndiku-ng-input>
 
         <p>{{ enteredPassword }}</p>
         <ndiku-ng-input
-          required notEmpty parentForm="editBaseForm" type="password" id="password" label="Password"
-          placeholder="Enter password" onComponentReady="addChild('passwordGroup', $event)"
+          required
+          notEmpty
+          parentForm="editBaseForm"
+          type="password"
+          id="password"
+          label="Password"
+          placeholder="Enter password"
+          onComponentReady="addChild('passwordGroup', $event)"
         ></ndiku-ng-input>
       </form>
 
-      <button mat-flat-button color="primary"
-        (click)="subscribeToEmailValue()">
+      <button mat-flat-button color="primary" (click)="subscribeToEmailValue()">
         Subscribe to Email value
       </button>
       <button
@@ -32,6 +43,17 @@
       <button mat-flat-button color="warn" (click)="unSubscribeToInputValue()">
         Unsubscribe to input values
       </button>
+
+      <!-- below are for table -->
+      <h2 style="margin-top: 30px; text-align: center;">TABLE COMPONENT</h2>
+      <P>
+        The 'ndiku-table-layout' provides a reusable table that takes care of
+        mapping data headers appropriately. For example, when we have nested
+        objects or null values. Also, provides the ability to pass column
+        configuration to control how data is displayed. See below for
+        examples...
+      </P>
+      <app-table-demo class="app-table-demo"></app-table-demo>
     </div>
   </div>
 </div>

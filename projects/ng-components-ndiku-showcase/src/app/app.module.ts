@@ -2,15 +2,21 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
-import { NgComponentsNdikuModule, NgComponentsNdikuSelectModule } from 'ng-components-ndiku';
+import {
+  MaterialModule,
+  NgComponentsNdikuModule,
+  NgComponentsNdikuSelectModule,
+  TableLayoutModule,
+
+} from 'ng-components-ndiku';
 
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MaterialModule } from 'projects/ng-components-ndiku/src/lib/input-control/material.module';
+import { TableDemoComponent } from './table-data/table-demo.component';
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, TableDemoComponent],
   imports: [
     BrowserModule,
     CommonModule,
@@ -19,9 +25,10 @@ import { MaterialModule } from 'projects/ng-components-ndiku/src/lib/input-contr
     BrowserAnimationsModule,
     MaterialModule,
     NgComponentsNdikuModule,
-    NgComponentsNdikuSelectModule
+    NgComponentsNdikuSelectModule,
+    TableLayoutModule,
   ],
   providers: [],
-  bootstrap: [AppComponent],
+  bootstrap: [AppComponent, TableDemoComponent],
 })
 export class AppModule {}
