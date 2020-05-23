@@ -1,3 +1,8 @@
+export enum TableType {
+  MatTable,
+  DefaultTable,
+}
+
 export class ColumnSetting {
   primaryKey: string;
   header?: string;

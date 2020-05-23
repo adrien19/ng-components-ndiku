@@ -1,4 +1,3 @@
-// ./project-center/model.ts
 export class Project {
   id: number;
   name: string;
@@ -15,8 +14,8 @@ export class Person {
   job: string;
   missions: string[];
   crewWith?: {
-      id: number,
-      name: string
+    id: number;
+    name: string;
   }[];
   manager?: any;
 }

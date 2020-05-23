@@ -3,13 +3,13 @@ import { Injectable } from '@angular/core';
 import { Project, Person } from './fake.model';
 import { PROJECTS, PERSONNEL } from './fake-data';
 
-@Injectable({ providedIn: 'root'})
+@Injectable({ providedIn: 'root' })
 export class TableDataService {
-    getProjects(): Project[] {
-        // actual implementation would use async method
-        return PROJECTS;
-    }
-    getPersonnel(): Person[] {
-        return PERSONNEL;
-    }
+  getProjects(): Project[] {
+    // actual implementation would use async method
+    return PROJECTS;
+  }
+  getPersonnel(): Person[] {
+    return PERSONNEL;
+  }
 }

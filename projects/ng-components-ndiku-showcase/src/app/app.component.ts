@@ -54,7 +54,7 @@ export class AppComponent {
     }
   }
 
-  addChild(childName: string, childGroup: FormGroup){
+  addChild(childName: string, childGroup: FormGroup) {
     this.editBaseForm.addControl(childName, childGroup);
   }
 }

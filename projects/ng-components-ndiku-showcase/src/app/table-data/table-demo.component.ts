@@ -6,26 +6,45 @@ import { ColumnSetting } from 'projects/ng-components-ndiku/src/lib/table/table-
 @Component({
   selector: `app-table-demo`,
   template: `
-    <ndiku-table-layout
-      [records]="projects"
-      [caption]="'NASA Projects'"
-      [settings]="projectsTableConfigSettings"
-    >
-    </ndiku-table-layout>
-    <ndiku-table-layout
-      [records]="people"
-      [caption]="'NASA Astronauts'"
-      [settings]="personnelSettings"
-    >
-    </ndiku-table-layout>
+    <div class="container-fluid">
+      <ndiku-table-layout
+        [table]="'mat-table'"
+        [records]="projects"
+        [caption]="'NASA Projects'"
+        [settings]="projectsTableConfigSettings"
+        class=" tableCaption projectsTable"
+      >
+      </ndiku-table-layout>
+      <ndiku-table-layout
+        [records]="people"
+        [caption]="'NASA Astronauts'"
+        [settings]="personnelSettings"
+        class=" tableCaption astronautsTable"
+      >
+      </ndiku-table-layout>
 
-    <ndiku-table-layout
-      [records]="dataSource"
-      [caption]="'Sample Data'"
-    >
-    </ndiku-table-layout>
+      <ndiku-table-layout
+        [records]="dataSource"
+        [caption]="'Sample Data'"
+        class=" tableCaption sampleDataTable"
+      >
+      </ndiku-table-layout>
+    </div>
   `,
-  styles: [``],
+  styles: [
+    `
+      ::ng-deep .tableCaption table caption {
+        font-size: 28px;
+        font-weight: bold;
+        padding-bottom: 20px;
+      }
+
+      ::ng-deep .tableCaption table {
+        background-color: white;
+        margin-top: 30px;
+      }
+    `,
+  ],
 })
 export class TableDemoComponent implements OnInit {
   projectsTableConfigSettings: ColumnSetting[] = [
@@ -63,11 +82,7 @@ export class TableDemoComponent implements OnInit {
   ngOnInit() {
     this.projects = this.tableDataService.getProjects();
     this.people = this.tableDataService.getPersonnel();
-    // console.log(this.projects);
-    // console.log(this.people);
   }
-
-
 }
 
 export interface PeriodicElement {
@@ -78,14 +93,14 @@ export interface PeriodicElement {
 }
 
 const ELEMENT_DATA: PeriodicElement[] = [
-  {position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H'},
-  {position: 2, name: 'Helium', weight: 4.0026, symbol: 'He'},
-  {position: 3, name: 'Lithium', weight: 6.941, symbol: 'Li'},
-  {position: 4, name: 'Beryllium', weight: 9.0122, symbol: 'Be'},
-  {position: 5, name: 'Boron', weight: 10.811, symbol: 'B'},
-  {position: 6, name: 'Carbon', weight: 12.0107, symbol: 'C'},
-  {position: 7, name: 'Nitrogen', weight: 14.0067, symbol: 'N'},
-  {position: 8, name: 'Oxygen', weight: 15.9994, symbol: 'O'},
-  {position: 9, name: 'Fluorine', weight: 18.9984, symbol: 'F'},
-  {position: 10, name: 'Neon', weight: 20.1797, symbol: 'Ne'},
+  { position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H' },
+  { position: 2, name: 'Helium', weight: 4.0026, symbol: 'He' },
+  { position: 3, name: 'Lithium', weight: 6.941, symbol: 'Li' },
+  { position: 4, name: 'Beryllium', weight: 9.0122, symbol: 'Be' },
+  { position: 5, name: 'Boron', weight: 10.811, symbol: 'B' },
+  { position: 6, name: 'Carbon', weight: 12.0107, symbol: 'C' },
+  { position: 7, name: 'Nitrogen', weight: 14.0067, symbol: 'N' },
+  { position: 8, name: 'Oxygen', weight: 15.9994, symbol: 'O' },
+  { position: 9, name: 'Fluorine', weight: 18.9984, symbol: 'F' },
+  { position: 10, name: 'Neon', weight: 20.1797, symbol: 'Ne' },
 ];
