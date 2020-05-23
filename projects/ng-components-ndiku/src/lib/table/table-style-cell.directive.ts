@@ -10,10 +10,10 @@ export class StyleCellDirective implements OnInit {
   ngOnInit() {
     if (this.ndikuStyleCell === undefined) {
       this.renderer.setStyle(this.el.nativeElement, 'color', '#dcdcdc');
-      this.renderer.setStyle(this.el.nativeElement, 'text-align', 'center');
+      // this.renderer.setStyle(this.el.nativeElement, 'text-align', 'center');
     }
     if (typeof this.ndikuStyleCell === 'number') {
-      this.renderer.setStyle(this.el.nativeElement, 'text-align', 'right');
+      // this.renderer.setStyle(this.el.nativeElement, 'text-align', 'right');
     }
   }
 }

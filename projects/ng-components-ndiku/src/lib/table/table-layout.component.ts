@@ -5,7 +5,7 @@ import { ColumnSetting, ColumnMap } from './table-layout-conf.model';
 @Component({
   selector: 'ndiku-table-layout',
   template: `
-    <table class="table">
+    <!-- <table class="table">
       <caption *ngIf="caption">
         {{
           caption
@@ -26,12 +26,15 @@ import { ColumnSetting, ColumnMap } from './table-layout-conf.model';
           </td>
         </tr>
       </tbody>
-    </table>
+    </table> -->
 
-    <!-- <mat-table [dataSource]="records" class="mat-elevation-z8">
-
+    <table mat-table [dataSource]="records" class="mat-elevation-z0">
       <ng-container *ngFor="let map of columnMaps" matColumnDef="{{ map.header}}">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ map.header }}</th>
+        <th mat-header-cell *matHeaderCellDef
+          mat-sort-header
+        >
+          {{ map.header }}
+        </th>
         <ng-container>
           <td mat-cell *matCellDef="let record"
             [ndikuStyleCell]="record[ map.access(record) ]"
@@ -43,9 +46,40 @@ import { ColumnSetting, ColumnMap } from './table-layout-conf.model';
 
       <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
       <mat-row *matRowDef="let row ; columns: displayedColumns"></mat-row>
-    </mat-table> -->
+    </table>
   `,
-  styles: [``],
+  styles: [`
+    table {
+      width: 100%;
+    }
+
+    /* .mat-table-column:first-child {
+      border-right: 1px solid #e0e0e0;
+    }*/
+
+    /* .mat-column:!last-child {
+      border-right: 1px solid #e0e0e0;
+    }  */
+
+    .mat-row,
+    .mat-header-row {
+      display: flex;
+      border-bottom-width: 1px;
+      border-bottom-style: solid;
+      align-items: center;
+      min-height: 48px;
+      padding: 0 24px;
+    }
+
+    .mat-cell,
+    .mat-header-cell {
+      flex: 1;
+      overflow: hidden;
+      word-wrap: break-word;
+      border-bottom: none;
+      /* border-bottom-style: solid; */
+    }
+  `],
 })
 export class TableLayoutComponent implements OnChanges {
   private _RECORDS: any[];
@@ -92,12 +126,14 @@ export class TableLayoutComponent implements OnChanges {
     if (this.settings) {
       // when settings provided
       this.columnMaps = this.settings.map((col) => new ColumnMap(col));
-      this.displayedColumns = this.columnMaps.map(col => col.header);
+      // this.displayedColumns = this.columnMaps.map(col => col.header);
     } else {
       // no settings, create column maps with defaults
       this.columnMaps = Object.keys(this.records[0]).map((key) => {
         return new ColumnMap({ primaryKey: key });
       });
     }
+    this.displayedColumns = this.columnMaps.map(col => col.header);
   }
+
 }
