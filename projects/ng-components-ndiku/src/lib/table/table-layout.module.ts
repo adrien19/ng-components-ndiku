@@ -1,8 +1,10 @@
 import { NgModule } from "@angular/core";
+// import { MaterialModule } from 'ng-components-ndiku';
 import { TableLayoutComponent } from './table-layout.component';
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { FormatCellPipe } from './table-format-cell.pipe';
 import { StyleCellDirective } from './table-style-cell.directive';
+import { MatTableModule } from '@angular/material/table';
 
 
 @NgModule({
@@ -13,7 +15,9 @@ import { StyleCellDirective } from './table-style-cell.directive';
   ],
 
   imports: [
-    CommonModule
+    CommonModule,
+    // MaterialModule
+    MatTableModule,
   ],
   exports: [
     TableLayoutComponent,

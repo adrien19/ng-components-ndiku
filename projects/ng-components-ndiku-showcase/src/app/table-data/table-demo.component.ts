@@ -12,12 +12,12 @@ import { ColumnSetting } from 'projects/ng-components-ndiku/src/lib/table/table-
       [settings]="projectsTableConfigSettings"
     >
     </ndiku-table-layout>
-    <ndiku-table-layout
+    <!-- <ndiku-table-layout
       [records]="people"
       [caption]="'NASA Astronauts'"
       [settings]="personnelSettings"
     >
-    </ndiku-table-layout>
+    </ndiku-table-layout> -->
   `,
   styles: [``],
 })

@@ -7,7 +7,7 @@ import { NgComponentsNdikuModule, NgComponentsNdikuSelectModule } from 'ng-compo
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MaterialModule } from 'projects/ng-components-ndiku/src/lib/input-control/material.module';
+import { MaterialModule } from 'projects/ng-components-ndiku/src/lib/shared/material.module';
 import { TableLayoutModule } from 'projects/ng-components-ndiku/src/lib/table/table-layout.module';
 import { TableDemoComponent } from './table-data/table-demo.component';
 
