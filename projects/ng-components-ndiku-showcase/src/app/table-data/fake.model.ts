@@ -2,15 +2,15 @@ export class Project {
   id: number;
   name: string;
   cost?: number;
-  total_cost?: number;
-  first_flight?: string;
+  TOTAL_COST?: number;
+  FIRST_FLIGHT?: string;
   launch?: string;
   status: string;
 }
 export class Person {
   id: number;
   name: string;
-  year_joined: number;
+  YEAR_JOINED: number;
   job: string;
   missions: string[];
   crewWith?: {

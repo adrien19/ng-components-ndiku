@@ -3,15 +3,16 @@ import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
 import {
+  MaterialModule,
   NgComponentsNdikuModule,
   NgComponentsNdikuSelectModule,
+  TableLayoutModule,
+
 } from 'ng-components-ndiku';
 
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MaterialModule } from 'projects/ng-components-ndiku/src/lib/shared/material.module';
-import { TableLayoutModule } from 'projects/ng-components-ndiku/src/lib/table/table-layout.module';
 import { TableDemoComponent } from './table-data/table-demo.component';
 
 @NgModule({

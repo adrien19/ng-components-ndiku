@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Project, Person } from './fake.model';
 import { TableDataService } from './tableDataService';
-import { ColumnSetting } from 'projects/ng-components-ndiku/src/lib/table/table-layout-conf.model';
+import { ColumnSetting } from 'ng-components-ndiku';
 
 @Component({
   selector: `app-table-demo`,
@@ -53,21 +53,21 @@ export class TableDemoComponent implements OnInit {
       header: 'Name',
     },
     {
-      primaryKey: 'first_launch',
+      primaryKey: 'first_Launch',
       header: 'First Launch',
-      alternativeKeys: ['launch', 'first_flight'],
+      alternativeKeys: ['launch', 'FIRST_FLIGHT'],
     },
     {
       primaryKey: 'cost',
       header: 'Cost',
       format: 'currency',
-      alternativeKeys: ['total_cost'],
+      alternativeKeys: ['TOTAL_COST'],
     },
   ];
 
   personnelSettings: ColumnSetting[] = [
     { primaryKey: 'name' },
-    { primaryKey: 'year_joined', header: 'Joined' },
+    { primaryKey: 'YEAR_JOINED', header: 'Joined' },
     { primaryKey: 'missions' },
     { primaryKey: 'manager' },
     { primaryKey: 'crewWith', header: 'Crew mates' },
