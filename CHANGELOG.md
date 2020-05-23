@@ -1,3 +1,16 @@
+# [1.2.0](https://github.com/adrien19/ng-components-ndiku/compare/v1.1.5...v1.2.0) (2020-05-23)
+
+
+### Bug Fixes
+
+* **app-table:** fixes the mismatch types in fake data file ([84a7650](https://github.com/adrien19/ng-components-ndiku/commit/84a7650284a30e126903c5de214afb16b6850e2a))
+* **lib-table:** fixes the currency pipe symbol error ([42e0597](https://github.com/adrien19/ng-components-ndiku/commit/42e0597f5ca07846742bc7cd1dba008ab03f1da5))
+
+
+### Features
+
+* adds  new feature of reusable table component ([04d8141](https://github.com/adrien19/ng-components-ndiku/commit/04d81415e5a6976b3cadb82d2fda1304f42d97af))
+
 ## [1.1.5](https://github.com/adrien19/ng-components-ndiku/compare/v1.1.4...v1.1.5) (2020-05-22)
 
 
