@@ -4,7 +4,9 @@ import { CurrencyPipe } from '@angular/common';
 @Pipe({ name: 'formatCell' })
 export class FormatCellPipe implements PipeTransform {
   constructor(private currencyPipe: CurrencyPipe) {}
-  transform(value: any, format: string, symbol: string) {
+  transform(value: any, format: string) {
+    const symbol = '';
+
     if (value === undefined) {
       return 'not available';
     }
