@@ -98,12 +98,28 @@ export class TableInlineLayoutComponent
   @Output() updateDependingColumns = new EventEmitter<EditedRows>();
   @Output() afterDelete = new EventEmitter<void>();
   displayedColumns: string[];
-  selectedCellsState: boolean[][];
   LAST_EDITABLE_COL: number;
   LAST_EDITABLE_ROW: number;
   FIRST_EDITABLE_COL = 1;
   FIRST_EDITABLE_ROW = 0;
   dataSourceServiceSub: Subscription;
+
+   /**
+   * NOTE: nbRows    of selectedCellsState must = nbRows of the tabl
+   * nbColumns of selectedCellsState must = nbColumns of all selectable cells in the table
+   */
+  selectedCellsState: boolean[][] = [
+    [false, false, false],
+    [false, false, false],
+    [false, false, false],
+    [false, false, false],
+    [false, false, false],
+    [false, false, false],
+    [false, false, false],
+    [false, false, false],
+    [false, false, false],
+    [false, false, false],
+  ];
 
   constructor(
     public snackBar: MatSnackBar,
@@ -117,27 +133,25 @@ export class TableInlineLayoutComponent
   }
 
   ngOnInit(): void {
-    this.dataSourceServiceSub = this.tableInlineEditService.dataSource$.subscribe(
-      (newDataSource) => {
-        if (newDataSource) {
-          this.dataSource = newDataSource;
+    this.dataSourceServiceSub = this.tableInlineEditService.snackBarMessage$.subscribe(
+      (receivedSnackBarMessage) => {
+        if (receivedSnackBarMessage) {
+          this.snackBar.open(receivedSnackBarMessage.message, receivedSnackBarMessage.action, {duration: 4000});
         }
       }
     );
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    this.LAST_EDITABLE_ROW = this.dataSource.length - 1;
     if (changes.columns) {
-      this.selectedCellsState = this.tableInlineEditService.selectedCellsState;
       this.displayedColumns = this.columns.map((column: Column) => column.col);
-      this.LAST_EDITABLE_ROW = this.dataSource.length - 1;
       this.LAST_EDITABLE_COL = this.displayedColumns.length - 1;
     }
   }
 
   @HostListener('document:keyup', ['$event'])
   onKeyUp(event: KeyboardEvent) {
-    console.log(`this is the KEYBOARDEVENT--- ${event}`);
     this.tableInlineEditService.onKeyUpTable(
       event,
       this.dataSource,
@@ -150,7 +164,7 @@ export class TableInlineLayoutComponent
   }
 
   onMouseDown(rowId: number, colId: number, cellsType: string) {
-    this.tableInlineEditService.onMouseDownTable(rowId, colId, cellsType);
+    this.tableInlineEditService.onMouseDownTable(rowId, colId, cellsType, this.selectedCellsState);
   }
 
   onMouseUp(rowId: number, colId: number, cellsType: string) {
@@ -164,5 +178,4 @@ export class TableInlineLayoutComponent
       this.FIRST_EDITABLE_ROW
     );
   }
-  //  UP TO HEERE
 }

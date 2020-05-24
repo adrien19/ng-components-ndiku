@@ -11,23 +11,9 @@ export class TableInlineEditService {
   tableMouseUp: TableMouseEvent;
   newCellValue: string = '';
   dataSource$ = new Subject<any[]>();
+  snackBarMessage$ = new Subject<{message: string, action: string}>();
 
-  /**
-   * NOTE: nbRows    of selectedCellsState must = nbRows of the tabl
-   * nbColumns of selectedCellsState must = nbColumns of all selectable cells in the table
-   */
-  selectedCellsState: boolean[][] = [
-    [false, false, false],
-    [false, false, false],
-    [false, false, false],
-    [false, false, false],
-    [false, false, false],
-    [false, false, false],
-    [false, false, false],
-    [false, false, false],
-    [false, false, false],
-    [false, false, false],
-  ];
+  selectedCellsState: boolean[][];
 
   constructor(public snackBar: MatSnackBar) {}
 
@@ -97,7 +83,8 @@ export class TableInlineEditService {
             endCol
         );
         // dataSource = dataCopy;
-        this.dataSource$.next(dataCopy);
+        // this.dataSource$.next(dataCopy);
+        this.openSnackBar("You have edited the source data", 'CANCEL');
       } else {
         this.openSnackBar("The selected cells don't have the same type.", 'OK');
       }
@@ -109,8 +96,9 @@ export class TableInlineEditService {
    * @param colId
    * @param cellsType
    */
-  onMouseDownTable(rowId: number, colId: number, cellsType: string) {
+  onMouseDownTable(rowId: number, colId: number, cellsType: string, selectedCellsState: boolean[][]) {
     this.tableMouseDown = { rowId: rowId, colId: colId, cellsType: cellsType };
+    this.selectedCellsState = selectedCellsState;
   }
 
   /**
@@ -337,7 +325,11 @@ export class TableInlineEditService {
    */
   openSnackBar(message: string, action: string) {
     console.log(`OPENNIGN SNACKBAR: ${message}`);
-
-    this.snackBar.open(message, action, { duration: 4000 });
+    const snackBarMessage = {
+      message: message,
+      action: action
+    }
+    this.snackBarMessage$.next(snackBarMessage);
+    // this.snackBar.open(message, action, { duration: 4000 });
   }
 }
