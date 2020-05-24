@@ -4,6 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
+import { ClickElsewhereDirective } from './clicked-else-where.directive';
 
 const importedModules = [
   MatAutocompleteModule,
@@ -14,8 +15,12 @@ const importedModules = [
 ];
 
 @NgModule({
+  declarations:[ClickElsewhereDirective],
   imports: importedModules,
 
-  exports: importedModules,
+  exports: [
+    ...importedModules,
+    ClickElsewhereDirective
+  ],
 })
 export class MaterialModule {}

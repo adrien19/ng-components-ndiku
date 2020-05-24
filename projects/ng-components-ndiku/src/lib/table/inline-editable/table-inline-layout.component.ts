@@ -43,12 +43,14 @@ import { Subscription } from 'rxjs';
         <ng-container *ngIf="column.editable">
           <td
             mat-cell
+            [id]="createCellId(i,j)"
+            (click) = "onDocumentClick($event, i, j)"
             (mousedown)="onMouseDown(i, j, column.col)"
             (mouseup)="onMouseUp(i, j, column.col)"
             *matCellDef="let element; let i = index"
             [ngClass]="{
-              selected: selectedCellsState[i][j],
-              unselected: !selectedCellsState[i][j]
+              selected: this.selectedCellsState[i][j],
+              unselected: !this.selectedCellsState[i][j]
             }"
           >
             {{ element[column.col] }}
@@ -102,44 +104,25 @@ export class TableInlineLayoutComponent
   LAST_EDITABLE_ROW: number;
   FIRST_EDITABLE_COL = 1;
   FIRST_EDITABLE_ROW = 0;
-  dataSourceServiceSub: Subscription;
+  snackBarServiceSub: Subscription;
 
-   /**
-   * NOTE: nbRows    of selectedCellsState must = nbRows of the tabl
-   * nbColumns of selectedCellsState must = nbColumns of all selectable cells in the table
-   */
-  selectedCellsState: boolean[][] = [
-    [false, false, false],
-    [false, false, false],
-    [false, false, false],
-    [false, false, false],
-    [false, false, false],
-    [false, false, false],
-    [false, false, false],
-    [false, false, false],
-    [false, false, false],
-    [false, false, false],
-  ];
+  selectedCellsState: boolean[][] = [ ];
 
   constructor(
     public snackBar: MatSnackBar,
     private tableInlineEditService: TableInlineEditService
   ) {}
 
+
   ngOnDestroy(): void {
-    if (this.dataSourceServiceSub) {
-      this.dataSourceServiceSub.unsubscribe();
+    if (this.snackBarServiceSub) {
+      this.snackBarServiceSub.unsubscribe();
     }
   }
 
   ngOnInit(): void {
-    this.dataSourceServiceSub = this.tableInlineEditService.snackBarMessage$.subscribe(
-      (receivedSnackBarMessage) => {
-        if (receivedSnackBarMessage) {
-          this.snackBar.open(receivedSnackBarMessage.message, receivedSnackBarMessage.action, {duration: 4000});
-        }
-      }
-    );
+    this.selectedCellsState = this.createSelectedCellsStates();
+    this.handleUnmatchingCellTypes();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -175,7 +158,67 @@ export class TableInlineLayoutComponent
       this.LAST_EDITABLE_COL,
       this.LAST_EDITABLE_ROW,
       this.FIRST_EDITABLE_COL,
-      this.FIRST_EDITABLE_ROW
+      this.FIRST_EDITABLE_ROW,
+      this.selectedCellsState
     );
   }
+
+  handleUnmatchingCellTypes(){
+    this.snackBarServiceSub = this.tableInlineEditService.snackBarMessage$.subscribe(
+      (receivedSnackBarMessage) => {
+        if (receivedSnackBarMessage) {
+          let snackBarRef = this.snackBar.open(receivedSnackBarMessage.message, receivedSnackBarMessage.action, { duration: 3000 });
+          if (receivedSnackBarMessage.action === "DISMISS") {
+            snackBarRef.afterDismissed().subscribe(() => {
+              const keyEventData = { isTrusted: true, key: "Enter" };
+              const keyBoardEvent = new KeyboardEvent("keyup", keyEventData);
+              this.onKeyUp(keyBoardEvent);
+
+            });
+            snackBarRef.onAction().subscribe(() => {
+              const keyEventData = { isTrusted: true, key: "Enter" };
+              const keyBoardEvent = new KeyboardEvent("keyup", keyEventData);
+              console.log(keyBoardEvent.key);
+              this.onKeyUp(keyBoardEvent);
+            })
+
+          }
+        }
+      }
+    );
+  }
+
+  createCellId(i:number,j:number): string{
+    return `${i}${j}`;
+  }
+
+  @HostListener('document:mousedown', ['$event'])
+  public onDocumentClick(event: MouseEvent, i: number, j: number): void {
+    const targetElement = event.target as HTMLElement;
+
+      const elId = this.createCellId(i,j);
+      const tableCellElement = document.getElementById(elId) as HTMLElement;
+
+      // Check if the click was outside the element
+      if (targetElement !== tableCellElement) {
+        const keyEventData = { isTrusted: true, key: "Enter" };
+        const keyBoardEvent = new KeyboardEvent("keyup", keyEventData);
+        this.onKeyUp(keyBoardEvent);
+      }
+  }
+
+  createSelectedCellsStates(): boolean[][]{
+    const cols = this.columns.length;
+    const rows = this.dataSource.length;
+    let selactableCellsState: boolean [][] = [];
+
+    for (let iIndex = 0; iIndex < rows; iIndex++) {
+      selactableCellsState[iIndex] = [];
+      for (let jindex = 0; jindex < cols; jindex++) {
+        selactableCellsState[iIndex][jindex] = false;
+      }
+    }
+    return selactableCellsState;
+  }
+
 }

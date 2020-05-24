@@ -56,15 +56,11 @@ export class TableInlineEditService {
 
         //--Edit cells from the same column
         if (startCol === endCol) {
-          console.log('--Edit cells from the same column');
           for (let i = startRow; i <= endRow; i++) {
             dataCopy[i][displayedColumns[startCol]] = text;
           }
         } else {
           //--Edit cells starting and ending not on the same column
-          console.log(
-            '--Edit cells starting and ending not on the same column'
-          );
 
           for (let i = startRow; i <= endRow; i++) {
             for (let j = startCol; j <= endCol; j++) {
@@ -72,21 +68,10 @@ export class TableInlineEditService {
             }
           }
         }
-        console.log(
-          '--update: ' +
-            startRow +
-            ', ' +
-            startCol +
-            ' to ' +
-            endRow +
-            ', ' +
-            endCol
-        );
         // dataSource = dataCopy;
-        // this.dataSource$.next(dataCopy);
-        this.openSnackBar("You have edited the source data", 'CANCEL');
+        this.dataSource$.next(dataCopy);
       } else {
-        this.openSnackBar("The selected cells don't have the same type.", 'OK');
+        this.openSnackBar("The selected cells don't have the same type.", "DISMISS");
       }
     }
   }
@@ -113,12 +98,13 @@ export class TableInlineEditService {
     LAST_EDITABLE_COL: number,
     LAST_EDITABLE_ROW: number,
     FIRST_EDITABLE_COL: number,
-    FIRST_EDITABLE_ROW: number
+    FIRST_EDITABLE_ROW: number,
+    selectedCellsState: boolean[][]
   ) {
     this.tableMouseUp = { rowId: rowId, colId: colId, cellsType: cellsType };
-    if (this.tableMouseDown) {
-      console.log(`MOUSE DOWN`);
+    this.selectedCellsState = selectedCellsState;
 
+    if (this.tableMouseDown) {
       this.newCellValue = '';
       this.updateSelectedCellsState(
         this.tableMouseDown.colId,
@@ -330,6 +316,5 @@ export class TableInlineEditService {
       action: action
     }
     this.snackBarMessage$.next(snackBarMessage);
-    // this.snackBar.open(message, action, { duration: 4000 });
   }
 }

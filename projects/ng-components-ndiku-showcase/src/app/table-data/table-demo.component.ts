@@ -1,8 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Project, Person } from './fake.model';
 import { TableDataService } from './tableDataService';
 import { ColumnSetting } from 'ng-components-ndiku';
 import { Column } from 'projects/ng-components-ndiku/src/lib/table/inline-editable/table-inline-edit-conf.model';
+import { TableInlineEditService } from 'projects/ng-components-ndiku/src/lib/table/inline-editable/table-inline-edit.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: `app-table-demo`,
@@ -32,7 +34,7 @@ import { Column } from 'projects/ng-components-ndiku/src/lib/table/inline-editab
       </ndiku-table-layout>
       <!-- [columns]="['position', 'name', 'weight', 'symbol']" -->
       <!-- [dataSource]="dataSource" -->
-      <ndiku-inline-table-layout [dataSource]="dataSource" [columns]="testEditableTable">
+      <ndiku-inline-table-layout [dataSource]="dataSource" [columns]="testEditableTable" >
       </ndiku-inline-table-layout>
     </div>
   `,
@@ -51,7 +53,7 @@ import { Column } from 'projects/ng-components-ndiku/src/lib/table/inline-editab
     `,
   ],
 })
-export class TableDemoComponent implements OnInit {
+export class TableDemoComponent implements OnInit, OnDestroy {
   projectsTableConfigSettings: ColumnSetting[] = [
     {
       primaryKey: 'name',
@@ -90,6 +92,11 @@ export class TableDemoComponent implements OnInit {
       editable: true,
     },
     {
+      col: 'symbol',
+      label: 'Symbol',
+      editable: true,
+    },
+    {
       col: 'weight',
       label: 'Weight',
       editable: true,
@@ -100,12 +107,29 @@ export class TableDemoComponent implements OnInit {
   projects: Project[];
   people: Person[];
   dataSource = ELEMENT_DATA;
+  inlineTableDataSub: Subscription;
 
-  constructor(private tableDataService: TableDataService) {}
+  constructor(private tableDataService: TableDataService, private inlineTableDataService: TableInlineEditService) {}
+
+  ngOnDestroy(): void {
+    if (this.inlineTableDataSub) {
+      this.inlineTableDataSub.unsubscribe();
+    }
+  }
 
   ngOnInit() {
     this.projects = this.tableDataService.getProjects();
     this.people = this.tableDataService.getPersonnel();
+
+    this.inlineTableDataSub = this.inlineTableDataService.dataSource$.subscribe((returnedSourceData) => {
+      if (returnedSourceData) {
+        this.dataSource = returnedSourceData;
+        this.dataSource.map(data => {
+          console.log(`returned data: ${data.name}`);
+        });
+
+      }
+    });
   }
 }
 
