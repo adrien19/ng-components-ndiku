@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Project, Person } from './fake.model';
 import { TableDataService } from './tableDataService';
 import { ColumnSetting } from 'ng-components-ndiku';
+import { Column } from 'projects/ng-components-ndiku/src/lib/table/inline-editable/table-inline-edit-conf.model';
 
 @Component({
   selector: `app-table-demo`,
@@ -29,6 +30,10 @@ import { ColumnSetting } from 'ng-components-ndiku';
         class=" tableCaption sampleDataTable"
       >
       </ndiku-table-layout>
+      <!-- [columns]="['position', 'name', 'weight', 'symbol']" -->
+      <!-- [dataSource]="dataSource" -->
+      <ndiku-inline-table-layout [dataSource]="dataSource" [columns]="testEditableTable">
+      </ndiku-inline-table-layout>
     </div>
   `,
   styles: [
@@ -72,6 +77,25 @@ export class TableDemoComponent implements OnInit {
     { primaryKey: 'manager' },
     { primaryKey: 'crewWith', header: 'Crew mates' },
   ];
+
+  testEditableTable: Column[] = [
+    {
+      col: 'position',
+      label: 'Position',
+      editable: false,
+    },
+    {
+      col: 'name',
+      label: 'Name',
+      editable: true,
+    },
+    {
+      col: 'weight',
+      label: 'Weight',
+      editable: true,
+      sum: 4
+    }
+  ]
 
   projects: Project[];
   people: Person[];
