@@ -2,12 +2,19 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
+// import {
+//   MaterialModule,
+//   NgComponentsNdikuModule,
+//   NgComponentsNdikuSelectModule,
+//   TableLayoutModule,
+// } from 'ng-components-ndiku';
+
 import {
   MaterialModule,
   NgComponentsNdikuModule,
   NgComponentsNdikuSelectModule,
   TableLayoutModule,
-} from 'ng-components-ndiku';
+} from 'projects/ng-components-ndiku/src/public_api';
 
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';

@@ -8,12 +8,14 @@ export class ColumnSetting {
   header?: string;
   format?: string;
   alternativeKeys?: string[];
+  editable?: boolean;
 }
 
 export class ColumnMap {
   primaryKey: string;
   private _HEADER: string;
   private _FORMAT: string;
+  private _EDITABLE: boolean;
   alternativeKeys?: string[];
 
   constructor(settings: ColumnSetting) {
@@ -21,6 +23,7 @@ export class ColumnMap {
     this.header = settings.header;
     this.format = settings.format;
     this.alternativeKeys = settings.alternativeKeys;
+    this.editable = settings.editable;
   }
   set header(setting: string) {
     this._HEADER = setting
@@ -36,6 +39,12 @@ export class ColumnMap {
   }
   get format() {
     return this._FORMAT;
+  }
+  set editable(setting: boolean) {
+    this._EDITABLE = setting ? setting : false;
+  }
+  get editable() {
+    return this._EDITABLE;
   }
   access = function(object: any) {
     if (object[this.primaryKey] || !this.alternativeKeys) {

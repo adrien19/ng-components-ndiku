@@ -4,13 +4,6 @@ export interface TableMouseEvent {
   cellsType: string;
 }
 
-export interface PeriodicElement {
-  name: string;
-  position: number;
-  weight: number;
-  symbol: string;
-}
-
 export interface EditedRows {
   startRow: number;
   endRow: number;
@@ -28,4 +21,17 @@ export interface Column {
   label: string;
   editable?: boolean;
   sum?: number;
+}
+
+export class SelectedCellsState {
+  private _CELLS_STATES: boolean[][];
+
+  constructor(){}
+
+  public set cellsStates(cellsStates: boolean[][]) {
+    this._CELLS_STATES = cellsStates;
+  }
+  public get cellsStates() : boolean[][] {
+    return this._CELLS_STATES;
+  }
 }

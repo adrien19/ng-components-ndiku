@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { TableMouseEvent } from './table-inline-edit-conf.model';
+import { TableMouseEvent, SelectedCellsState } from './table-inline-edit-conf.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subject } from 'rxjs';
+import { ColumnMap } from '../table-layout-conf.model';
 
 @Injectable({
   providedIn: 'root',
@@ -13,7 +14,7 @@ export class TableInlineEditService {
   dataSource$ = new Subject<any[]>();
   snackBarMessage$ = new Subject<{message: string, action: string}>();
 
-  selectedCellsState: boolean[][];
+  selectedCellsState: SelectedCellsState;
 
   constructor(public snackBar: MatSnackBar) {}
 
@@ -24,7 +25,7 @@ export class TableInlineEditService {
   updateSelectedCellsValues(
     text: string,
     dataSource: any[],
-    displayedColumns: any[]
+    columnMaps: ColumnMap[]
   ) {
     if (text == null) {
       return;
@@ -41,6 +42,9 @@ export class TableInlineEditService {
         if (this.tableMouseDown.colId <= this.tableMouseUp.colId) {
           startCol = this.tableMouseDown.colId;
           endCol = this.tableMouseUp.colId;
+          // record = this.tableMouseDown.object;
+
+          console.log(`SAME column ${startCol}, ${endCol}`);
         } else {
           endCol = this.tableMouseDown.colId;
           startCol = this.tableMouseUp.colId;
@@ -57,14 +61,32 @@ export class TableInlineEditService {
         //--Edit cells from the same column
         if (startCol === endCol) {
           for (let i = startRow; i <= endRow; i++) {
-            dataCopy[i][displayedColumns[startCol]] = text;
+            const record = dataCopy[i];
+            console.log(`THIS IS THE RECORD: ${Object.entries(record)}`);
+
+            if (record) {
+              // dataCopy[i][columnMaps[startRow].access(record)] = text;
+              console.log(`GOING TO EDIT THIS::: ${dataCopy[i][columnMaps[startRow].access(record)] }`);
+
+              dataCopy[i][columnMaps[startRow].access(record)] = text;
+
+            }else{
+              console.log("THE VALUE IS NULL");
+            }
           }
         } else {
           //--Edit cells starting and ending not on the same column
-
           for (let i = startRow; i <= endRow; i++) {
             for (let j = startCol; j <= endCol; j++) {
-              dataCopy[i][displayedColumns[j]] = text;
+              const record = dataCopy[i];
+              console.log(`THIS IS THE RECORD: ${Object.entries(record)}`);
+
+              if (record) {
+                console.log(`UPTADING...: ${dataCopy[i][columnMaps[j].access(record)]}`);
+                dataCopy[i][columnMaps[j].access(record)] = text;
+              }else{
+                console.log("THE VALUE IS NULL");
+              }
             }
           }
         }
@@ -81,8 +103,10 @@ export class TableInlineEditService {
    * @param colId
    * @param cellsType
    */
-  onMouseDownTable(rowId: number, colId: number, cellsType: string, selectedCellsState: boolean[][]) {
-    this.tableMouseDown = { rowId: rowId, colId: colId, cellsType: cellsType };
+  onMouseDownTable(rowId: number, colId: number, cellsType: string, selectedCellsState: SelectedCellsState) {
+    this.tableMouseDown = {rowId: rowId, colId: colId, cellsType: cellsType };
+    console.log(`this is the cellsType: ${cellsType}`);
+
     this.selectedCellsState = selectedCellsState;
   }
 
@@ -99,9 +123,9 @@ export class TableInlineEditService {
     LAST_EDITABLE_ROW: number,
     FIRST_EDITABLE_COL: number,
     FIRST_EDITABLE_ROW: number,
-    selectedCellsState: boolean[][]
+    selectedCellsState: SelectedCellsState
   ) {
-    this.tableMouseUp = { rowId: rowId, colId: colId, cellsType: cellsType };
+    this.tableMouseUp = {rowId: rowId, colId: colId, cellsType: cellsType };
     this.selectedCellsState = selectedCellsState;
 
     if (this.tableMouseDown) {
@@ -167,7 +191,7 @@ export class TableInlineEditService {
     }
     for (let i = startRow; i <= endRow; i++) {
       for (let j = startCol; j <= endCol; j++) {
-        this.selectedCellsState[i][j] = true;
+        this.selectedCellsState.cellsStates[i][j] = true;
       }
     }
     this.setSelectedCells(startRow, endRow, startCol, endCol, true);
@@ -189,7 +213,7 @@ export class TableInlineEditService {
   ) {
     for (let i = firstEditableRow; i <= lastEditableRow; i++) {
       for (let j = firstEditableCol; j <= lastEditableCol; j++) {
-        this.selectedCellsState[i][j] = value;
+        this.selectedCellsState.cellsStates [i][j] = value;
       }
     }
   }
@@ -202,7 +226,7 @@ export class TableInlineEditService {
   onKeyUpTable(
     event: KeyboardEvent,
     dataSource: any[],
-    displayedColumns: any[],
+    columnMaps: ColumnMap[],
     LAST_EDITABLE_COL: number,
     LAST_EDITABLE_ROW: number,
     FIRST_EDITABLE_COL: number,
@@ -215,7 +239,7 @@ export class TableInlineEditService {
         this.updateSelectedCellsValues(
           this.newCellValue,
           dataSource,
-          displayedColumns
+          columnMaps
         );
       } else if (event.key === 'Backspace') {
         // 'delete' key is pressed
@@ -224,15 +248,16 @@ export class TableInlineEditService {
         this.updateSelectedCellsValues(
           this.newCellValue,
           dataSource,
-          displayedColumns
+          columnMaps
         );
       } else if (this.isNotSpecialKeys(event)) {
         // key is not specialKeys
         this.newCellValue += event.key;
+        console.log(`KEY NOT SPECIAL, SO: ${this.newCellValue}`);
         this.updateSelectedCellsValues(
           this.newCellValue,
           dataSource,
-          displayedColumns
+          columnMaps
         );
       }
       if (event.key === 'Enter') {
