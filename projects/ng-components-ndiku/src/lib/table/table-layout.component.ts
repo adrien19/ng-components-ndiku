@@ -1,18 +1,20 @@
-import { Component, Input, OnChanges, OnInit, OnDestroy, HostListener } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, OnDestroy, HostListener, SimpleChanges } from '@angular/core';
 import { ColumnSetting, ColumnMap, TableType } from './table-layout-conf.model';
 import { Subscription } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TableInlineEditService } from './inline-editable/table-inline-edit.service';
 import { SelectedCellsState } from './inline-editable/table-inline-edit-conf.model';
+import { TableEntryType } from './tableEntryType';
 
 @Component({
   selector: 'ndiku-table-layout',
   template: `
-    <table class="table" *ngIf="table === defaultTableType">
+  <ng-container [ngSwitch]="table.tableType">
+    <table class="table" *ngSwitchCase="types.DefaultTable">
       <caption *ngIf="caption">
         {{
           caption
-        }}
+        }} {{ "defaultTableType" }}
       </caption>
       <thead>
         <tr>
@@ -22,7 +24,7 @@ import { SelectedCellsState } from './inline-editable/table-inline-edit-conf.mod
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let record of records">
+        <tr *ngFor="let record of table.dataSource">
           <td
             *ngFor="let map of columnMaps"
             [ndikuStyleCell]="{
@@ -38,9 +40,9 @@ import { SelectedCellsState } from './inline-editable/table-inline-edit-conf.mod
 
     <table
       mat-table
-      [dataSource]="records"
+      *ngSwitchCase="types.MatTable"
+      [dataSource]="table.dataSource"
       class="mat-elevation-z0"
-      *ngIf="table === matTableType"
       (keyup)="onKeyUp($event)"
     >
       <caption *ngIf="caption">
@@ -55,9 +57,10 @@ import { SelectedCellsState } from './inline-editable/table-inline-edit-conf.mod
         <th mat-header-cell *matHeaderCellDef mat-sort-header>
           {{ map.header }}
         </th>
-        <ng-container *ngIf="!map.editable">
+        <ng-container *ngIf="!map.editable && !table.inlineEditable">
           <td
             mat-cell
+            class="unselected"
             *matCellDef="let record"
             [ndikuStyleCell]="{
               contentType: record[map.access(record)],
@@ -67,7 +70,7 @@ import { SelectedCellsState } from './inline-editable/table-inline-edit-conf.mod
             {{ record[map.access(record)] | formatCell: map.format }}
           </td>
         </ng-container>
-        <ng-container *ngIf="map.editable">
+        <ng-container *ngIf="map.editable && table.inlineEditable">
           <td
             mat-cell
             *matCellDef="let record; let i = index"
@@ -76,7 +79,6 @@ import { SelectedCellsState } from './inline-editable/table-inline-edit-conf.mod
               tableType: 'mat-table'
             }"
             [id]="createCellId(i,j)"
-
             (mousedown)="onMouseDown($event, i, j, map.header)"
             (mouseup)="onMouseUp(i, j, map.header)"
             [ngClass]="{
@@ -92,6 +94,8 @@ import { SelectedCellsState } from './inline-editable/table-inline-edit-conf.mod
       <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
       <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
     </table>
+
+  </ng-container>
   `,
   styles: [
     `
@@ -143,13 +147,14 @@ export class TableLayoutComponent implements OnInit, OnChanges, OnDestroy {
   private _CAPTION: string;
   private _KEYS: string[];
   private _SETTINGS: ColumnSetting[];
-  private _TABLE_TYPE = TableType.DefaultTable;
+  private _TABLE: TableEntryType;
   defaultTableType = TableType.DefaultTable;
   matTableType = TableType.MatTable;
+  types = TableType;
+
   columnMaps: ColumnMap[];
   displayedColumns: any[];
 
-  @Input()
   public get records(): any[] {
     return this._RECORDS;
   }
@@ -181,25 +186,24 @@ export class TableLayoutComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   @Input()
-  public get table(): any {
-    return this._TABLE_TYPE;
+  public get table(): TableEntryType {
+    return this._TABLE;
   }
-  public set table(value: any) {
-    if (value === "mat-table") {
-      this._TABLE_TYPE = TableType.MatTable;
-    } else {
-      this._TABLE_TYPE = TableType.DefaultTable;
-    }
+  public set table(tableType: TableEntryType) {
+      if (tableType.dataSource) {
+        this._TABLE = tableType;
+        this.records = tableType.dataSource;
+      }else{
+        console.log(`NO DATA WAS PROVIDED!!`);
+
+        this._TABLE = tableType;
+        this.records = [];
+      }
   }
 
   // For inline editing
   @Input() selectedCellsState: SelectedCellsState;
   cellsStates: boolean[][];
-
-  LAST_EDITABLE_COL: number;
-  LAST_EDITABLE_ROW: number;
-  FIRST_EDITABLE_COL = 0; // to skip first column, assign to 1.
-  FIRST_EDITABLE_ROW = 0;
   snackBarServiceSub: Subscription;
 
 
@@ -216,30 +220,45 @@ export class TableLayoutComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnInit(){
-    this.handleUnmatchingCellTypes();
+    if (this.table.inlineEditable) {
+      this.handleUnmatchingCellTypes();
+    }
   }
 
-  ngOnChanges() {
-    if (this.settings) {
-      // when settings provided
-      this.columnMaps = this.settings.map((col) => new ColumnMap(col));
-    } else {
-      // no settings, create column maps with defaults
-      this.columnMaps = Object.keys(this.records[0]).map((key) => {
-        return new ColumnMap({ primaryKey: key });
-      });
-    }
-    if (this.selectedCellsState){
-      this.cellsStates = this.selectedCellsState.cellsStates;
-    }else{
-      console.log("selectedCellsState is empty");
-      this.cellsStates = [];
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.settings) {
+      if (this.settings) {
+        // when settings provided
+        this.columnMaps = this.settings.map((col) => new ColumnMap(col));
+      } else {
+        // no settings, create column maps with defaults
+        this.columnMaps = Object.keys(this.records[0]).map((key) => {
+          return new ColumnMap({ primaryKey: key });
+        });
+      }
+      this.displayedColumns = this.columnMaps.map((col) => col.header);
+      if (this.table.inlineEditable) {
+        this.tableInlineEditService.columnMaps = this.columnMaps;
+        this.tableInlineEditService.LAST_EDITABLE_COL = this.displayedColumns.length - 1;
+      }
     }
 
-    this.displayedColumns = this.columnMaps.map((col) => col.header);
-    this.LAST_EDITABLE_ROW = this.records.length - 1;
-    this.LAST_EDITABLE_COL = this.displayedColumns.length - 1;
+    if (changes.selectedCellsState && this.table.inlineEditable) {
+      if (this.selectedCellsState){
+        this.cellsStates = this.selectedCellsState.cellsStates;
+        this.tableInlineEditService.selectedCellsState = this.selectedCellsState;
+      }else{
+        console.log("selectedCellsState is empty");
+        this.cellsStates = [];
+      }
+    }
 
+    if (changes.table) {
+      if (this.table.inlineEditable) {
+        this.tableInlineEditService.tableData.dataCopy = this.table.dataSource.slice();
+        this.tableInlineEditService.LAST_EDITABLE_ROW = this.table.dataSource.length - 1;
+      }
+    }
   }
 
   handleUnmatchingCellTypes(){
@@ -269,14 +288,9 @@ export class TableLayoutComponent implements OnInit, OnChanges, OnDestroy {
 
   @HostListener('document:keyup', ['$event'])
   onKeyUp(event: KeyboardEvent) {
+    event.stopImmediatePropagation();
     this.tableInlineEditService.onKeyUpTable(
-      event,
-      this.records,
-      this.columnMaps,
-      this.LAST_EDITABLE_COL,
-      this.LAST_EDITABLE_ROW,
-      this.FIRST_EDITABLE_COL,
-      this.FIRST_EDITABLE_ROW
+      event
     );
   }
 
@@ -290,10 +304,11 @@ export class TableLayoutComponent implements OnInit, OnChanges, OnDestroy {
 
     // Check if the click was outside the element
     if (targetElement === tableCellElement) {
-      this.tableInlineEditService.onMouseDownTable(rowId, colId, cellsType, this.selectedCellsState);
+      this.tableInlineEditService.onMouseDownTable(rowId, colId, cellsType);
     }else{
       const keyEventData = { isTrusted: true, key: "Enter" };
       const keyBoardEvent = new KeyboardEvent("keyup", keyEventData);
+      keyBoardEvent.stopImmediatePropagation();
       this.onKeyUp(keyBoardEvent);
     }
   }
@@ -303,16 +318,11 @@ export class TableLayoutComponent implements OnInit, OnChanges, OnDestroy {
         rowId,
         colId,
         cellsType,
-        this.LAST_EDITABLE_COL,
-        this.LAST_EDITABLE_ROW,
-        this.FIRST_EDITABLE_COL,
-        this.FIRST_EDITABLE_ROW,
-        this.selectedCellsState
       );
   }
 
   createCellId(i:number,j:number): string{
-    return `${i}${j}`;
+    return `cell${i}${j}`;
   }
 
 }

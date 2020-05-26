@@ -4,23 +4,28 @@ export interface TableMouseEvent {
   cellsType: string;
 }
 
-export interface EditedRows {
-  startRow: number;
-  endRow: number;
-}
+// export interface EditedRows {
+//   startRow: number;
+//   endRow: number;
+// }
 
-export interface EditedCell {
-  rowId: number;
-  colId: number;
-  cellsType: string;
-  newValue: string;
-}
+// export interface EditedCell {
+//   rowId: number;
+//   colId: number;
+//   cellsType: string;
+//   newValue: string;
+// }
 
-export interface Column {
-  col: string;
-  label: string;
-  editable?: boolean;
-  sum?: number;
+export class TableData {
+  private _DATACOPY: any;
+  constructor(){}
+
+  public set dataCopy(dataCopy: any[]) {
+    this._DATACOPY = dataCopy;
+  }
+  public get dataCopy() : any[] {
+    return this._DATACOPY;
+  }
 }
 
 export class SelectedCellsState {

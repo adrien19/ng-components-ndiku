@@ -1,19 +1,19 @@
 import { Project, Person } from './fake.model';
 export const PROJECTS: Project[] = [
-  {
-    id: 1,
-    name: 'Mercury',
-    cost: 277000000,
-    FIRST_FLIGHT: 'September 9, 1959',
-    status: 'Complete',
-  },
-  {
-    id: 2,
-    name: 'Gemini',
-    cost: 1300000000,
-    FIRST_FLIGHT: 'April 8, 1964',
-    status: 'Complete',
-  },
+  // {
+  //   id: 1,
+  //   name: 'Mercury',
+  //   cost: 277000000,
+  //   FIRST_FLIGHT: 'September 9, 1959',
+  //   status: 'Complete',
+  // },
+  // {
+  //   id: 2,
+  //   name: 'Gemini',
+  //   cost: 1300000000,
+  //   FIRST_FLIGHT: 'April 8, 1964',
+  //   status: 'Complete',
+  // },
   {
     id: 3,
     name: 'Apollo',
@@ -27,12 +27,12 @@ export const PROJECTS: Project[] = [
     launch: 'May 14, 1973',
     status: 'Complete',
   },
-  {
-    id: 5,
-    name: 'Apollo-Soyuz',
-    launch: 'July 15, 1975',
-    status: 'Complete',
-  },
+  // {
+  //   id: 5,
+  //   name: 'Apollo-Soyuz',
+  //   launch: 'July 15, 1975',
+  //   status: 'Complete',
+  // },
   {
     id: 6,
     name: 'Space Shuttle',

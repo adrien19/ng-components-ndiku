@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { TableMouseEvent, SelectedCellsState } from './table-inline-edit-conf.model';
+import { TableMouseEvent, SelectedCellsState, TableData } from './table-inline-edit-conf.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subject } from 'rxjs';
 import { ColumnMap } from '../table-layout-conf.model';
@@ -15,8 +15,16 @@ export class TableInlineEditService {
   snackBarMessage$ = new Subject<{message: string, action: string}>();
 
   selectedCellsState: SelectedCellsState;
+  tableData = new TableData();
 
-  constructor(public snackBar: MatSnackBar) {}
+  columnMaps: ColumnMap[];
+  FIRST_EDITABLE_ROW: number = 0;
+  LAST_EDITABLE_ROW: number = 0;
+  FIRST_EDITABLE_COL: number = 0;
+  LAST_EDITABLE_COL: number = 0;
+
+
+  constructor(public snackBar: MatSnackBar) { }
 
   /**
    * Update table's dataSource
@@ -24,8 +32,6 @@ export class TableInlineEditService {
    */
   updateSelectedCellsValues(
     text: string,
-    dataSource: any[],
-    columnMaps: ColumnMap[]
   ) {
     if (text == null) {
       return;
@@ -33,7 +39,7 @@ export class TableInlineEditService {
 
     if (this.tableMouseDown && this.tableMouseUp) {
       if (this.tableMouseDown.cellsType === this.tableMouseUp.cellsType) {
-        const dataCopy: any[] = dataSource.slice(); // copy and mutate
+        const dataCopy = this.tableData.dataCopy;
         let startCol: number;
         let endCol: number;
         let startRow: number;
@@ -53,6 +59,8 @@ export class TableInlineEditService {
         if (this.tableMouseDown.rowId <= this.tableMouseUp.rowId) {
           startRow = this.tableMouseDown.rowId;
           endRow = this.tableMouseUp.rowId;
+          console.log(`SAME row ${startRow}, ${endRow}`);
+
         } else {
           endRow = this.tableMouseDown.rowId;
           startRow = this.tableMouseUp.rowId;
@@ -62,14 +70,8 @@ export class TableInlineEditService {
         if (startCol === endCol) {
           for (let i = startRow; i <= endRow; i++) {
             const record = dataCopy[i];
-            console.log(`THIS IS THE RECORD: ${Object.entries(record)}`);
-
             if (record) {
-              // dataCopy[i][columnMaps[startRow].access(record)] = text;
-              console.log(`GOING TO EDIT THIS::: ${dataCopy[i][columnMaps[startRow].access(record)] }`);
-
-              dataCopy[i][columnMaps[startRow].access(record)] = text;
-
+              dataCopy[i][this.columnMaps[startCol].access(record)] = text;
             }else{
               console.log("THE VALUE IS NULL");
             }
@@ -79,11 +81,8 @@ export class TableInlineEditService {
           for (let i = startRow; i <= endRow; i++) {
             for (let j = startCol; j <= endCol; j++) {
               const record = dataCopy[i];
-              console.log(`THIS IS THE RECORD: ${Object.entries(record)}`);
-
               if (record) {
-                console.log(`UPTADING...: ${dataCopy[i][columnMaps[j].access(record)]}`);
-                dataCopy[i][columnMaps[j].access(record)] = text;
+                dataCopy[i][this.columnMaps[j].access(record)] = text;
               }else{
                 console.log("THE VALUE IS NULL");
               }
@@ -103,11 +102,9 @@ export class TableInlineEditService {
    * @param colId
    * @param cellsType
    */
-  onMouseDownTable(rowId: number, colId: number, cellsType: string, selectedCellsState: SelectedCellsState) {
+  onMouseDownTable(rowId: number, colId: number, cellsType: string) {
     this.tableMouseDown = {rowId: rowId, colId: colId, cellsType: cellsType };
-    console.log(`this is the cellsType: ${cellsType}`);
-
-    this.selectedCellsState = selectedCellsState;
+    console.log(`this is the mouseDownTable cellsType: ${cellsType}`);
   }
 
   /**
@@ -119,15 +116,8 @@ export class TableInlineEditService {
     rowId: number,
     colId: number,
     cellsType: string,
-    LAST_EDITABLE_COL: number,
-    LAST_EDITABLE_ROW: number,
-    FIRST_EDITABLE_COL: number,
-    FIRST_EDITABLE_ROW: number,
-    selectedCellsState: SelectedCellsState
   ) {
     this.tableMouseUp = {rowId: rowId, colId: colId, cellsType: cellsType };
-    this.selectedCellsState = selectedCellsState;
-
     if (this.tableMouseDown) {
       this.newCellValue = '';
       this.updateSelectedCellsState(
@@ -135,10 +125,6 @@ export class TableInlineEditService {
         this.tableMouseUp.colId,
         this.tableMouseDown.rowId,
         this.tableMouseUp.rowId,
-        LAST_EDITABLE_COL,
-        LAST_EDITABLE_ROW,
-        FIRST_EDITABLE_COL,
-        FIRST_EDITABLE_ROW
       );
     }
   }
@@ -155,17 +141,13 @@ export class TableInlineEditService {
     mouseUpColId: number,
     mouseDownRowId: number,
     mouseUpRowId: number,
-    FIRST_EDITABLE_COL: number,
-    LAST_EDITABLE_COL: number,
-    LAST_EDITABLE_ROW: number,
-    FIRST_EDITABLE_ROW: number
   ) {
     // init selected cells
     this.setSelectedCells(
-      FIRST_EDITABLE_ROW,
-      LAST_EDITABLE_ROW,
-      FIRST_EDITABLE_COL,
-      LAST_EDITABLE_COL,
+      this.FIRST_EDITABLE_ROW,
+      this.LAST_EDITABLE_ROW,
+      this.FIRST_EDITABLE_COL,
+      this.LAST_EDITABLE_COL,
       false
     );
 
@@ -225,12 +207,6 @@ export class TableInlineEditService {
    */
   onKeyUpTable(
     event: KeyboardEvent,
-    dataSource: any[],
-    columnMaps: ColumnMap[],
-    LAST_EDITABLE_COL: number,
-    LAST_EDITABLE_ROW: number,
-    FIRST_EDITABLE_COL: number,
-    FIRST_EDITABLE_ROW: number
   ): void {
     // If no cell is selected then ignore keyUp event
     if (this.tableMouseDown && this.tableMouseUp) {
@@ -238,8 +214,6 @@ export class TableInlineEditService {
         this.newCellValue = '';
         this.updateSelectedCellsValues(
           this.newCellValue,
-          dataSource,
-          columnMaps
         );
       } else if (event.key === 'Backspace') {
         // 'delete' key is pressed
@@ -247,8 +221,6 @@ export class TableInlineEditService {
         this.newCellValue = this.newCellValue.slice(0, end);
         this.updateSelectedCellsValues(
           this.newCellValue,
-          dataSource,
-          columnMaps
         );
       } else if (this.isNotSpecialKeys(event)) {
         // key is not specialKeys
@@ -256,16 +228,14 @@ export class TableInlineEditService {
         console.log(`KEY NOT SPECIAL, SO: ${this.newCellValue}`);
         this.updateSelectedCellsValues(
           this.newCellValue,
-          dataSource,
-          columnMaps
         );
       }
       if (event.key === 'Enter') {
         this.setSelectedCells(
-          FIRST_EDITABLE_ROW,
-          LAST_EDITABLE_ROW,
-          FIRST_EDITABLE_COL,
-          LAST_EDITABLE_COL,
+          this.FIRST_EDITABLE_ROW,
+          this.LAST_EDITABLE_ROW,
+          this.FIRST_EDITABLE_COL,
+          this.LAST_EDITABLE_COL,
           false
         );
       }
