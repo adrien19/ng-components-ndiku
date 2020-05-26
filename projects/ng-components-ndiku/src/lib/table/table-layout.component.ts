@@ -10,7 +10,11 @@ import { TableEntryType } from './tableEntryType';
   selector: 'ndiku-table-layout',
   template: `
   <ng-container [ngSwitch]="table.tableType">
-    <table class="table" *ngSwitchCase="types.DefaultTable">
+    <table
+      class="table"
+      *ngSwitchCase="types.DefaultTable"
+      (keyup)="onKeyUp($event)"
+    >
       <caption *ngIf="caption">
         {{
           caption
@@ -24,17 +28,36 @@ import { TableEntryType } from './tableEntryType';
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let record of table.dataSource">
-          <td
-            *ngFor="let map of columnMaps"
-            [ndikuStyleCell]="{
-              contentType: record[map.access(record)],
-              tableType: 'default'
-            }"
-          >
-            {{ record[map.access(record)] | formatCell: map.format }}
-          </td>
-        </tr>
+          <tr *ngFor="let record of table.dataSource; let i = index">
+            <ng-container *ngFor="let map of columnMaps; let j = index">
+              <td
+                *ngIf="!map.editable && !table.inlineEditable"
+                [ndikuStyleCell]="{
+                  contentType: record[map.access(record)],
+                  tableType: table.tableType
+                }"
+              >
+                {{ record[map.access(record)] | formatCell: map.format }}
+              </td>
+
+              <td
+                *ngIf="map.editable && table.inlineEditable"
+                [ndikuStyleCell]="{
+                  contentType: record[map.access(record)],
+                  tableType: table.tableType
+                }"
+                [id]="createCellId(table.tableType, i, j)"
+                (mousedown)="onMouseDown($event, table.tableType, i, j, map.header)"
+                (mouseup)="onMouseUp(i, j, map.header)"
+                [ngClass]="{
+                  selected: cellsStates[i][j],
+                  unselected: !cellsStates[i][j]
+                }"
+              >
+                {{ record[map.access(record)] | formatCell: map.format }}
+              </td>
+            </ng-container>
+          </tr>
       </tbody>
     </table>
 
@@ -64,7 +87,7 @@ import { TableEntryType } from './tableEntryType';
             *matCellDef="let record"
             [ndikuStyleCell]="{
               contentType: record[map.access(record)],
-              tableType: 'mat-table'
+              tableType: table.tableType
             }"
           >
             {{ record[map.access(record)] | formatCell: map.format }}
@@ -76,10 +99,10 @@ import { TableEntryType } from './tableEntryType';
             *matCellDef="let record; let i = index"
             [ndikuStyleCell]="{
               contentType: record[map.access(record)],
-              tableType: 'mat-table'
+              tableType: table.tableType
             }"
-            [id]="createCellId(i,j)"
-            (mousedown)="onMouseDown($event, i, j, map.header)"
+            [id]="createCellId(table.tableType, i, j)"
+            (mousedown)="onMouseDown($event, table.tableType, i, j, map.header)"
             (mouseup)="onMouseUp(i, j, map.header)"
             [ngClass]="{
               selected: cellsStates[i][j],
@@ -295,11 +318,12 @@ export class TableLayoutComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   @HostListener('document:mousedown', ['$event'])
-  onMouseDown(event: MouseEvent, rowId: number, colId: number, cellsType: string) {
+  onMouseDown(event: MouseEvent, tableType: any, rowId: number, colId: number, cellsType: string) {
 
     const targetElement = event.target as HTMLElement;
+    event.stopImmediatePropagation();
 
-    const elId = this.createCellId(rowId, colId);
+    const elId = this.createCellId(tableType, rowId, colId);
     const tableCellElement = document.getElementById(elId) as HTMLElement;
 
     // Check if the click was outside the element
@@ -321,8 +345,8 @@ export class TableLayoutComponent implements OnInit, OnChanges, OnDestroy {
       );
   }
 
-  createCellId(i:number,j:number): string{
-    return `cell${i}${j}`;
+  createCellId(tableType: any, i:number,j:number): string{
+    return `${tableType}${i}${j}`;
   }
 
 }
