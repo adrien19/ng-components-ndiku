@@ -18,7 +18,7 @@ import { TableEntryType } from './tableEntryType';
       <caption *ngIf="caption">
         {{
           caption
-        }} {{ "defaultTableType" }}
+        }} {{ "(default Table)" }}
       </caption>
       <thead>
         <tr>
@@ -50,7 +50,7 @@ import { TableEntryType } from './tableEntryType';
                   table: table,
                   selectCell: {rowId: i, colId: j}
                 }"
-                [cellsStates]="table.cellsStates"
+                [directiveCellsStates]="table.cellsStates"
               >
                 {{ record[map.access(record)] | formatCell: map.format }}
               </td>
@@ -104,7 +104,7 @@ import { TableEntryType } from './tableEntryType';
               table: table,
               selectCell: {rowId: i, colId: j}
             }"
-            [cellsStates]="table.cellsStates"
+            [directiveCellsStates]="table.cellsStates"
           >
             {{ record[map.access(record)] | formatCell: map.format }}
           </td>
@@ -139,26 +139,6 @@ import { TableEntryType } from './tableEntryType';
         word-wrap: break-word;
         border-bottom: none;
       }
-
-      /*--------  Editable Cells  --------*/
-      /* .selected { */
-        /* border: 1px solid #698ad8; */
-      /* } */
-      /* .unselected { */
-        /* border-bottom-color: rgba(0, 0, 0, 0.12); */
-        /* border-bottom-width: 1px; */
-        /* border-bottom-style: solid; */
-      }
-      /*---- Remove default browser behaviour after selecting cells ----*/
-      /* .selected, */
-      /* .unselected { */
-        /* -webkit-user-select: none; Webkit  */
-        /* -moz-user-select: none; Firefox */
-        /* -ms-user-select: none; IE 10   */
-        /* -o-user-select: none; Currently not supported in Opera but will be soon */
-        /* user-select: none; */
-      }
-      /*--------End Editable Cells--------*/
     `,
   ],
 })
@@ -168,15 +148,10 @@ export class TableLayoutComponent implements OnInit, OnChanges, OnDestroy {
   private _KEYS: string[];
   private _SETTINGS: ColumnSetting[];
   private _TABLE: TableEntryType;
-  defaultTableType = TableType.DefaultTable;
-  matTableType = TableType.MatTable;
   types = TableType;
 
   columnMaps: ColumnMap[];
   displayedColumns: any[];
-  cellsStates: boolean[][];
-  cellsStatesObserv: BehaviorSubject<any>;
-
 
   snackBarServiceSub: Subscription;
 
@@ -241,14 +216,6 @@ export class TableLayoutComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnInit(){
     if (this.table.inlineEditable) {
-      // this.tableInlineEditService.updateCellStyle$.subscribe((styleUpdates) => {
-      //   if (styleUpdates) {
-      //     this.cellsStates = styleUpdates.cellStateValues;
-      //     console.log(`THESE ARE UPDATED STYLES: ${this.cellsStates}`);
-
-      //   }
-      // });
-      this.cellsStates = this.table.cellsStates;
       this.handleUnmatchingCellTypes();
     }
   }
@@ -265,18 +232,11 @@ export class TableLayoutComponent implements OnInit, OnChanges, OnDestroy {
         });
       }
       this.displayedColumns = this.columnMaps.map((col) => col.header);
-      if (this.table.inlineEditable) {
-        this.tableInlineEditService.columnMaps = this.columnMaps;
-      }
     }
 
-    if (changes.table) {
-      // if (this.table.inlineEditable) {
-        // this.table = changes.table.currentValue;
-        // this.cellsStates = this.table.cellsStates;
-        this.tableInlineEditService.table = this.table;
-        // this.tableInlineEditService.cellsStates = this.table.cellsStates.slice();
-      // }
+    if (changes.table && this.table.inlineEditable) {
+      this.tableInlineEditService.table = this.table;
+      this.tableInlineEditService.columnMaps = this.columnMaps;
     }
   }
 
@@ -314,15 +274,15 @@ export class TableLayoutComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   @HostListener('document:mousedown', ['$event'])
-  onMouseDown(event: MouseEvent, tableType: any, rowId: number, colId: number, cellsType: string) {
+  onMouseDown(event: MouseEvent, tableId: any, rowId: number, colId: number, cellsType: string) {
+
+    this.tableInlineEditService.table = this.table;
 
     event.stopImmediatePropagation();
     const targetElement = event.target as HTMLElement;
 
-    const elId = this.createCellId(tableType, rowId, colId);
+    const elId = this.createCellId(tableId, rowId, colId);
     const tableCellElement = document.getElementById(elId) as HTMLElement;
-    // console.log(`targeted cell: `, targetElement);
-    // console.log(`tableCellElement cell:`, tableCellElement);
 
     // Check if the click was outside the element
     if (targetElement === tableCellElement) {

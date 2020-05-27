@@ -11,7 +11,7 @@ export class StyleCellDirective implements OnInit, OnDestroy, OnChanges {
     contentType: string;
     selectCell?: {rowId: number, colId: number};
   };
-  @Input() cellsStates: boolean[][];
+  @Input() directiveCellsStates: boolean[][];
 
   cellsStatesSub: Subscription;
 
@@ -20,9 +20,11 @@ export class StyleCellDirective implements OnInit, OnDestroy, OnChanges {
 
   ngOnChanges(changes: import("@angular/core").SimpleChanges): void {
     if (changes.cellsStates) {
-      this.cellsStates = changes.cellsStates.currentValue;
-      console.log(this.cellsStates);
-      this.handleStylingSelectedCells(this.cellsStates);
+      this.directiveCellsStates = changes.cellsStates.currentValue;
+      // console.log(this.cellsStates);
+      this.cellsStatesSub = this.tableInlineEditService.updateCellStyle$.subscribe((cellStates) => {
+          this.handleStylingSelectedCells(cellStates.cellStateValues, cellStates.tableId);
+      });
     }
   }
 
@@ -34,7 +36,6 @@ export class StyleCellDirective implements OnInit, OnDestroy, OnChanges {
 
   ngOnInit() {
     this.handlestylingUndefinedValues();
-    // this.handleStylingSelectedCells();
   }
 
   handlestylingUndefinedValues(){
@@ -62,24 +63,20 @@ export class StyleCellDirective implements OnInit, OnDestroy, OnChanges {
     }
   }
 
-  handleStylingSelectedCells(cellsStates: any){
+  handleStylingSelectedCells(cellsStates: any, tableId: string){
     if (this.ndikuStyleCell.table.inlineEditable) {
 
-      // this.cellsStatesSub = this.tableInlineEditService.updateCellStyle$.subscribe((cellsStates) => {
-      //   console.log("I was clicked");
-      //   if (cellsStates.cellStateValues) {
-          const rowId = this.ndikuStyleCell.selectCell.rowId;
-          const colId = this.ndikuStyleCell.selectCell.colId;
+      const rowId = this.ndikuStyleCell.selectCell.rowId;
+      const colId = this.ndikuStyleCell.selectCell.colId;
+      // console.log(`Table in directive: ${this.ndikuStyleCell.table.tableId}
+      // Table in service: ${tableId}`);
 
-          if (cellsStates[rowId][colId]) {
-            console.log(cellsStates[rowId][colId]);
-            this.renderer.setStyle(this.el.nativeElement, 'border', '1px solid #698ad8');
-
-          }else{
-            console.log("DOING NOTHING!!!");
-          }
-      //   }
-      // });
+      if (cellsStates[rowId][colId] && this.ndikuStyleCell.table.tableId === tableId) {
+        console.log(cellsStates[rowId][colId]);
+        this.renderer.setStyle(this.el.nativeElement, 'border', '1px solid #698ad8');
+      }else{
+        this.renderer.setStyle(this.el.nativeElement, 'border', 'none');
+      }
 
       this.renderer.setStyle(this.el.nativeElement, '-webkit-user-select', 'none'); /* Webkit  */
       this.renderer.setStyle(this.el.nativeElement, '-moz-user-select', 'none'); /* Firefox */

@@ -14,9 +14,10 @@ export class TableInlineEditService {
   newCellValue: string = '';
   dataSource$ = new Subject<{editedData: any[], tableId: string}>();
   snackBarMessage$ = new Subject<{message: string, action: string}>();
-  updateCellStyle$ = new BehaviorSubject<{
-    cellStateValues: boolean[][]
-  }>({cellStateValues: []});
+  updateCellStyle$ = new Subject<{
+    cellStateValues: boolean[][],
+    tableId: string
+  }>();
 
   // tableData = new TableData();
   // tableId: string;
@@ -215,7 +216,7 @@ export class TableInlineEditService {
     console.log("SHOULD BE UPDATING THE CELLS ON CLICK");
 
     // const cellId = "";
-    // this.updateCellStyle$.next({ cellStateValues: this.cellsStates});
+    this.updateCellStyle$.next({ cellStateValues: this.table.cellsStates, tableId: this.table.tableId});
   }
 
   /**
