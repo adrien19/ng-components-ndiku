@@ -1,6 +1,6 @@
 import { Component, Input, OnChanges, OnInit, OnDestroy, HostListener, SimpleChanges } from '@angular/core';
 import { ColumnSetting, ColumnMap, TableType } from './table-layout-conf.model';
-import { Subscription } from 'rxjs';
+import { Subscription, BehaviorSubject } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TableInlineEditService } from './inline-editable/table-inline-edit.service';
 import { TableEntryType } from './tableEntryType';
@@ -34,8 +34,7 @@ import { TableEntryType } from './tableEntryType';
                 *ngIf="!map.editable && !table.inlineEditable"
                 [ndikuStyleCell]="{
                   contentType: record[map.access(record)],
-                  tableType: table.tableType,
-                  handleSelect:{}
+                  table: table
                 }"
               >
                 {{ record[map.access(record)] | formatCell: map.format }}
@@ -48,12 +47,10 @@ import { TableEntryType } from './tableEntryType';
                 (mouseup)="onMouseUp(i, j, map.header)"
                 [ndikuStyleCell]="{
                   contentType: record[map.access(record)],
-                  tableType: table.tableType,
-                  handleSelect:{
-                    selected: cellsStates[i][j],
-                    unselected: !cellsStates[i][j]
-                  }
+                  table: table,
+                  selectCell: {rowId: i, colId: j}
                 }"
+                [cellsStates]="table.cellsStates"
               >
                 {{ record[map.access(record)] | formatCell: map.format }}
               </td>
@@ -89,8 +86,7 @@ import { TableEntryType } from './tableEntryType';
             *matCellDef="let record"
             [ndikuStyleCell]="{
               contentType: record[map.access(record)],
-              tableType: table.tableType,
-              handleSelect:{}
+              table: table
             }"
           >
             {{ record[map.access(record)] | formatCell: map.format }}
@@ -105,12 +101,10 @@ import { TableEntryType } from './tableEntryType';
             (mouseup)="onMouseUp(i, j, map.header)"
             [ndikuStyleCell]="{
               contentType: record[map.access(record)],
-              tableType: table.tableType,
-              handleSelect:{
-                selected: cellsStates[i][j],
-                unselected: !cellsStates[i][j]
-              }
+              table: table,
+              selectCell: {rowId: i, colId: j}
             }"
+            [cellsStates]="table.cellsStates"
           >
             {{ record[map.access(record)] | formatCell: map.format }}
           </td>
@@ -181,6 +175,8 @@ export class TableLayoutComponent implements OnInit, OnChanges, OnDestroy {
   columnMaps: ColumnMap[];
   displayedColumns: any[];
   cellsStates: boolean[][];
+  cellsStatesObserv: BehaviorSubject<any>;
+
 
   snackBarServiceSub: Subscription;
 
@@ -245,13 +241,13 @@ export class TableLayoutComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnInit(){
     if (this.table.inlineEditable) {
-      this.tableInlineEditService.updateCellStyle$.subscribe((styleUpdates) => {
-        if (styleUpdates) {
-          this.cellsStates = styleUpdates.cellStateValues;
-          console.log(`THESE ARE UPDATED STYLES: ${this.cellsStates}`);
+      // this.tableInlineEditService.updateCellStyle$.subscribe((styleUpdates) => {
+      //   if (styleUpdates) {
+      //     this.cellsStates = styleUpdates.cellStateValues;
+      //     console.log(`THESE ARE UPDATED STYLES: ${this.cellsStates}`);
 
-        }
-      });
+      //   }
+      // });
       this.cellsStates = this.table.cellsStates;
       this.handleUnmatchingCellTypes();
     }
@@ -279,7 +275,7 @@ export class TableLayoutComponent implements OnInit, OnChanges, OnDestroy {
         // this.table = changes.table.currentValue;
         // this.cellsStates = this.table.cellsStates;
         this.tableInlineEditService.table = this.table;
-        this.tableInlineEditService.cellsStates = this.table.cellsStates.slice();
+        // this.tableInlineEditService.cellsStates = this.table.cellsStates.slice();
       // }
     }
   }

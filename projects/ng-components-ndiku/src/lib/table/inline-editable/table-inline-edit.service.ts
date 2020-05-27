@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { TableMouseEvent, SelectedCellsState, TableData } from './table-inline-edit-conf.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Subject } from 'rxjs';
+import { Subject, BehaviorSubject } from 'rxjs';
 import { ColumnMap } from '../table-layout-conf.model';
 import { TableEntryType } from '../tableEntryType';
 
@@ -14,11 +14,13 @@ export class TableInlineEditService {
   newCellValue: string = '';
   dataSource$ = new Subject<{editedData: any[], tableId: string}>();
   snackBarMessage$ = new Subject<{message: string, action: string}>();
-  updateCellStyle$ = new Subject<{cellStateValues: boolean[][]}>();
+  updateCellStyle$ = new BehaviorSubject<{
+    cellStateValues: boolean[][]
+  }>({cellStateValues: []});
 
   // tableData = new TableData();
   // tableId: string;
-  cellsStates: boolean[][];
+  // cellsStates: boolean[][];
   table: TableEntryType;
 
   columnMaps: ColumnMap[];
@@ -176,11 +178,15 @@ export class TableInlineEditService {
       endRow = mouseDownRowId;
       startRow = mouseUpRowId;
     }
+
+
     for (let i = startRow; i <= endRow; i++) {
       for (let j = startCol; j <= endCol; j++) {
-        this.cellsStates[i][j] = true;
+        this.table.cellsStates[i][j] = true;
+        // cellsStatesCopy[i][j] = true;
       }
     }
+
     this.setSelectedCells(startRow, endRow, startCol, endCol, true);
   }
 
@@ -198,13 +204,18 @@ export class TableInlineEditService {
     lastEditableCol: number,
     value: boolean
   ) {
+    // let cellsStatesCopy = this.table.cellsStates.slice();
+
     for (let i = firstEditableRow; i <= lastEditableRow; i++) {
       for (let j = firstEditableCol; j <= lastEditableCol; j++) {
-        // this.table.cellsStates[i][j] = value;
-        this.cellsStates[i][j] = value;
+        this.table.cellsStates[i][j] = value;
+        // cellsStatesCopy[i][j] = value;
       }
     }
-    this.updateCellStyle$.next({ cellStateValues: this.cellsStates});
+    console.log("SHOULD BE UPDATING THE CELLS ON CLICK");
+
+    // const cellId = "";
+    // this.updateCellStyle$.next({ cellStateValues: this.cellsStates});
   }
 
   /**
