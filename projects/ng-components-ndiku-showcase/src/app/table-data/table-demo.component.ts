@@ -17,7 +17,6 @@ import { TableEntryType } from 'projects/ng-components-ndiku/src/lib/table/table
         [table]="tableConfig"
         [caption]="'NASA Projects'"
         [settings]="projectsTableConfigSettings"
-        [selectedCellsState]="selectedCellsState"
         class=" tableCaption projectsTable"
       >
       </ndiku-table-layout>
@@ -25,7 +24,6 @@ import { TableEntryType } from 'projects/ng-components-ndiku/src/lib/table/table
         [table]="peapleTableConfig"
         [caption]="'NASA Astronauts'"
         [settings]="personnelSettings"
-        [selectedCellsState]="peopleSelectedCellsState"
         class=" tableCaption astronautsTable"
       >
       </ndiku-table-layout>
@@ -101,40 +99,6 @@ export class TableDemoComponent implements OnInit, OnDestroy {
   people: Person[];
 
   inlineTableDataSub: Subscription;
-  selectedCellsState = new SelectedCellsState();
-  peopleSelectedCellsState = new SelectedCellsState();
-
-  cellsStates: boolean[][] = [
-    [false, false, false],
-    [false, false, false],
-    [false, false, false],
-    [false, false, false],
-    [false, false, false],
-    [false, false, false],
-    [false, false, false],
-    [false, false, false],
-    [false, false, false],
-    [false, false, false]
-  ]
-
-
-  peopleCellsStates: boolean[][] = [
-    [false, false, false, false, false],
-    [false, false, false, false, false],
-    [false, false, false, false, false],
-    [false, false, false, false, false],
-    [false, false, false, false, false],
-    [false, false, false, false, false],
-    [false, false, false, false, false],
-    [false, false, false, false, false],
-    [false, false, false, false, false],
-    [false, false, false, false, false],
-    [false, false, false, false, false],
-    [false, false, false, false, false],
-    [false, false, false, false, false],
-    [false, false, false, false, false]
-  ]
-
 
   constructor(private tableDataService: TableDataService, private inlineTableDataService: TableInlineEditService) {}
 
@@ -147,21 +111,16 @@ export class TableDemoComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.projects = this.tableDataService.getProjects();
     this.people = this.tableDataService.getPersonnel();
-    this.tableConfig = new TableEntryType("mat-table", this.projects, true);
-    this.peapleTableConfig = new TableEntryType("default", this.people, true);
+    this.tableConfig = new TableEntryType("mat-table", "projectsTable", this.projects, true, 3);
+    this.peapleTableConfig = new TableEntryType("default", "peapleTable", this.people, true, 5);
 
-    const rowsLength = this.projects.length - 1;
-    const colsLength = 5;
-    this.selectedCellsState.cellsStates = this.cellsStates;
-    this.peopleSelectedCellsState.cellsStates = this.peopleCellsStates;
-
-    this.inlineTableDataSub = this.inlineTableDataService.dataSource$.subscribe((returnedSourceData) => {
-      if (returnedSourceData) {
-        // this.projects = returnedSourceData;
-        // returnedSourceData.map(data => {
-        //   console.log(`returned data: ${Object.entries(data)}`);
-        // });
-        // console.log(`returned data: ${Object.entries(returnedSourceData)}`);
+    this.inlineTableDataSub = this.inlineTableDataService.dataSource$.subscribe((data) => {
+      if (data) {
+        if (data.tableId === this.tableConfig.tableId) {
+          this.projects = data.editedData;
+        }else{
+          this.people = data.editedData;
+        }
       }
     });
   }

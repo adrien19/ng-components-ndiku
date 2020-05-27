@@ -3,7 +3,6 @@ import { ColumnSetting, ColumnMap, TableType } from './table-layout-conf.model';
 import { Subscription } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TableInlineEditService } from './inline-editable/table-inline-edit.service';
-import { SelectedCellsState } from './inline-editable/table-inline-edit-conf.model';
 import { TableEntryType } from './tableEntryType';
 
 @Component({
@@ -12,6 +11,7 @@ import { TableEntryType } from './tableEntryType';
   <ng-container [ngSwitch]="table.tableType">
     <table
       class="table"
+      [id]="table.tableId"
       *ngSwitchCase="types.DefaultTable"
       (keyup)="onKeyUp($event)"
     >
@@ -34,7 +34,8 @@ import { TableEntryType } from './tableEntryType';
                 *ngIf="!map.editable && !table.inlineEditable"
                 [ndikuStyleCell]="{
                   contentType: record[map.access(record)],
-                  tableType: table.tableType
+                  tableType: table.tableType,
+                  handleSelect:{}
                 }"
               >
                 {{ record[map.access(record)] | formatCell: map.format }}
@@ -42,16 +43,16 @@ import { TableEntryType } from './tableEntryType';
 
               <td
                 *ngIf="map.editable && table.inlineEditable"
+                [id]="createCellId(table.tableId, i, j)"
+                (mousedown)="onMouseDown($event, table.tableId, i, j, map.header)"
+                (mouseup)="onMouseUp(i, j, map.header)"
                 [ndikuStyleCell]="{
                   contentType: record[map.access(record)],
-                  tableType: table.tableType
-                }"
-                [id]="createCellId(table.tableType, i, j)"
-                (mousedown)="onMouseDown($event, table.tableType, i, j, map.header)"
-                (mouseup)="onMouseUp(i, j, map.header)"
-                [ngClass]="{
-                  selected: cellsStates[i][j],
-                  unselected: !cellsStates[i][j]
+                  tableType: table.tableType,
+                  handleSelect:{
+                    selected: cellsStates[i][j],
+                    unselected: !cellsStates[i][j]
+                  }
                 }"
               >
                 {{ record[map.access(record)] | formatCell: map.format }}
@@ -66,6 +67,7 @@ import { TableEntryType } from './tableEntryType';
       *ngSwitchCase="types.MatTable"
       [dataSource]="table.dataSource"
       class="mat-elevation-z0"
+      [id]="table.tableId"
       (keyup)="onKeyUp($event)"
     >
       <caption *ngIf="caption">
@@ -87,7 +89,8 @@ import { TableEntryType } from './tableEntryType';
             *matCellDef="let record"
             [ndikuStyleCell]="{
               contentType: record[map.access(record)],
-              tableType: table.tableType
+              tableType: table.tableType,
+              handleSelect:{}
             }"
           >
             {{ record[map.access(record)] | formatCell: map.format }}
@@ -97,16 +100,16 @@ import { TableEntryType } from './tableEntryType';
           <td
             mat-cell
             *matCellDef="let record; let i = index"
+            [id]="createCellId(table.tableId, i, j)"
+            (mousedown)="onMouseDown($event, table.tableId, i, j, map.header)"
+            (mouseup)="onMouseUp(i, j, map.header)"
             [ndikuStyleCell]="{
               contentType: record[map.access(record)],
-              tableType: table.tableType
-            }"
-            [id]="createCellId(table.tableType, i, j)"
-            (mousedown)="onMouseDown($event, table.tableType, i, j, map.header)"
-            (mouseup)="onMouseUp(i, j, map.header)"
-            [ngClass]="{
-              selected: cellsStates[i][j],
-              unselected: !cellsStates[i][j]
+              tableType: table.tableType,
+              handleSelect:{
+                selected: cellsStates[i][j],
+                unselected: !cellsStates[i][j]
+              }
             }"
           >
             {{ record[map.access(record)] | formatCell: map.format }}
@@ -144,22 +147,22 @@ import { TableEntryType } from './tableEntryType';
       }
 
       /*--------  Editable Cells  --------*/
-      .selected {
-        border: 1px solid #698ad8;
-      }
-      .unselected {
+      /* .selected { */
+        /* border: 1px solid #698ad8; */
+      /* } */
+      /* .unselected { */
         /* border-bottom-color: rgba(0, 0, 0, 0.12); */
         /* border-bottom-width: 1px; */
         /* border-bottom-style: solid; */
       }
       /*---- Remove default browser behaviour after selecting cells ----*/
-      .selected,
-      .unselected {
-        -webkit-user-select: none; /* Webkit  */
-        -moz-user-select: none; /* Firefox */
-        -ms-user-select: none; /* IE 10   */
-        -o-user-select: none; /* Currently not supported in Opera but will be soon */
-        user-select: none;
+      /* .selected, */
+      /* .unselected { */
+        /* -webkit-user-select: none; Webkit  */
+        /* -moz-user-select: none; Firefox */
+        /* -ms-user-select: none; IE 10   */
+        /* -o-user-select: none; Currently not supported in Opera but will be soon */
+        /* user-select: none; */
       }
       /*--------End Editable Cells--------*/
     `,
@@ -177,6 +180,10 @@ export class TableLayoutComponent implements OnInit, OnChanges, OnDestroy {
 
   columnMaps: ColumnMap[];
   displayedColumns: any[];
+  cellsStates: boolean[][];
+
+  snackBarServiceSub: Subscription;
+
 
   public get records(): any[] {
     return this._RECORDS;
@@ -224,12 +231,6 @@ export class TableLayoutComponent implements OnInit, OnChanges, OnDestroy {
       }
   }
 
-  // For inline editing
-  @Input() selectedCellsState: SelectedCellsState;
-  cellsStates: boolean[][];
-  snackBarServiceSub: Subscription;
-
-
   constructor(
     public snackBar: MatSnackBar,
     private tableInlineEditService: TableInlineEditService
@@ -244,6 +245,14 @@ export class TableLayoutComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnInit(){
     if (this.table.inlineEditable) {
+      this.tableInlineEditService.updateCellStyle$.subscribe((styleUpdates) => {
+        if (styleUpdates) {
+          this.cellsStates = styleUpdates.cellStateValues;
+          console.log(`THESE ARE UPDATED STYLES: ${this.cellsStates}`);
+
+        }
+      });
+      this.cellsStates = this.table.cellsStates;
       this.handleUnmatchingCellTypes();
     }
   }
@@ -262,25 +271,16 @@ export class TableLayoutComponent implements OnInit, OnChanges, OnDestroy {
       this.displayedColumns = this.columnMaps.map((col) => col.header);
       if (this.table.inlineEditable) {
         this.tableInlineEditService.columnMaps = this.columnMaps;
-        this.tableInlineEditService.LAST_EDITABLE_COL = this.displayedColumns.length - 1;
-      }
-    }
-
-    if (changes.selectedCellsState && this.table.inlineEditable) {
-      if (this.selectedCellsState){
-        this.cellsStates = this.selectedCellsState.cellsStates;
-        this.tableInlineEditService.selectedCellsState = this.selectedCellsState;
-      }else{
-        console.log("selectedCellsState is empty");
-        this.cellsStates = [];
       }
     }
 
     if (changes.table) {
-      if (this.table.inlineEditable) {
-        this.tableInlineEditService.tableData.dataCopy = this.table.dataSource.slice();
-        this.tableInlineEditService.LAST_EDITABLE_ROW = this.table.dataSource.length - 1;
-      }
+      // if (this.table.inlineEditable) {
+        // this.table = changes.table.currentValue;
+        // this.cellsStates = this.table.cellsStates;
+        this.tableInlineEditService.table = this.table;
+        this.tableInlineEditService.cellsStates = this.table.cellsStates.slice();
+      // }
     }
   }
 
@@ -320,11 +320,13 @@ export class TableLayoutComponent implements OnInit, OnChanges, OnDestroy {
   @HostListener('document:mousedown', ['$event'])
   onMouseDown(event: MouseEvent, tableType: any, rowId: number, colId: number, cellsType: string) {
 
-    const targetElement = event.target as HTMLElement;
     event.stopImmediatePropagation();
+    const targetElement = event.target as HTMLElement;
 
     const elId = this.createCellId(tableType, rowId, colId);
     const tableCellElement = document.getElementById(elId) as HTMLElement;
+    // console.log(`targeted cell: `, targetElement);
+    // console.log(`tableCellElement cell:`, tableCellElement);
 
     // Check if the click was outside the element
     if (targetElement === tableCellElement) {

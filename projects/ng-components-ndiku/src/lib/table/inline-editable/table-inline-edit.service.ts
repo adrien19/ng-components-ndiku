@@ -3,6 +3,7 @@ import { TableMouseEvent, SelectedCellsState, TableData } from './table-inline-e
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subject } from 'rxjs';
 import { ColumnMap } from '../table-layout-conf.model';
+import { TableEntryType } from '../tableEntryType';
 
 @Injectable({
   providedIn: 'root',
@@ -11,17 +12,20 @@ export class TableInlineEditService {
   tableMouseDown: TableMouseEvent;
   tableMouseUp: TableMouseEvent;
   newCellValue: string = '';
-  dataSource$ = new Subject<any[]>();
+  dataSource$ = new Subject<{editedData: any[], tableId: string}>();
   snackBarMessage$ = new Subject<{message: string, action: string}>();
+  updateCellStyle$ = new Subject<{cellStateValues: boolean[][]}>();
 
-  selectedCellsState: SelectedCellsState;
-  tableData = new TableData();
+  // tableData = new TableData();
+  // tableId: string;
+  cellsStates: boolean[][];
+  table: TableEntryType;
 
   columnMaps: ColumnMap[];
-  FIRST_EDITABLE_ROW: number = 0;
-  LAST_EDITABLE_ROW: number = 0;
-  FIRST_EDITABLE_COL: number = 0;
-  LAST_EDITABLE_COL: number = 0;
+  // FIRST_EDITABLE_ROW: number = 0;
+  // LAST_EDITABLE_ROW: number = 0;
+  // FIRST_EDITABLE_COL: number = 0;
+  // LAST_EDITABLE_COL: number = 0;
 
 
   constructor(public snackBar: MatSnackBar) { }
@@ -39,7 +43,8 @@ export class TableInlineEditService {
 
     if (this.tableMouseDown && this.tableMouseUp) {
       if (this.tableMouseDown.cellsType === this.tableMouseUp.cellsType) {
-        const dataCopy = this.tableData.dataCopy;
+        // const dataCopy = this.tableData.dataCopy;
+        const dataCopy = this.table.dataSource.slice();
         let startCol: number;
         let endCol: number;
         let startRow: number;
@@ -90,7 +95,7 @@ export class TableInlineEditService {
           }
         }
         // dataSource = dataCopy;
-        this.dataSource$.next(dataCopy);
+        this.dataSource$.next({editedData: dataCopy, tableId: this.table.tableId});
       } else {
         this.openSnackBar("The selected cells don't have the same type.", "DISMISS");
       }
@@ -144,10 +149,10 @@ export class TableInlineEditService {
   ) {
     // init selected cells
     this.setSelectedCells(
-      this.FIRST_EDITABLE_ROW,
-      this.LAST_EDITABLE_ROW,
-      this.FIRST_EDITABLE_COL,
-      this.LAST_EDITABLE_COL,
+      this.table.FIRST_EDITABLE_ROW,
+      this.table.LAST_EDITABLE_ROW,
+      this.table.FIRST_EDITABLE_COL,
+      this.table.LAST_EDITABLE_COL,
       false
     );
 
@@ -173,7 +178,7 @@ export class TableInlineEditService {
     }
     for (let i = startRow; i <= endRow; i++) {
       for (let j = startCol; j <= endCol; j++) {
-        this.selectedCellsState.cellsStates[i][j] = true;
+        this.cellsStates[i][j] = true;
       }
     }
     this.setSelectedCells(startRow, endRow, startCol, endCol, true);
@@ -195,9 +200,11 @@ export class TableInlineEditService {
   ) {
     for (let i = firstEditableRow; i <= lastEditableRow; i++) {
       for (let j = firstEditableCol; j <= lastEditableCol; j++) {
-        this.selectedCellsState.cellsStates [i][j] = value;
+        // this.table.cellsStates[i][j] = value;
+        this.cellsStates[i][j] = value;
       }
     }
+    this.updateCellStyle$.next({ cellStateValues: this.cellsStates});
   }
 
   /**
@@ -232,10 +239,10 @@ export class TableInlineEditService {
       }
       if (event.key === 'Enter') {
         this.setSelectedCells(
-          this.FIRST_EDITABLE_ROW,
-          this.LAST_EDITABLE_ROW,
-          this.FIRST_EDITABLE_COL,
-          this.LAST_EDITABLE_COL,
+          this.table.FIRST_EDITABLE_ROW,
+          this.table.LAST_EDITABLE_ROW,
+          this.table.FIRST_EDITABLE_COL,
+          this.table.LAST_EDITABLE_COL,
           false
         );
       }

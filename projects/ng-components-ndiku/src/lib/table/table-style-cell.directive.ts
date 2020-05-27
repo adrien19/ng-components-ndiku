@@ -6,6 +6,7 @@ export class StyleCellDirective implements OnInit {
   @Input() ndikuStyleCell: {
     tableType: TableType;
     contentType: string;
+    handleSelect?: {selected: boolean, unselected: boolean};
   };
 
   constructor(private el: ElementRef, private renderer: Renderer2) {}
@@ -32,6 +33,23 @@ export class StyleCellDirective implements OnInit {
     ) {
       this.renderer.setStyle(this.el.nativeElement, 'text-align', 'right');
       this.renderer.setStyle(this.el.nativeElement, 'padding-right', '10%');
+    }
+
+    if (this.ndikuStyleCell.handleSelect) {
+      const selected = this.ndikuStyleCell.handleSelect.selected;
+      const unselected = this.ndikuStyleCell.handleSelect.unselected;
+      // console.log(`selected is: ${selected}
+      // unselected is: ${unselected}`);
+
+      if (selected) {
+        this.renderer.setStyle(this.el.nativeElement, 'border', '1px solid #698ad8');
+        this.renderer.setStyle(this.el.nativeElement, 'color', '1px solid #698ad8');
+      }
+      this.renderer.setStyle(this.el.nativeElement, '-webkit-user-select', 'none'); /* Webkit  */
+      this.renderer.setStyle(this.el.nativeElement, '-moz-user-select', 'none'); /* Firefox */
+      this.renderer.setStyle(this.el.nativeElement, '-ms-user-select', 'none'); /* IE 10   */
+      this.renderer.setStyle(this.el.nativeElement, '-o-user-select', 'none'); /* Currently not supported in Opera but will be soon */
+      this.renderer.setStyle(this.el.nativeElement, 'user-select', 'none');
     }
   }
 }
