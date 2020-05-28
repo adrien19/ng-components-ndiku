@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import { TableMouseEvent } from './table-inline-edit-conf.model';
+import { Injectable, HostListener } from '@angular/core';
+import { TableMouseEvent, EditedTableCell } from './table-inline-edit-conf.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subject } from 'rxjs';
 import { ColumnMap } from '../table-layout-conf.model';
@@ -52,7 +52,6 @@ export class TableInlineEditService {
         if (this.tableMouseDown.rowId <= this.tableMouseUp.rowId) {
           startRow = this.tableMouseDown.rowId;
           endRow = this.tableMouseUp.rowId;
-          console.log(`SAME row ${startRow}, ${endRow}`);
 
         } else {
           endRow = this.tableMouseDown.rowId;
@@ -65,6 +64,15 @@ export class TableInlineEditService {
             const record = dataCopy[i];
             if (record) {
               dataCopy[i][this.columnMaps[startCol].access(record)] = text;
+              const editedCell: EditedTableCell = {
+                rowId: i,
+                colId: startCol,
+                header: this.columnMaps[startCol].header,
+                newCellValue: text,
+                tableId: this.table.tableId,
+                editedTimestamp: + new Date()
+              }
+              this.table.saveEditedCell(editedCell);
             }else{
               console.log("THE VALUE IS NULL");
             }
@@ -76,6 +84,15 @@ export class TableInlineEditService {
               const record = dataCopy[i];
               if (record) {
                 dataCopy[i][this.columnMaps[j].access(record)] = text;
+                const editedCell: EditedTableCell = {
+                  rowId: i,
+                  colId: j,
+                  header: this.columnMaps[j].header,
+                  newCellValue: text,
+                  tableId: this.table.tableId,
+                  editedTimestamp: + new Date()
+                }
+                this.table.saveEditedCell(editedCell);
               }else{
                 console.log("THE VALUE IS NULL");
               }
@@ -219,10 +236,10 @@ export class TableInlineEditService {
         this.updateSelectedCellsValues(
           this.newCellValue,
         );
+
       } else if (this.isNotSpecialKeys(event)) {
         // key is not specialKeys
         this.newCellValue += event.key;
-        console.log(`KEY NOT SPECIAL, SO: ${this.newCellValue}`);
         this.updateSelectedCellsValues(
           this.newCellValue,
         );

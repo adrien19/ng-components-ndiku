@@ -1,5 +1,6 @@
 
 import { TableType } from './table-layout-conf.model';
+import { EditedTableCell } from './inline-editable/table-inline-edit-conf.model';
 
 export class TableEntryType {
   private _TABLE_TYPE: TableType;
@@ -12,6 +13,8 @@ export class TableEntryType {
     FIRST_EDITABLE_COL?: number,
     LAST_EDITABLE_COL?: number,
   }[] = [];
+
+  private _EDITED_CELLS: EditedTableCell[] = [];
 
   dataSource: any[];
   inlineEditable? = false;
@@ -104,5 +107,52 @@ export class TableEntryType {
       return el.tableId === this.tableId;
     });
     return tableCellStates[0];
+  }
+
+  getEditedCellsByTableId(): EditedTableCell[] {
+    const editedCells = this._EDITED_CELLS.filter((el) => {
+      return el.tableId === this.tableId;
+    });
+    return editedCells;
+  }
+
+  saveEditedCell(editedCell:EditedTableCell) {
+    this._EDITED_CELLS.push(editedCell);
+  }
+
+  getEditedCellsByHeader(header: string): EditedTableCell[] {
+    const editedCells = this._EDITED_CELLS.filter((el) => {
+      return el.header === header;
+    });
+    return editedCells;
+  }
+
+  getEditedCellsByrowCol(rowNumber?: number, colNumber?: number): EditedTableCell[] {
+    let editedCells: EditedTableCell[] = [];
+    if (rowNumber && colNumber) {
+      editedCells = this._EDITED_CELLS.filter((el) => {
+        return el.rowId === rowNumber && el.colId === colNumber;
+      });
+    } else if(rowNumber && !colNumber){
+      editedCells = this._EDITED_CELLS.filter((el) => {
+        return el.rowId === rowNumber;
+      });
+    } else if(colNumber && !rowNumber){
+      editedCells = this._EDITED_CELLS.filter((el) => {
+        return el.colId === colNumber;
+      });
+    } else{
+      throw "You must provide either a row number or column number";
+    }
+
+    return editedCells;
+  }
+
+  hasBeenEdited(): boolean{
+    let hasBeenEdited = false;
+    if(this._EDITED_CELLS.length !== 0){
+      hasBeenEdited = true;
+    }
+    return hasBeenEdited;
   }
 }

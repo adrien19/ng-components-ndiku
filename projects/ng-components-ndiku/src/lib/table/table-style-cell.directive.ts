@@ -19,7 +19,7 @@ export class StyleCellDirective implements OnInit, OnDestroy, OnChanges {
 
 
   ngOnChanges(changes: import("@angular/core").SimpleChanges): void {
-
+    this.visualizeEditedCells();
   }
 
   ngOnDestroy(): void {
@@ -30,6 +30,7 @@ export class StyleCellDirective implements OnInit, OnDestroy, OnChanges {
 
   ngOnInit() {
     this.handlestylingUndefinedValues();
+    this.visualizeEditedCells();
     this.cellsStatesSub = this.tableInlineEditService.updateCellStyle$.subscribe((cellStates) => {
       this.handleStylingSelectedCells();
     });
@@ -69,8 +70,12 @@ export class StyleCellDirective implements OnInit, OnDestroy, OnChanges {
 
       if (tableCells[rowId][colId]) {
         console.log(tableCells[rowId][colId]);
+        // this.handlestylingUndefinedValues();
+
         this.renderer.setStyle(this.el.nativeElement, 'border', '1px solid #698ad8');
         this.renderer.addClass(this.el.nativeElement, 'cursor');
+        this.renderer.setStyle(this.el.nativeElement, 'min-height', '22px');
+
 
       }else{
         this.renderer.setStyle(this.el.nativeElement, 'border', 'none');
@@ -82,6 +87,23 @@ export class StyleCellDirective implements OnInit, OnDestroy, OnChanges {
       this.renderer.setStyle(this.el.nativeElement, '-ms-user-select', 'none'); /* IE 10   */
       this.renderer.setStyle(this.el.nativeElement, '-o-user-select', 'none'); /* Currently not supported in Opera but will be soon */
       this.renderer.setStyle(this.el.nativeElement, 'user-select', 'none');
+    }
+  }
+
+  visualizeEditedCells(){
+    const table = this.ndikuStyleCell.table;
+    const rowId = this.ndikuStyleCell.selectCell.rowId;
+    const colId = this.ndikuStyleCell.selectCell.colId;
+    if(table.hasBeenEdited){
+      const editedCells = table.getEditedCellsByTableId();
+
+      editedCells.map((cell) => {
+        if (cell.rowId === rowId && cell.colId === colId) {
+          this.renderer.setStyle(this.el.nativeElement, 'border', '1px solid #B00020');
+        }
+        console.log(cell);
+
+      });
     }
   }
 }
