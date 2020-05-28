@@ -70,9 +70,11 @@ export class StyleCellDirective implements OnInit, OnDestroy, OnChanges {
       if (tableCells[rowId][colId]) {
         console.log(tableCells[rowId][colId]);
         this.renderer.setStyle(this.el.nativeElement, 'border', '1px solid #698ad8');
+        this.renderer.addClass(this.el.nativeElement, 'cursor');
 
       }else{
         this.renderer.setStyle(this.el.nativeElement, 'border', 'none');
+        this.renderer.removeClass(this.el.nativeElement, 'cursor');
       }
 
       this.renderer.setStyle(this.el.nativeElement, '-webkit-user-select', 'none'); /* Webkit  */

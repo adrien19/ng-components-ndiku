@@ -18,7 +18,7 @@ import { TableEntryType } from './tableEntryType';
       <caption *ngIf="caption">
         {{
           caption
-        }} {{ "(default Table)" }}
+        }} {{ "(Default Table)" }}
       </caption>
       <thead>
         <tr>
@@ -53,6 +53,7 @@ import { TableEntryType } from './tableEntryType';
                 [directiveCellsStates]="table.tableCellStates.tableCellStates"
               >
                 {{ record[map.access(record)] | formatCell: map.format }}
+                <i></i>
               </td>
             </ng-container>
           </tr>
@@ -107,6 +108,7 @@ import { TableEntryType } from './tableEntryType';
             [directiveCellsStates]="table.tableCellStates.tableCellStates"
           >
             {{ record[map.access(record)] | formatCell: map.format }}
+            <i></i>
           </td>
         </ng-container>
       </ng-container>
@@ -139,6 +141,33 @@ import { TableEntryType } from './tableEntryType';
         word-wrap: break-word;
         border-bottom: none;
       }
+
+      /* below adds cursor  */
+      .cursor {
+         position: relative;
+      }
+      .cursor i {
+          position: absolute;
+          width: 1px;
+          height: 80%;
+          background-color: gray;
+          left: 5px;
+          top: 10%;
+          animation-name: blink;
+          animation-duration: 800ms;
+          animation-iteration-count: infinite;
+          opacity: 1;
+      }
+
+      .cursor :focus + i {
+        display: none;
+      }
+
+      @keyframes blink {
+          from { opacity: 1; }
+          to { opacity: 0; }
+      }
+
     `,
   ],
 })
