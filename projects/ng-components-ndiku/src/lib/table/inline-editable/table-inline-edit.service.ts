@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { TableMouseEvent, SelectedCellsState, TableData } from './table-inline-edit-conf.model';
+import { TableMouseEvent } from './table-inline-edit-conf.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Subject, BehaviorSubject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { ColumnMap } from '../table-layout-conf.model';
 import { TableEntryType } from '../tableEntryType';
 
@@ -14,21 +14,10 @@ export class TableInlineEditService {
   newCellValue: string = '';
   dataSource$ = new Subject<{editedData: any[], tableId: string}>();
   snackBarMessage$ = new Subject<{message: string, action: string}>();
-  updateCellStyle$ = new Subject<{
-    cellStateValues: boolean[][],
-    tableId: string
-  }>();
+  updateCellStyle$ = new Subject<any>();
 
-  // tableData = new TableData();
-  // tableId: string;
-  // cellsStates: boolean[][];
   table: TableEntryType;
-
   columnMaps: ColumnMap[];
-  // FIRST_EDITABLE_ROW: number = 0;
-  // LAST_EDITABLE_ROW: number = 0;
-  // FIRST_EDITABLE_COL: number = 0;
-  // LAST_EDITABLE_COL: number = 0;
 
 
   constructor(public snackBar: MatSnackBar) { }
@@ -46,7 +35,6 @@ export class TableInlineEditService {
 
     if (this.tableMouseDown && this.tableMouseUp) {
       if (this.tableMouseDown.cellsType === this.tableMouseUp.cellsType) {
-        // const dataCopy = this.tableData.dataCopy;
         const dataCopy = this.table.dataSource.slice();
         let startCol: number;
         let endCol: number;
@@ -56,9 +44,6 @@ export class TableInlineEditService {
         if (this.tableMouseDown.colId <= this.tableMouseUp.colId) {
           startCol = this.tableMouseDown.colId;
           endCol = this.tableMouseUp.colId;
-          // record = this.tableMouseDown.object;
-
-          console.log(`SAME column ${startCol}, ${endCol}`);
         } else {
           endCol = this.tableMouseDown.colId;
           startCol = this.tableMouseUp.colId;
@@ -112,7 +97,6 @@ export class TableInlineEditService {
    */
   onMouseDownTable(rowId: number, colId: number, cellsType: string) {
     this.tableMouseDown = {rowId: rowId, colId: colId, cellsType: cellsType };
-    console.log(`this is the mouseDownTable cellsType: ${cellsType}`);
   }
 
   /**
@@ -183,9 +167,7 @@ export class TableInlineEditService {
 
     for (let i = startRow; i <= endRow; i++) {
       for (let j = startCol; j <= endCol; j++) {
-        // this.table.cellsStates[i][j] = true;
         this.table.tableCellStates.tableCellStates[i][j] = true;
-        // cellsStatesCopy[i][j] = true;
       }
     }
 
@@ -206,19 +188,13 @@ export class TableInlineEditService {
     lastEditableCol: number,
     value: boolean
   ) {
-    // let cellsStatesCopy = this.table.cellsStates.slice();
 
     for (let i = firstEditableRow; i <= lastEditableRow; i++) {
       for (let j = firstEditableCol; j <= lastEditableCol; j++) {
-        // this.table.cellsStates[i][j] = value;
         this.table.tableCellStates.tableCellStates[i][j] = value;
-        // cellsStatesCopy[i][j] = value;
       }
     }
-    console.log("SHOULD BE UPDATING THE CELLS ON CLICK");
-
-    // const cellId = "";
-    this.updateCellStyle$.next({ cellStateValues: this.table.tableCellStates.tableCellStates, tableId: this.table.tableId});
+    this.updateCellStyle$.next(); // sending an event to update the selected cells in directive
   }
 
   /**

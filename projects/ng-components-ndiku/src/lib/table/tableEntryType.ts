@@ -4,7 +4,6 @@ import { TableType } from './table-layout-conf.model';
 export class TableEntryType {
   private _TABLE_TYPE: TableType;
   private _TABLE_ID: string;
-  private _CELLS_STATES: boolean[][];
   private _ALL_TABLES_STATES: {
     tableCellStates: boolean[][],
     tableId: string,
@@ -59,13 +58,6 @@ export class TableEntryType {
     this._TABLE_ID = tableId;
   }
 
-  public set cellsStates(cellsStates: boolean[][]) {
-    this._CELLS_STATES = cellsStates;
-  }
-  public get cellsStates() : boolean[][] {
-    return this._CELLS_STATES;
-  }
-
   private createCellsStates(tableId: string){
     if (this.inlineEditable && this.nEditableCols) {
       let temp: boolean[][]=[];
@@ -75,7 +67,6 @@ export class TableEntryType {
           temp[iIndex][jIndex] = false;
         }
       }
-      this.cellsStates = temp;
       this.tableCellStates = {
         tableCellStates: temp,
         tableId: tableId,
@@ -109,7 +100,6 @@ export class TableEntryType {
     FIRST_EDITABLE_COL?: number,
     LAST_EDITABLE_COL?: number,
   }{
-
     const tableCellStates = this._ALL_TABLES_STATES.filter((el) => {
       return el.tableId === this.tableId;
     });

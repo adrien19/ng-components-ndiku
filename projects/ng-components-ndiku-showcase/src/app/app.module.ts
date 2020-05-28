@@ -20,7 +20,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TableDemoComponent } from './table-data/table-demo.component';
-import { TableInlineLayoutModule } from 'projects/ng-components-ndiku/src/lib/table/inline-editable/table-inline-layout.module';
+// import { TableInlineLayoutModule } from 'projects/ng-components-ndiku/src/lib/table/inline-editable/table-inline-layout.module';
 
 @NgModule({
   declarations: [AppComponent, TableDemoComponent],
@@ -34,7 +34,7 @@ import { TableInlineLayoutModule } from 'projects/ng-components-ndiku/src/lib/ta
     NgComponentsNdikuModule,
     NgComponentsNdikuSelectModule,
     TableLayoutModule,
-    TableInlineLayoutModule,
+    // TableInlineLayoutModule,
   ],
   providers: [],
   bootstrap: [AppComponent, TableDemoComponent],

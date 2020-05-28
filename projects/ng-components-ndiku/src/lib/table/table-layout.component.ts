@@ -1,6 +1,6 @@
 import { Component, Input, OnChanges, OnInit, OnDestroy, HostListener, SimpleChanges } from '@angular/core';
 import { ColumnSetting, ColumnMap, TableType } from './table-layout-conf.model';
-import { Subscription, BehaviorSubject } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TableInlineEditService } from './inline-editable/table-inline-edit.service';
 import { TableEntryType } from './tableEntryType';
@@ -234,11 +234,6 @@ export class TableLayoutComponent implements OnInit, OnChanges, OnDestroy {
       }
       this.displayedColumns = this.columnMaps.map((col) => col.header);
     }
-
-    // if (changes.table && this.table.inlineEditable) {
-    //   this.tableInlineEditService.table = this.table;
-    //   this.tableInlineEditService.columnMaps = this.columnMaps;
-    // }
   }
 
   handleUnmatchingCellTypes(){
@@ -267,7 +262,7 @@ export class TableLayoutComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   @HostListener('document:keyup', ['$event'])
-  onKeyUp(event: KeyboardEvent, table?: TableEntryType) {
+  onKeyUp(event: KeyboardEvent) {
     event.stopImmediatePropagation();
     // this.tableInlineEditService.table = table;
     this.tableInlineEditService.onKeyUpTable(
