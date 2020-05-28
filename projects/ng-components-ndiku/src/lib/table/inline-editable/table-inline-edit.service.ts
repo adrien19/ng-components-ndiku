@@ -152,10 +152,10 @@ export class TableInlineEditService {
   ) {
     // init selected cells
     this.setSelectedCells(
-      this.table.FIRST_EDITABLE_ROW,
-      this.table.LAST_EDITABLE_ROW,
-      this.table.FIRST_EDITABLE_COL,
-      this.table.LAST_EDITABLE_COL,
+      this.table.tableCellStates.FIRST_EDITABLE_ROW,
+      this.table.tableCellStates.LAST_EDITABLE_ROW,
+      this.table.tableCellStates.FIRST_EDITABLE_COL,
+      this.table.tableCellStates.LAST_EDITABLE_COL,
       false
     );
 
@@ -183,7 +183,8 @@ export class TableInlineEditService {
 
     for (let i = startRow; i <= endRow; i++) {
       for (let j = startCol; j <= endCol; j++) {
-        this.table.cellsStates[i][j] = true;
+        // this.table.cellsStates[i][j] = true;
+        this.table.tableCellStates.tableCellStates[i][j] = true;
         // cellsStatesCopy[i][j] = true;
       }
     }
@@ -209,14 +210,15 @@ export class TableInlineEditService {
 
     for (let i = firstEditableRow; i <= lastEditableRow; i++) {
       for (let j = firstEditableCol; j <= lastEditableCol; j++) {
-        this.table.cellsStates[i][j] = value;
+        // this.table.cellsStates[i][j] = value;
+        this.table.tableCellStates.tableCellStates[i][j] = value;
         // cellsStatesCopy[i][j] = value;
       }
     }
     console.log("SHOULD BE UPDATING THE CELLS ON CLICK");
 
     // const cellId = "";
-    this.updateCellStyle$.next({ cellStateValues: this.table.cellsStates, tableId: this.table.tableId});
+    this.updateCellStyle$.next({ cellStateValues: this.table.tableCellStates.tableCellStates, tableId: this.table.tableId});
   }
 
   /**
@@ -251,10 +253,10 @@ export class TableInlineEditService {
       }
       if (event.key === 'Enter') {
         this.setSelectedCells(
-          this.table.FIRST_EDITABLE_ROW,
-          this.table.LAST_EDITABLE_ROW,
-          this.table.FIRST_EDITABLE_COL,
-          this.table.LAST_EDITABLE_COL,
+          this.table.tableCellStates.FIRST_EDITABLE_ROW,
+          this.table.tableCellStates.LAST_EDITABLE_ROW,
+          this.table.tableCellStates.FIRST_EDITABLE_COL,
+          this.table.tableCellStates.LAST_EDITABLE_COL,
           false
         );
       }

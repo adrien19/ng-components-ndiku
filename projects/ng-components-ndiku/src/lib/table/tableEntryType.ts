@@ -5,6 +5,15 @@ export class TableEntryType {
   private _TABLE_TYPE: TableType;
   private _TABLE_ID: string;
   private _CELLS_STATES: boolean[][];
+  private _ALL_TABLES_STATES: {
+    tableCellStates: boolean[][],
+    tableId: string,
+    FIRST_EDITABLE_ROW?: number,
+    LAST_EDITABLE_ROW?: number,
+    FIRST_EDITABLE_COL?: number,
+    LAST_EDITABLE_COL?: number,
+  }[] = [];
+
   dataSource: any[];
   inlineEditable? = false;
   nEditableCols?: number;
@@ -13,6 +22,7 @@ export class TableEntryType {
   LAST_EDITABLE_ROW?: number;
   FIRST_EDITABLE_COL?: number;
   LAST_EDITABLE_COL?: number;
+
 
   constructor(tableTypeName: string, tableId: string, dataSource: any[], inlineEditable?: boolean, nEditableCols?: number, firstEditableRow?: number, firstEditableCol?: number) {
     if (tableTypeName === "mat-table") {
@@ -25,11 +35,13 @@ export class TableEntryType {
     this.nRows = this.dataSource.length - 1;
     this.nEditableCols = nEditableCols;
     this.inlineEditable = inlineEditable;
-    this.createCellsStates();
     this.FIRST_EDITABLE_ROW = firstEditableRow? firstEditableRow : 0;
     this.FIRST_EDITABLE_COL = firstEditableCol? firstEditableCol : 0;
     this.LAST_EDITABLE_ROW = this.nRows;
     this.LAST_EDITABLE_COL = nEditableCols? nEditableCols : 0;
+
+    this.createCellsStates(tableId);
+
   }
 
 
@@ -54,7 +66,7 @@ export class TableEntryType {
     return this._CELLS_STATES;
   }
 
-  private createCellsStates(){
+  private createCellsStates(tableId: string){
     if (this.inlineEditable && this.nEditableCols) {
       let temp: boolean[][]=[];
       for (let iIndex = 0; iIndex <= this.nRows; iIndex++) {
@@ -64,6 +76,14 @@ export class TableEntryType {
         }
       }
       this.cellsStates = temp;
+      this.tableCellStates = {
+        tableCellStates: temp,
+        tableId: tableId,
+        FIRST_EDITABLE_ROW: this.FIRST_EDITABLE_ROW,
+        LAST_EDITABLE_ROW: this.LAST_EDITABLE_ROW,
+        FIRST_EDITABLE_COL: this.FIRST_EDITABLE_COL,
+        LAST_EDITABLE_COL: this.LAST_EDITABLE_COL,
+      }
     }else if(this.inlineEditable){
       throw "You need to supply number of editable columns for inline editable table.";
     }else{
@@ -71,4 +91,28 @@ export class TableEntryType {
     }
   }
 
+  public set tableCellStates(tableCellStates: {
+    tableCellStates: boolean[][],
+    tableId: string,
+    FIRST_EDITABLE_ROW?: number,
+    LAST_EDITABLE_ROW?: number,
+    FIRST_EDITABLE_COL?: number,
+    LAST_EDITABLE_COL?: number,
+  }) {
+    this._ALL_TABLES_STATES.push(tableCellStates);
+  }
+  public get tableCellStates() : {
+    tableCellStates: boolean[][],
+    tableId: string,
+    FIRST_EDITABLE_ROW?: number,
+    LAST_EDITABLE_ROW?: number,
+    FIRST_EDITABLE_COL?: number,
+    LAST_EDITABLE_COL?: number,
+  }{
+
+    const tableCellStates = this._ALL_TABLES_STATES.filter((el) => {
+      return el.tableId === this.tableId;
+    });
+    return tableCellStates[0];
+  }
 }

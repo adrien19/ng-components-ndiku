@@ -19,13 +19,7 @@ export class StyleCellDirective implements OnInit, OnDestroy, OnChanges {
 
 
   ngOnChanges(changes: import("@angular/core").SimpleChanges): void {
-    if (changes.cellsStates) {
-      this.directiveCellsStates = changes.cellsStates.currentValue;
-      // console.log(this.cellsStates);
-      this.cellsStatesSub = this.tableInlineEditService.updateCellStyle$.subscribe((cellStates) => {
-          this.handleStylingSelectedCells(cellStates.cellStateValues, cellStates.tableId);
-      });
-    }
+
   }
 
   ngOnDestroy(): void {
@@ -36,6 +30,9 @@ export class StyleCellDirective implements OnInit, OnDestroy, OnChanges {
 
   ngOnInit() {
     this.handlestylingUndefinedValues();
+    this.cellsStatesSub = this.tableInlineEditService.updateCellStyle$.subscribe((cellStates) => {
+      this.handleStylingSelectedCells();
+    });
   }
 
   handlestylingUndefinedValues(){
@@ -63,17 +60,17 @@ export class StyleCellDirective implements OnInit, OnDestroy, OnChanges {
     }
   }
 
-  handleStylingSelectedCells(cellsStates: any, tableId: string){
+  handleStylingSelectedCells(){
     if (this.ndikuStyleCell.table.inlineEditable) {
 
       const rowId = this.ndikuStyleCell.selectCell.rowId;
       const colId = this.ndikuStyleCell.selectCell.colId;
-      // console.log(`Table in directive: ${this.ndikuStyleCell.table.tableId}
-      // Table in service: ${tableId}`);
+      const tableCells = this.directiveCellsStates;
 
-      if (cellsStates[rowId][colId] && this.ndikuStyleCell.table.tableId === tableId) {
-        console.log(cellsStates[rowId][colId]);
+      if (tableCells[rowId][colId]) {
+        console.log(tableCells[rowId][colId]);
         this.renderer.setStyle(this.el.nativeElement, 'border', '1px solid #698ad8');
+
       }else{
         this.renderer.setStyle(this.el.nativeElement, 'border', 'none');
       }

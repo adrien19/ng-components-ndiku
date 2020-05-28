@@ -13,7 +13,7 @@ import { TableEntryType } from './tableEntryType';
       class="table"
       [id]="table.tableId"
       *ngSwitchCase="types.DefaultTable"
-      (keyup)="onKeyUp($event)"
+      (keyup)="onKeyUp($event, table)"
     >
       <caption *ngIf="caption">
         {{
@@ -43,14 +43,14 @@ import { TableEntryType } from './tableEntryType';
               <td
                 *ngIf="map.editable && table.inlineEditable"
                 [id]="createCellId(table.tableId, i, j)"
-                (mousedown)="onMouseDown($event, table.tableId, i, j, map.header)"
+                (mousedown)="onMouseDown($event, table.tableId, i, j, map.header, table)"
                 (mouseup)="onMouseUp(i, j, map.header)"
                 [ndikuStyleCell]="{
                   contentType: record[map.access(record)],
                   table: table,
                   selectCell: {rowId: i, colId: j}
                 }"
-                [directiveCellsStates]="table.cellsStates"
+                [directiveCellsStates]="table.tableCellStates.tableCellStates"
               >
                 {{ record[map.access(record)] | formatCell: map.format }}
               </td>
@@ -65,7 +65,7 @@ import { TableEntryType } from './tableEntryType';
       [dataSource]="table.dataSource"
       class="mat-elevation-z0"
       [id]="table.tableId"
-      (keyup)="onKeyUp($event)"
+      (keyup)="onKeyUp($event, table)"
     >
       <caption *ngIf="caption">
         {{
@@ -97,14 +97,14 @@ import { TableEntryType } from './tableEntryType';
             mat-cell
             *matCellDef="let record; let i = index"
             [id]="createCellId(table.tableId, i, j)"
-            (mousedown)="onMouseDown($event, table.tableId, i, j, map.header)"
+            (mousedown)="onMouseDown($event, table.tableId, i, j, map.header, table)"
             (mouseup)="onMouseUp(i, j, map.header)"
             [ndikuStyleCell]="{
               contentType: record[map.access(record)],
               table: table,
               selectCell: {rowId: i, colId: j}
             }"
-            [directiveCellsStates]="table.cellsStates"
+            [directiveCellsStates]="table.tableCellStates.tableCellStates"
           >
             {{ record[map.access(record)] | formatCell: map.format }}
           </td>
@@ -216,6 +216,7 @@ export class TableLayoutComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnInit(){
     if (this.table.inlineEditable) {
+      this.tableInlineEditService.table = this.table;
       this.handleUnmatchingCellTypes();
     }
   }
@@ -234,10 +235,10 @@ export class TableLayoutComponent implements OnInit, OnChanges, OnDestroy {
       this.displayedColumns = this.columnMaps.map((col) => col.header);
     }
 
-    if (changes.table && this.table.inlineEditable) {
-      this.tableInlineEditService.table = this.table;
-      this.tableInlineEditService.columnMaps = this.columnMaps;
-    }
+    // if (changes.table && this.table.inlineEditable) {
+    //   this.tableInlineEditService.table = this.table;
+    //   this.tableInlineEditService.columnMaps = this.columnMaps;
+    // }
   }
 
   handleUnmatchingCellTypes(){
@@ -266,17 +267,20 @@ export class TableLayoutComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   @HostListener('document:keyup', ['$event'])
-  onKeyUp(event: KeyboardEvent) {
+  onKeyUp(event: KeyboardEvent, table?: TableEntryType) {
     event.stopImmediatePropagation();
+    // this.tableInlineEditService.table = table;
     this.tableInlineEditService.onKeyUpTable(
       event
     );
   }
 
   @HostListener('document:mousedown', ['$event'])
-  onMouseDown(event: MouseEvent, tableId: any, rowId: number, colId: number, cellsType: string) {
+  onMouseDown(event: MouseEvent, tableId: any, rowId: number, colId: number, cellsType: string, clickedTable: TableEntryType) {
 
-    this.tableInlineEditService.table = this.table;
+
+    // this.table = clickedTable;
+
 
     event.stopImmediatePropagation();
     const targetElement = event.target as HTMLElement;
@@ -286,11 +290,15 @@ export class TableLayoutComponent implements OnInit, OnChanges, OnDestroy {
 
     // Check if the click was outside the element
     if (targetElement === tableCellElement) {
+      this.tableInlineEditService.table = clickedTable;
+      this.tableInlineEditService.columnMaps = this.columnMaps;
       this.tableInlineEditService.onMouseDownTable(rowId, colId, cellsType);
     }else{
       const keyEventData = { isTrusted: true, key: "Enter" };
       const keyBoardEvent = new KeyboardEvent("keyup", keyEventData);
       keyBoardEvent.stopImmediatePropagation();
+      // this.tableInlineEditService.table = clickedTable;
+
       this.onKeyUp(keyBoardEvent);
     }
   }
