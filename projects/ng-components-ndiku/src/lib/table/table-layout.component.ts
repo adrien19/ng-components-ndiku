@@ -312,15 +312,10 @@ export class TableLayoutComponent implements OnInit, OnChanges, OnDestroy {
   @HostListener('document:keyup', ['$event'])
   onKeyUp(event: KeyboardEvent) {
     if (this.tableInEditingMode  && this.tableInEditingMode.enableEditingMode) {
-    event.stopImmediatePropagation();
-    // this.tableInlineEditService.table = table;
-      console.log("Key pressed!");
-
+      event.stopImmediatePropagation();
       this.tableInlineEditService.onKeyUpTable(
         event
       );
-
-
     }
   }
 
@@ -369,12 +364,9 @@ export class TableLayoutComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   onSaveTable(clickedTable: TableEntryType){
-
-    this.saveButtonClicked(clickedTable);
-
+    this.enterKeyPressed();
     clickedTable.enableEditingMode = false;
     this.editingMode = false;
-
   }
 
   private enterKeyPressed(){
@@ -384,10 +376,5 @@ export class TableLayoutComponent implements OnInit, OnChanges, OnDestroy {
     this.onKeyUp(keyBoardEvent);
   }
 
-  private saveButtonClicked(clickedTable: TableEntryType){
-    this.enterKeyPressed();
-    // clickedTable.resetCellsStates();
-    // this.saveTableButtonClicked$.next(clickedTable.getEditedCellsByTableId());
-  }
 
 }

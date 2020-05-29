@@ -1,4 +1,4 @@
-import { Injectable, HostListener } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { TableMouseEvent, EditedTableCell } from './table-inline-edit-conf.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subject } from 'rxjs';
@@ -33,13 +33,10 @@ export class TableInlineEditService {
     if (text == null) {
       return;
     }
-    console.log(`mousedown and mouseup In UpdateValues : ${this.tableMouseDown.colId} && tableMouse up = ${this.tableMouseUp.colId}`);
 
     if (this.tableMouseDown && this.tableMouseUp) {
       if (this.tableMouseDown.cellsType === this.tableMouseUp.cellsType) {
         const dataCopy = this.table.dataSource.slice();
-        console.log(`got dataCopy ${this.table.tableId}`);
-
         let startCol: number;
         let endCol: number;
         let startRow: number;
@@ -61,14 +58,6 @@ export class TableInlineEditService {
           endRow = this.tableMouseDown.rowId;
           startRow = this.tableMouseUp.rowId;
         }
-        console.log(`mousedown and mouseup In PART 2 : ${this.tableMouseDown.colId} && tableMouse up = ${this.tableMouseUp.colId}`);
-
-        console.log(`
-        startRow = ${startRow}
-        endRow = ${endRow}
-        startCol = ${startCol}
-        endCol = ${endCol}`);
-
 
         //--Edit cells from the same column
         if (startCol === endCol) {
@@ -86,7 +75,8 @@ export class TableInlineEditService {
               }
               this.table.saveEditedCell(editedCell);
             }else{
-              console.log("THE VALUE IS NULL");
+              throw "No record found!";
+
             }
           }
         } else {
@@ -106,7 +96,8 @@ export class TableInlineEditService {
                 }
                 this.table.saveEditedCell(editedCell);
               }else{
-                console.log("THE VALUE IS NULL");
+                throw "No record fowund!";
+
               }
             }
           }
