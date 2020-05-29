@@ -9,8 +9,8 @@ import { TableEntryType } from '../tableEntryType';
   providedIn: 'root',
 })
 export class TableInlineEditService {
-  // tableMouseDown: TableMouseEvent;
-  // tableMouseUp: TableMouseEvent;
+  tableMouseDown: TableMouseEvent;
+  tableMouseUp: TableMouseEvent;
   newCellValue: string = '';
   dataSource$ = new Subject<{editedData: any[], tableId: string}>();
   snackBarMessage$ = new Subject<{message: string, action: string}>();
@@ -33,30 +33,42 @@ export class TableInlineEditService {
     if (text == null) {
       return;
     }
+    console.log(`mousedown and mouseup In UpdateValues : ${this.tableMouseDown.colId} && tableMouse up = ${this.tableMouseUp.colId}`);
 
-    if (this.table.tableMouseDown && this.table.tableMouseUp) {
-      if (this.table.tableMouseDown.cellsType === this.table.tableMouseUp.cellsType) {
+    if (this.tableMouseDown && this.tableMouseUp) {
+      if (this.tableMouseDown.cellsType === this.tableMouseUp.cellsType) {
         const dataCopy = this.table.dataSource.slice();
+        console.log(`got dataCopy ${this.table.tableId}`);
+
         let startCol: number;
         let endCol: number;
         let startRow: number;
         let endRow: number;
 
-        if (this.table.tableMouseDown.colId <= this.table.tableMouseUp.colId) {
-          endCol = this.table.tableMouseUp.colId;
+        if (this.tableMouseDown.colId <= this.tableMouseUp.colId) {
+          endCol = this.tableMouseUp.colId;
+          startCol = this.tableMouseDown.colId;
         } else {
-          endCol = this.table.tableMouseDown.colId;
-          startCol = this.table.tableMouseUp.colId;
+          endCol = this.tableMouseDown.colId;
+          startCol = this.tableMouseUp.colId;
         }
 
-        if (this.table.tableMouseDown.rowId <= this.table.tableMouseUp.rowId) {
-          startRow = this.table.tableMouseDown.rowId;
-          endRow = this.table.tableMouseUp.rowId;
+        if (this.tableMouseDown.rowId <= this.tableMouseUp.rowId) {
+          startRow = this.tableMouseDown.rowId;
+          endRow = this.tableMouseUp.rowId;
 
         } else {
-          endRow = this.table.tableMouseDown.rowId;
-          startRow = this.table.tableMouseUp.rowId;
+          endRow = this.tableMouseDown.rowId;
+          startRow = this.tableMouseUp.rowId;
         }
+        console.log(`mousedown and mouseup In PART 2 : ${this.tableMouseDown.colId} && tableMouse up = ${this.tableMouseUp.colId}`);
+
+        console.log(`
+        startRow = ${startRow}
+        endRow = ${endRow}
+        startCol = ${startCol}
+        endCol = ${endCol}`);
+
 
         //--Edit cells from the same column
         if (startCol === endCol) {
@@ -113,7 +125,9 @@ export class TableInlineEditService {
    * @param cellsType
    */
   onMouseDownTable(rowId: number, colId: number, cellsType: string) {
-    this.table.tableMouseDown = {rowId: rowId, colId: colId, cellsType: cellsType };
+    this.tableMouseDown = {rowId: rowId, colId: colId, cellsType: cellsType };
+    console.log(this.tableMouseDown);
+
   }
 
   /**
@@ -126,14 +140,14 @@ export class TableInlineEditService {
     colId: number,
     cellsType: string,
   ) {
-    this.table.tableMouseUp = {rowId: rowId, colId: colId, cellsType: cellsType };
-    if (this.table.tableMouseDown) {
+    this.tableMouseUp = {rowId: rowId, colId: colId, cellsType: cellsType };
+    if (this.tableMouseDown) {
       this.newCellValue = '';
       this.updateSelectedCellsState(
-        this.table.tableMouseDown.colId,
-        this.table.tableMouseUp.colId,
-        this.table.tableMouseDown.rowId,
-        this.table.tableMouseUp.rowId,
+        this.tableMouseDown.colId,
+        this.tableMouseUp.colId,
+        this.tableMouseDown.rowId,
+        this.tableMouseUp.rowId,
       );
     }
   }
@@ -223,7 +237,9 @@ export class TableInlineEditService {
     event: KeyboardEvent,
   ): void {
     // If no cell is selected then ignore keyUp event
-    if (this.table.tableMouseDown && this.table.tableMouseUp) {
+    console.log(`${this.tableMouseDown.cellsType}, ${this.tableMouseUp.cellsType}`);
+
+    if (this.tableMouseDown && this.tableMouseUp) {
       if (event.key === 'Delete') {
         this.newCellValue = '';
         this.updateSelectedCellsValues(

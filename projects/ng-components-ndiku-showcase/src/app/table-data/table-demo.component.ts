@@ -116,6 +116,8 @@ export class TableDemoComponent implements OnInit, OnDestroy {
       if (data) {
         if (data.tableId === this.tableConfig.tableId) {
           this.projects = data.editedData;
+          console.log(`THESE ARE RETURNED: ${data.editedData[0].cost}`);
+
         }else{
           this.people = data.editedData;
         }

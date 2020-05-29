@@ -14,7 +14,7 @@ import { EditedTableCell } from './inline-editable/table-inline-edit-conf.model'
       class="table"
       [id]="table.tableId"
       *ngSwitchCase="types.DefaultTable"
-      (keyup)="onKeyUp($event, table)"
+      (keyup)="onKeyUp($event)"
     >
       <caption *ngIf="caption">
         {{
@@ -77,7 +77,7 @@ import { EditedTableCell } from './inline-editable/table-inline-edit-conf.model'
       [dataSource]="table.dataSource"
       class="mat-elevation-z0"
       [id]="table.tableId"
-      (keyup)="onKeyUp($event, table)"
+      (keyup)="onKeyUp($event)"
     >
       <caption *ngIf="caption">
         {{
@@ -199,6 +199,7 @@ export class TableLayoutComponent implements OnInit, OnChanges, OnDestroy {
   private _SETTINGS: ColumnSetting[];
   private _TABLE: TableEntryType;
   types = TableType;
+  tableInEditingMode: TableEntryType;
 
   columnMaps: ColumnMap[];
   displayedColumns: any[];
@@ -310,11 +311,17 @@ export class TableLayoutComponent implements OnInit, OnChanges, OnDestroy {
 
   @HostListener('document:keyup', ['$event'])
   onKeyUp(event: KeyboardEvent) {
+    if (this.tableInEditingMode  && this.tableInEditingMode.enableEditingMode) {
     event.stopImmediatePropagation();
     // this.tableInlineEditService.table = table;
-    this.tableInlineEditService.onKeyUpTable(
-      event
-    );
+      console.log("Key pressed!");
+
+      this.tableInlineEditService.onKeyUpTable(
+        event
+      );
+
+
+    }
   }
 
   @HostListener('document:mousedown', ['$event'])
@@ -331,6 +338,7 @@ export class TableLayoutComponent implements OnInit, OnChanges, OnDestroy {
       if (targetElement === tableCellElement) {
         console.log(targetElement);
 
+        this.tableInEditingMode = clickedTable;
         this.tableInlineEditService.table = clickedTable;
         this.tableInlineEditService.columnMaps = this.columnMaps;
         this.tableInlineEditService.onMouseDownTable(rowId, colId, cellsType);

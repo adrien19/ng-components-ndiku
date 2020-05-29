@@ -22,8 +22,8 @@ export class TableEntryType {
   nEditableCols?: number;
   nRows: number = 0;
 
-  tableMouseDown?: TableMouseEvent;
-  tableMouseUp?: TableMouseEvent;
+  // tableMouseDown?: TableMouseEvent = {rowId: 0, colId: 0, cellsType: ""};
+  // tableMouseUp?: TableMouseEvent = {rowId: 0, colId: 0, cellsType: ""};
   FIRST_EDITABLE_ROW?: number;
   LAST_EDITABLE_ROW?: number;
   FIRST_EDITABLE_COL?: number;

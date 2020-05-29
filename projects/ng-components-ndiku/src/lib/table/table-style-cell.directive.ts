@@ -62,7 +62,7 @@ export class StyleCellDirective implements OnInit, OnDestroy, OnChanges {
   }
 
   handleStylingSelectedCells(){
-    if (this.ndikuStyleCell.table.inlineEditable && this.ndikuStyleCell.table.enableEditingMode) {
+    if (this.ndikuStyleCell.table.inlineEditable ) {
 
       const rowId = this.ndikuStyleCell.selectCell.rowId;
       const colId = this.ndikuStyleCell.selectCell.colId;
