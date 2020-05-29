@@ -1,9 +1,10 @@
 import { Component, Input, OnChanges, OnInit, OnDestroy, HostListener, SimpleChanges } from '@angular/core';
 import { ColumnSetting, ColumnMap, TableType } from './table-layout-conf.model';
-import { Subscription } from 'rxjs';
+import { Subscription, Subject } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TableInlineEditService } from './inline-editable/table-inline-edit.service';
 import { TableEntryType } from './tableEntryType';
+import { EditedTableCell } from './inline-editable/table-inline-edit-conf.model';
 
 @Component({
   selector: 'ndiku-table-layout',
@@ -19,6 +20,16 @@ import { TableEntryType } from './tableEntryType';
         {{
           caption
         }} {{ "(Default Table)" }}
+        <span *ngIf="table.inlineEditable">
+          <button *ngIf="!editingMode" (click)="onEditTable(table)">
+            <!-- <mat-icon>home</mat-icon> -->
+            Edit
+          </button>
+          <button *ngIf="editingMode" (click)="onSaveTable(table)">
+            <!-- <mat-icon>home</mat-icon> -->
+            Save
+          </button>
+        </span>
       </caption>
       <thead>
         <tr>
@@ -44,7 +55,7 @@ import { TableEntryType } from './tableEntryType';
                 *ngIf="map.editable && table.inlineEditable"
                 [id]="createCellId(table.tableId, i, j)"
                 (mousedown)="onMouseDown($event, table.tableId, i, j, map.header, table)"
-                (mouseup)="onMouseUp(i, j, map.header)"
+                (mouseup)="onMouseUp(i, j, map.header, table)"
                 [ndikuStyleCell]="{
                   contentType: record[map.access(record)],
                   table: table,
@@ -72,6 +83,16 @@ import { TableEntryType } from './tableEntryType';
         {{
           caption
         }}
+        <span *ngIf="table.inlineEditable">
+          <button mat-icon-button color="accent" *ngIf="!editingMode" (click)="onEditTable(table)">
+            <!-- <mat-icon>home</mat-icon> -->
+            Edit
+          </button>
+          <button mat-icon-button color="accent" *ngIf="editingMode" (click)="onSaveTable(table)">
+            <!-- <mat-icon>home</mat-icon> -->
+            Save
+          </button>
+        </span>
       </caption>
       <ng-container
         *ngFor="let map of columnMaps; let j = index"
@@ -99,7 +120,7 @@ import { TableEntryType } from './tableEntryType';
             *matCellDef="let record; let i = index"
             [id]="createCellId(table.tableId, i, j)"
             (mousedown)="onMouseDown($event, table.tableId, i, j, map.header, table)"
-            (mouseup)="onMouseUp(i, j, map.header)"
+            (mouseup)="onMouseUp(i, j, map.header, table)"
             [ndikuStyleCell]="{
               contentType: record[map.access(record)],
               table: table,
@@ -183,7 +204,9 @@ export class TableLayoutComponent implements OnInit, OnChanges, OnDestroy {
   displayedColumns: any[];
 
   snackBarServiceSub: Subscription;
+  saveTableButtonClicked$: Subject<EditedTableCell[]>;
 
+  editingMode = false;
 
   public get records(): any[] {
     return this._RECORDS;
@@ -272,16 +295,11 @@ export class TableLayoutComponent implements OnInit, OnChanges, OnDestroy {
           let snackBarRef = this.snackBar.open(receivedSnackBarMessage.message, receivedSnackBarMessage.action, { duration: 3000 });
           if (receivedSnackBarMessage.action === "DISMISS") {
             snackBarRef.afterDismissed().subscribe(() => {
-              const keyEventData = { isTrusted: true, key: "Enter" };
-              const keyBoardEvent = new KeyboardEvent("keyup", keyEventData);
-              this.onKeyUp(keyBoardEvent);
+              this.enterKeyPressed();
 
             });
             snackBarRef.onAction().subscribe(() => {
-              const keyEventData = { isTrusted: true, key: "Enter" };
-              const keyBoardEvent = new KeyboardEvent("keyup", keyEventData);
-              console.log(keyBoardEvent.key);
-              this.onKeyUp(keyBoardEvent);
+              this.enterKeyPressed();
             })
 
           }
@@ -302,41 +320,66 @@ export class TableLayoutComponent implements OnInit, OnChanges, OnDestroy {
   @HostListener('document:mousedown', ['$event'])
   onMouseDown(event: MouseEvent, tableId: any, rowId: number, colId: number, cellsType: string, clickedTable: TableEntryType) {
 
+    if(clickedTable  && clickedTable.enableEditingMode){
+      event.stopImmediatePropagation();
+      const targetElement = event.target as HTMLElement;
 
-    // this.table = clickedTable;
+      const elId = this.createCellId(tableId, rowId, colId);
+      const tableCellElement = document.getElementById(elId) as HTMLElement;
 
+      // Check if the click was outside the element
+      if (targetElement === tableCellElement) {
+        console.log(targetElement);
 
-    event.stopImmediatePropagation();
-    const targetElement = event.target as HTMLElement;
-
-    const elId = this.createCellId(tableId, rowId, colId);
-    const tableCellElement = document.getElementById(elId) as HTMLElement;
-
-    // Check if the click was outside the element
-    if (targetElement === tableCellElement) {
-      this.tableInlineEditService.table = clickedTable;
-      this.tableInlineEditService.columnMaps = this.columnMaps;
-      this.tableInlineEditService.onMouseDownTable(rowId, colId, cellsType);
-    }else{
-      const keyEventData = { isTrusted: true, key: "Enter" };
-      const keyBoardEvent = new KeyboardEvent("keyup", keyEventData);
-      keyBoardEvent.stopImmediatePropagation();
-      // this.tableInlineEditService.table = clickedTable;
-
-      this.onKeyUp(keyBoardEvent);
+        this.tableInlineEditService.table = clickedTable;
+        this.tableInlineEditService.columnMaps = this.columnMaps;
+        this.tableInlineEditService.onMouseDownTable(rowId, colId, cellsType);
+      }else{
+        this.enterKeyPressed();
+      }
     }
   }
 
-  onMouseUp(rowId: number, colId: number, cellsType: string) {
+  onMouseUp(rowId: number, colId: number, cellsType: string, clickedTable: TableEntryType) {
+    if(clickedTable  && clickedTable.enableEditingMode){
+
       this.tableInlineEditService.onMouseUpTable(
         rowId,
         colId,
         cellsType,
       );
+    }
   }
 
   createCellId(tableType: any, i:number,j:number): string{
     return `${tableType}${i}${j}`;
+  }
+
+  onEditTable(clickedTable: TableEntryType){
+    this.editingMode = true;
+    clickedTable.enableEditingMode = true;
+  }
+
+  onSaveTable(clickedTable: TableEntryType){
+
+    this.saveButtonClicked(clickedTable);
+
+    clickedTable.enableEditingMode = false;
+    this.editingMode = false;
+
+  }
+
+  private enterKeyPressed(){
+    const keyEventData = { isTrusted: true, key: "Enter" };
+    const keyBoardEvent = new KeyboardEvent("keyup", keyEventData);
+    keyBoardEvent.stopImmediatePropagation();
+    this.onKeyUp(keyBoardEvent);
+  }
+
+  private saveButtonClicked(clickedTable: TableEntryType){
+    this.enterKeyPressed();
+    // clickedTable.resetCellsStates();
+    // this.saveTableButtonClicked$.next(clickedTable.getEditedCellsByTableId());
   }
 
 }

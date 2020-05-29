@@ -1,6 +1,6 @@
 
 import { TableType } from './table-layout-conf.model';
-import { EditedTableCell } from './inline-editable/table-inline-edit-conf.model';
+import { EditedTableCell, TableMouseEvent } from './inline-editable/table-inline-edit-conf.model';
 
 export class TableEntryType {
   private _TABLE_TYPE: TableType;
@@ -18,8 +18,12 @@ export class TableEntryType {
 
   dataSource: any[];
   inlineEditable? = false;
+  enableEditingMode? = false;
   nEditableCols?: number;
   nRows: number = 0;
+
+  tableMouseDown?: TableMouseEvent;
+  tableMouseUp?: TableMouseEvent;
   FIRST_EDITABLE_ROW?: number;
   LAST_EDITABLE_ROW?: number;
   FIRST_EDITABLE_COL?: number;
@@ -84,6 +88,24 @@ export class TableEntryType {
       return
     }
   }
+
+  resetCellsStates(){
+    if (this.tableCellStates.tableCellStates) {
+      let temp: boolean[][]=[];
+      for (let iIndex = 0; iIndex <= this.nRows; iIndex++) {
+        temp[iIndex]=[]
+        for (let jIndex = 0; jIndex <= this.nEditableCols; jIndex++) {
+          temp[iIndex][jIndex] = false;
+        }
+      }
+      this.tableCellStates.tableCellStates = temp;
+      this.tableCellStates.FIRST_EDITABLE_ROW = 0;
+      this.tableCellStates.LAST_EDITABLE_ROW =  this.nRows;
+      this.tableCellStates.FIRST_EDITABLE_COL = 0;
+      this.tableCellStates.LAST_EDITABLE_COL = this.nEditableCols;
+    }
+  }
+
 
   public set tableCellStates(tableCellStates: {
     tableCellStates: boolean[][],
@@ -159,11 +181,19 @@ export class TableEntryType {
     return editedCells;
   }
 
-  hasBeenEdited(): boolean{
+  hasBeenEdited(): boolean {
     let hasBeenEdited = false;
-    if(this._EDITED_CELLS.length !== 0){
+    const tableCells = this.getEditedCellsByTableId();
+    if(tableCells.length !== 0){
       hasBeenEdited = true;
     }
     return hasBeenEdited;
+  }
+
+  clearEditedCells(): void {
+    const editedCells = this._EDITED_CELLS.filter((el) => {
+      return el.tableId !== this.tableId;
+    });
+    this._EDITED_CELLS = editedCells;
   }
 }

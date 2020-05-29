@@ -62,7 +62,7 @@ export class StyleCellDirective implements OnInit, OnDestroy, OnChanges {
   }
 
   handleStylingSelectedCells(){
-    if (this.ndikuStyleCell.table.inlineEditable) {
+    if (this.ndikuStyleCell.table.inlineEditable && this.ndikuStyleCell.table.enableEditingMode) {
 
       const rowId = this.ndikuStyleCell.selectCell.rowId;
       const colId = this.ndikuStyleCell.selectCell.colId;
@@ -103,7 +103,6 @@ export class StyleCellDirective implements OnInit, OnDestroy, OnChanges {
           this.renderer.setStyle(this.el.nativeElement, 'background', '#FFB74D');
         }
       });
-      console.log(editedCells.length);
     }
   }
 }
