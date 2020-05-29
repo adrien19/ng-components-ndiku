@@ -100,10 +100,10 @@ export class StyleCellDirective implements OnInit, OnDestroy, OnChanges {
       editedCells.map((cell) => {
         if (cell.rowId === rowId && cell.colId === colId) {
           this.renderer.setStyle(this.el.nativeElement, 'border', '1px solid #B00020');
+          this.renderer.setStyle(this.el.nativeElement, 'background', '#FFB74D');
         }
-        console.log(cell);
-
       });
+      console.log(editedCells.length);
     }
   }
 }

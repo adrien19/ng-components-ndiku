@@ -117,7 +117,18 @@ export class TableEntryType {
   }
 
   saveEditedCell(editedCell:EditedTableCell) {
-    this._EDITED_CELLS.push(editedCell);
+    if (this.hasBeenEdited) {
+      const foundEdited = this._EDITED_CELLS.find( (cell, index) => {
+        if (cell.colId === editedCell.colId && cell.colId === editedCell.colId && cell.tableId === editedCell.tableId) {
+          return this._EDITED_CELLS[index] = editedCell;
+        }
+      });
+      if (!foundEdited) {
+        this._EDITED_CELLS.push(editedCell);
+      }
+    } else {
+      this._EDITED_CELLS.push(editedCell);
+    }
   }
 
   getEditedCellsByHeader(header: string): EditedTableCell[] {
