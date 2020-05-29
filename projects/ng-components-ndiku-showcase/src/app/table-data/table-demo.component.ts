@@ -11,6 +11,12 @@ import { TableEntryType } from 'projects/ng-components-ndiku/src/lib/table/table
   selector: `app-table-demo`,
   template: `
     <div class="container-fluid">
+    <ng-container >
+      <button mat-flat-button color="primary" (click)="clearEditedTableData()">
+        Clear Edited Table data
+      </button>
+    </ng-container>
+
       <ndiku-table-layout
         [table]="tableConfig"
         [caption]="'NASA Projects'"
@@ -114,14 +120,26 @@ export class TableDemoComponent implements OnInit, OnDestroy {
 
     this.inlineTableDataSub = this.inlineTableDataService.dataSource$.subscribe((data) => {
       if (data) {
-        if (data.tableId === this.tableConfig.tableId) {
-          this.projects = data.editedData;
-          console.log(`THESE ARE RETURNED: ${data.editedData[0].cost}`);
+        if (data.table.tableId === this.tableConfig.tableId) {
+          this.tableConfig = data.table;
+          this.projects = data.table.dataSource;
+          console.log(`THESE ARE RETURNED: ${data.table.dataSource[0].cost}`);
 
         }else{
-          this.people = data.editedData;
+          this.peapleTableConfig = data.table;
+          this.people = data.table.dataSource;
         }
       }
     });
+  }
+
+  clearEditedTableData(){
+    if (this.tableConfig.hasBeenEdited(this.tableConfig.tableId)) {
+      this.tableConfig.clearEditedCells(this.tableConfig.tableId);
+    }
+    if (this.peapleTableConfig.hasBeenEdited(this.peapleTableConfig.tableId)) {
+      this.peapleTableConfig.clearEditedCells(this.peapleTableConfig.tableId);
+    }
+    this.inlineTableDataService.clearSavedDataInitiated$.next(); // send an event to clear colored edited data
   }
 }

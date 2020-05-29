@@ -131,9 +131,13 @@ export class TableEntryType {
     return tableCellStates[0];
   }
 
-  getEditedCellsByTableId(): EditedTableCell[] {
+  getEditedCellsByTableId(tableId?: string): EditedTableCell[] {
     const editedCells = this._EDITED_CELLS.filter((el) => {
-      return el.tableId === this.tableId;
+      if (tableId) {
+        return el.tableId === tableId;
+      }else{
+        return el.tableId === this.tableId;
+      }
     });
     return editedCells;
   }
@@ -181,18 +185,27 @@ export class TableEntryType {
     return editedCells;
   }
 
-  hasBeenEdited(): boolean {
+  hasBeenEdited(tableId: string): boolean {
     let hasBeenEdited = false;
-    const tableCells = this.getEditedCellsByTableId();
+    let tableCells: EditedTableCell[] = []
+    if (tableId) {
+      tableCells = this.getEditedCellsByTableId(tableId);
+    } else {
+      tableCells = this.getEditedCellsByTableId();
+    }
     if(tableCells.length !== 0){
       hasBeenEdited = true;
     }
     return hasBeenEdited;
   }
 
-  clearEditedCells(): void {
+  clearEditedCells(tableId?: string): void {
     const editedCells = this._EDITED_CELLS.filter((el) => {
-      return el.tableId !== this.tableId;
+      if (tableId) {
+        return el.tableId !== tableId;
+      } else {
+        return el.tableId !== this.tableId;
+      }
     });
     this._EDITED_CELLS = editedCells;
   }

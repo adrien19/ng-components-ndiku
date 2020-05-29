@@ -14,6 +14,7 @@ export class StyleCellDirective implements OnInit, OnDestroy, OnChanges {
   @Input() directiveCellsStates: boolean[][];
 
   cellsStatesSub: Subscription;
+  clearEditedVisualsSub: Subscription;
 
   constructor(private el: ElementRef, private renderer: Renderer2, private tableInlineEditService: TableInlineEditService ) {}
 
@@ -26,6 +27,9 @@ export class StyleCellDirective implements OnInit, OnDestroy, OnChanges {
     if (this.cellsStatesSub) {
       this.cellsStatesSub.unsubscribe();
     }
+    if (this.clearEditedVisualsSub) {
+      this.clearEditedVisualsSub.unsubscribe();
+    }
   }
 
   ngOnInit() {
@@ -33,6 +37,9 @@ export class StyleCellDirective implements OnInit, OnDestroy, OnChanges {
     this.visualizeEditedCells();
     this.cellsStatesSub = this.tableInlineEditService.updateCellStyle$.subscribe((cellStates) => {
       this.handleStylingSelectedCells();
+    });
+    this.clearEditedVisualsSub = this.tableInlineEditService.clearSavedDataInitiated$.subscribe(() => {
+      this.visualizeEditedCells();
     });
   }
 
@@ -70,7 +77,6 @@ export class StyleCellDirective implements OnInit, OnDestroy, OnChanges {
 
       if (tableCells[rowId][colId]) {
         console.log(tableCells[rowId][colId]);
-        // this.handlestylingUndefinedValues();
 
         this.renderer.setStyle(this.el.nativeElement, 'border', '1px solid #698ad8');
         this.renderer.addClass(this.el.nativeElement, 'cursor');
@@ -94,15 +100,17 @@ export class StyleCellDirective implements OnInit, OnDestroy, OnChanges {
     const table = this.ndikuStyleCell.table;
     const rowId = this.ndikuStyleCell.selectCell.rowId;
     const colId = this.ndikuStyleCell.selectCell.colId;
-    if(table.hasBeenEdited){
-      const editedCells = table.getEditedCellsByTableId();
-
+    if(table.hasBeenEdited(table.tableId)){
+      const editedCells = table.getEditedCellsByTableId(table.tableId);
       editedCells.map((cell) => {
         if (cell.rowId === rowId && cell.colId === colId) {
           this.renderer.setStyle(this.el.nativeElement, 'border', '1px solid #B00020');
           this.renderer.setStyle(this.el.nativeElement, 'background', '#FFB74D');
         }
       });
+    }else{
+      this.renderer.setStyle(this.el.nativeElement, 'border', 'none');
+      this.renderer.setStyle(this.el.nativeElement, 'background', 'none');
     }
   }
 }

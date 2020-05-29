@@ -331,8 +331,6 @@ export class TableLayoutComponent implements OnInit, OnChanges, OnDestroy {
 
       // Check if the click was outside the element
       if (targetElement === tableCellElement) {
-        console.log(targetElement);
-
         this.tableInEditingMode = clickedTable;
         this.tableInlineEditService.table = clickedTable;
         this.tableInlineEditService.columnMaps = this.columnMaps;

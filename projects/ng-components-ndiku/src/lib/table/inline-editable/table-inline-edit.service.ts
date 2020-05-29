@@ -12,10 +12,10 @@ export class TableInlineEditService {
   tableMouseDown: TableMouseEvent;
   tableMouseUp: TableMouseEvent;
   newCellValue: string = '';
-  dataSource$ = new Subject<{editedData: any[], tableId: string}>();
+  dataSource$ = new Subject<{table: TableEntryType}>();
   snackBarMessage$ = new Subject<{message: string, action: string}>();
   updateCellStyle$ = new Subject<any>();
-  // saveButtonWasClicked$ = new Subject<any>();
+  clearSavedDataInitiated$ = new Subject<any>();
 
   table: TableEntryType;
   columnMaps: ColumnMap[];
@@ -103,7 +103,8 @@ export class TableInlineEditService {
           }
         }
         // dataSource = dataCopy;
-        this.dataSource$.next({editedData: dataCopy, tableId: this.table.tableId});
+        this.table.dataSource = dataCopy;
+        this.dataSource$.next({table: this.table});
       } else {
         this.openSnackBar("The selected cells don't have the same type.", "DISMISS");
       }
@@ -117,8 +118,6 @@ export class TableInlineEditService {
    */
   onMouseDownTable(rowId: number, colId: number, cellsType: string) {
     this.tableMouseDown = {rowId: rowId, colId: colId, cellsType: cellsType };
-    console.log(this.tableMouseDown);
-
   }
 
   /**
@@ -228,7 +227,6 @@ export class TableInlineEditService {
     event: KeyboardEvent,
   ): void {
     // If no cell is selected then ignore keyUp event
-    console.log(`${this.tableMouseDown.cellsType}, ${this.tableMouseUp.cellsType}`);
 
     if (this.tableMouseDown && this.tableMouseUp) {
       if (event.key === 'Delete') {
@@ -326,7 +324,6 @@ export class TableInlineEditService {
    * @param action
    */
   openSnackBar(message: string, action: string) {
-    console.log(`OPENNIGN SNACKBAR: ${message}`);
     const snackBarMessage = {
       message: message,
       action: action
