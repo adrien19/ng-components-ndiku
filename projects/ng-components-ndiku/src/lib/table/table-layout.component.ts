@@ -221,24 +221,9 @@ import { TableEntryType } from './tableEntryType';
   ],
 })
 export class TableLayoutComponent implements OnInit, OnChanges, OnDestroy {
-  private _RECORDS: any[];
   private _CAPTION: string;
   private _SETTINGS: ColumnSetting[];
   private _TABLE: TableEntryType;
-  types = TableType;
-  tableInEditingMode: TableEntryType;
-
-  columnMaps: ColumnMap[];
-  displayedColumns: any[];
-  editingMode = false;
-  snackBarServiceSub: Subscription;
-
-  get records(): any[] {
-    return this._RECORDS;
-  }
-  set records(value: any[]) {
-    this._RECORDS = value;
-  }
 
   @Input()
   get caption(): string {
@@ -261,19 +246,19 @@ export class TableLayoutComponent implements OnInit, OnChanges, OnDestroy {
     return this._TABLE;
   }
   set table(tableType: TableEntryType) {
-    if (tableType.dataSource) {
-      this._TABLE = tableType;
-      this.records = tableType.dataSource;
-    } else {
-      console.log(`NO DATA WAS PROVIDED!!`);
-
-      this._TABLE = tableType;
-      this.records = [];
-    }
+    this._TABLE = tableType;
   }
 
   @Output() saveTableButtonClicked: EventEmitter<any> = new EventEmitter();
   @Output() editTableButtonClicked: EventEmitter<any> = new EventEmitter();
+
+  types = TableType;
+  tableInEditingMode: TableEntryType;
+
+  columnMaps: ColumnMap[];
+  displayedColumns: any[];
+  editingMode = false;
+  snackBarServiceSub: Subscription;
 
   constructor(
     public snackBar: MatSnackBar,
@@ -300,7 +285,7 @@ export class TableLayoutComponent implements OnInit, OnChanges, OnDestroy {
         this.columnMaps = this.settings.map((col) => new ColumnMap(col));
       } else {
         // no settings, create column maps with defaults
-        this.columnMaps = Object.keys(this.records[0]).map((key) => {
+        this.columnMaps = Object.keys(this.table.dataSource[0]).map((key) => {
           return new ColumnMap({ primaryKey: key });
         });
       }
