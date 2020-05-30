@@ -7,14 +7,7 @@ import {
   NgComponentsNdikuModule,
   NgComponentsNdikuSelectModule,
   TableLayoutModule,
-} from 'projects/ng-components-ndiku/src/public_api';
-
-// import {
-//   MaterialModule,
-//   NgComponentsNdikuModule,
-//   NgComponentsNdikuSelectModule,
-//   TableLayoutModule,
-// } from 'projects/ng-components-ndiku/src/public_api';
+} from 'ng-components-ndiku';
 
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';

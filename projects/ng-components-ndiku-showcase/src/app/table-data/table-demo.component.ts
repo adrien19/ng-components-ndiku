@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Project, Person } from './fake.model';
 import { TableDataService } from './tableDataService';
-import { ColumnSetting, TableInlineEditService, TableEntryType } from 'projects/ng-components-ndiku/src/public_api';
+import { ColumnSetting, TableInlineEditService, TableEntryType } from 'ng-components-ndiku';
 import { Subscription } from 'rxjs';
 
 @Component({
