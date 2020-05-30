@@ -1,11 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Project, Person } from './fake.model';
 import { TableDataService } from './tableDataService';
-import { ColumnSetting } from 'projects/ng-components-ndiku/src/public_api';
-
-import { TableInlineEditService } from 'projects/ng-components-ndiku/src/lib/table/inline-editable/table-inline-edit.service';
+import { ColumnSetting, TableInlineEditService, TableEntryType } from 'projects/ng-components-ndiku/src/public_api';
 import { Subscription } from 'rxjs';
-import { TableEntryType } from 'projects/ng-components-ndiku/src/lib/table/tableEntryType';
 
 @Component({
   selector: `app-table-demo`,

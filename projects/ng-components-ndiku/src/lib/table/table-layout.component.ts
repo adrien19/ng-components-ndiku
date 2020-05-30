@@ -223,7 +223,6 @@ import { TableEntryType } from './tableEntryType';
 export class TableLayoutComponent implements OnInit, OnChanges, OnDestroy {
   private _RECORDS: any[];
   private _CAPTION: string;
-  private _KEYS: string[];
   private _SETTINGS: ColumnSetting[];
   private _TABLE: TableEntryType;
   types = TableType;
@@ -231,48 +230,37 @@ export class TableLayoutComponent implements OnInit, OnChanges, OnDestroy {
 
   columnMaps: ColumnMap[];
   displayedColumns: any[];
-
-  snackBarServiceSub: Subscription;
-  @Output() saveTableButtonClicked: EventEmitter<any> = new EventEmitter();
-  @Output() editTableButtonClicked: EventEmitter<any> = new EventEmitter();
-
   editingMode = false;
+  snackBarServiceSub: Subscription;
 
-  public get records(): any[] {
+  get records(): any[] {
     return this._RECORDS;
   }
-  public set records(value: any[]) {
+  set records(value: any[]) {
     this._RECORDS = value;
   }
 
   @Input()
-  public get caption(): string {
+  get caption(): string {
     return this._CAPTION;
   }
-  public set caption(value: string) {
+  set caption(value: string) {
     this._CAPTION = value;
   }
 
-  public get keys(): string[] {
-    return this._KEYS;
-  }
-  public set keys(value: string[]) {
-    this._KEYS = value;
-  }
-
   @Input()
-  public get settings(): ColumnSetting[] {
+  get settings(): ColumnSetting[] {
     return this._SETTINGS;
   }
-  public set settings(value: ColumnSetting[]) {
+  set settings(value: ColumnSetting[]) {
     this._SETTINGS = value;
   }
 
   @Input()
-  public get table(): TableEntryType {
+  get table(): TableEntryType {
     return this._TABLE;
   }
-  public set table(tableType: TableEntryType) {
+  set table(tableType: TableEntryType) {
     if (tableType.dataSource) {
       this._TABLE = tableType;
       this.records = tableType.dataSource;
@@ -283,6 +271,9 @@ export class TableLayoutComponent implements OnInit, OnChanges, OnDestroy {
       this.records = [];
     }
   }
+
+  @Output() saveTableButtonClicked: EventEmitter<any> = new EventEmitter();
+  @Output() editTableButtonClicked: EventEmitter<any> = new EventEmitter();
 
   constructor(
     public snackBar: MatSnackBar,

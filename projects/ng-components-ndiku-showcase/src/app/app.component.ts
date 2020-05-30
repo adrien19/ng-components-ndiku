@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NgComponentsNdikuService } from 'ng-components-ndiku';
+import { NgComponentsNdikuService } from 'projects/ng-components-ndiku/src/public_api';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { Subscription } from 'rxjs';
 
