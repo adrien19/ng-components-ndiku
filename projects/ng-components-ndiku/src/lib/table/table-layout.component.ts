@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit, OnDestroy, HostListener, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, OnDestroy, HostListener, SimpleChanges, Output, EventEmitter } from '@angular/core';
 import { ColumnSetting, ColumnMap, TableType } from './table-layout-conf.model';
 import { Subscription, Subject } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -205,7 +205,9 @@ export class TableLayoutComponent implements OnInit, OnChanges, OnDestroy {
   displayedColumns: any[];
 
   snackBarServiceSub: Subscription;
-  saveTableButtonClicked$: Subject<EditedTableCell[]>;
+  @Output() saveTableButtonClicked: EventEmitter<any> = new EventEmitter();
+  @Output() editTableButtonClicked: EventEmitter<any> = new EventEmitter();
+
 
   editingMode = false;
 
@@ -356,17 +358,32 @@ export class TableLayoutComponent implements OnInit, OnChanges, OnDestroy {
     return `${tableType}${i}${j}`;
   }
 
+  /**
+   * Enables table editing mode.
+   * Emits bindable event
+   * @param clickedTable
+   */
   onEditTable(clickedTable: TableEntryType){
+    this.saveTableButtonClicked.emit(clickedTable);
     this.editingMode = true;
     clickedTable.enableEditingMode = true;
   }
 
+  /**
+   * clears cell/cells selection, disables table editting mode
+   * Emits bindable event with table data.
+   * @param clickedTable
+   */
   onSaveTable(clickedTable: TableEntryType){
+    this.editTableButtonClicked.emit(clickedTable);
     this.enterKeyPressed();
     clickedTable.enableEditingMode = false;
     this.editingMode = false;
   }
 
+  /**
+   * Creates a Keyboard event to save or cancel a cell/cells selection
+   */
   private enterKeyPressed(){
     const keyEventData = { isTrusted: true, key: "Enter" };
     const keyBoardEvent = new KeyboardEvent("keyup", keyEventData);

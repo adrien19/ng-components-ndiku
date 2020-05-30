@@ -22,8 +22,6 @@ export class TableEntryType {
   nEditableCols?: number;
   nRows: number = 0;
 
-  // tableMouseDown?: TableMouseEvent = {rowId: 0, colId: 0, cellsType: ""};
-  // tableMouseUp?: TableMouseEvent = {rowId: 0, colId: 0, cellsType: ""};
   FIRST_EDITABLE_ROW?: number;
   LAST_EDITABLE_ROW?: number;
   FIRST_EDITABLE_COL?: number;
@@ -65,6 +63,10 @@ export class TableEntryType {
     this._TABLE_ID = tableId;
   }
 
+  /**
+   * Creates table cells selection states
+   * @param tableId
+   */
   private createCellsStates(tableId: string){
     if (this.inlineEditable && this.nEditableCols) {
       let temp: boolean[][]=[];
@@ -89,6 +91,10 @@ export class TableEntryType {
     }
   }
 
+
+/**
+ * Resets cells of the table to default selection states
+ */
   resetCellsStates(){
     if (this.tableCellStates.tableCellStates) {
       let temp: boolean[][]=[];
@@ -131,6 +137,10 @@ export class TableEntryType {
     return tableCellStates[0];
   }
 
+  /**
+   * Returns all edited cells of a give table by table id
+   * @param tableId
+   */
   getEditedCellsByTableId(tableId?: string): EditedTableCell[] {
     const editedCells = this._EDITED_CELLS.filter((el) => {
       if (tableId) {
@@ -142,6 +152,10 @@ export class TableEntryType {
     return editedCells;
   }
 
+  /**
+   * Updates table's edited cells history
+   * @param editedCell
+   */
   saveEditedCell(editedCell:EditedTableCell) {
     if (this.hasBeenEdited) {
       const foundEdited = this._EDITED_CELLS.find( (cell, index) => {
@@ -157,6 +171,10 @@ export class TableEntryType {
     }
   }
 
+  /**
+   * Returns all edited cells of a column
+   * @param header
+   */
   getEditedCellsByHeader(header: string): EditedTableCell[] {
     const editedCells = this._EDITED_CELLS.filter((el) => {
       return el.header === header;
@@ -164,6 +182,11 @@ export class TableEntryType {
     return editedCells;
   }
 
+  /**
+   * Return edited cells by column and row number
+   * @param rowNumber
+   * @param colNumber
+   */
   getEditedCellsByrowCol(rowNumber?: number, colNumber?: number): EditedTableCell[] {
     let editedCells: EditedTableCell[] = [];
     if (rowNumber && colNumber) {
@@ -185,6 +208,11 @@ export class TableEntryType {
     return editedCells;
   }
 
+
+/**
+ * Returns true if a table has edited cells history
+ * @param tableId
+ */
   hasBeenEdited(tableId: string): boolean {
     let hasBeenEdited = false;
     let tableCells: EditedTableCell[] = []
@@ -199,6 +227,10 @@ export class TableEntryType {
     return hasBeenEdited;
   }
 
+  /**
+   * Removes edited cells history
+   * @param tableId
+   */
   clearEditedCells(tableId?: string): void {
     const editedCells = this._EDITED_CELLS.filter((el) => {
       if (tableId) {

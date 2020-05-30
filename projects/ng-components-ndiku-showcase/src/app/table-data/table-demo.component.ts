@@ -59,13 +59,14 @@ export class TableDemoComponent implements OnInit, OnDestroy {
     {
       primaryKey: 'first_Launch',
       header: 'First Launch',
+      format: {formatType: 'date', dateFormat: 'short'},
       alternativeKeys: ['launch', 'FIRST_FLIGHT'],
       editable: true,
     },
     {
       primaryKey: 'cost',
       header: 'Cost',
-      format: 'currency',
+      format: {formatType: 'currency', currencyCode: 'USD'},
       alternativeKeys: ['TOTAL_COST'],
       editable: true,
     },
@@ -79,6 +80,7 @@ export class TableDemoComponent implements OnInit, OnDestroy {
     {
       primaryKey: 'YEAR_JOINED',
       header: 'Joined',
+      format: {formatType: 'date', dateFormat: 'yyyy'},
       editable: true
     },
     {

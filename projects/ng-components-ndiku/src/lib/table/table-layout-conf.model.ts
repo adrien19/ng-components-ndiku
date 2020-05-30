@@ -6,7 +6,7 @@ export enum TableType {
 export class ColumnSetting {
   primaryKey: string;
   header?: string;
-  format?: string;
+  format?: {formatType?: string, currencySymbol?: string, currencyCode?: string, dateFormat?: string, dateTimeZone?: string, percentFormat?: string}
   alternativeKeys?: string[];
   editable?: boolean;
 }
@@ -14,7 +14,7 @@ export class ColumnSetting {
 export class ColumnMap {
   primaryKey: string;
   private _HEADER: string;
-  private _FORMAT: string;
+  private _FORMAT: {formatType?: string, currencySymbol?: string, currencyCode?: string, dateFormat?: string, dateTimeZone?: string, percentFormat?: string}
   private _EDITABLE: boolean;
   alternativeKeys?: string[];
 
@@ -34,8 +34,8 @@ export class ColumnMap {
   get header() {
     return this._HEADER;
   }
-  set format(setting: string) {
-    this._FORMAT = setting ? setting : 'default';
+  set format(setting: {formatType?: string, currencySymbol?: string, currencyCode?: string, dateFormat?: string, dateTimeZone?: string, percentFormat?: string} ) {
+    this._FORMAT = setting ? setting : {formatType: "default"};
   }
   get format() {
     return this._FORMAT;

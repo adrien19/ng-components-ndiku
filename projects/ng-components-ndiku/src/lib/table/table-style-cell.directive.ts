@@ -1,4 +1,4 @@
-import { Directive, ElementRef, Input, Renderer2, OnInit, OnDestroy, OnChanges } from '@angular/core';
+import { Directive, ElementRef, Input, Renderer2, OnInit, OnDestroy, OnChanges, SimpleChanges } from '@angular/core';
 import { TableType } from './table-layout-conf.model';
 import { Subscription } from 'rxjs';
 import { TableEntryType } from './tableEntryType';
@@ -19,7 +19,7 @@ export class StyleCellDirective implements OnInit, OnDestroy, OnChanges {
   constructor(private el: ElementRef, private renderer: Renderer2, private tableInlineEditService: TableInlineEditService ) {}
 
 
-  ngOnChanges(changes: import("@angular/core").SimpleChanges): void {
+  ngOnChanges(changes: SimpleChanges): void {
     this.visualizeEditedCells();
   }
 
@@ -43,6 +43,9 @@ export class StyleCellDirective implements OnInit, OnDestroy, OnChanges {
     });
   }
 
+  /**
+   * Styles each cell depending on its value.
+   */
   handlestylingUndefinedValues(){
     const types = TableType;
     if (
@@ -68,6 +71,9 @@ export class StyleCellDirective implements OnInit, OnDestroy, OnChanges {
     }
   }
 
+  /**
+   * Adds border to user selected cells
+   */
   handleStylingSelectedCells(){
     if (this.ndikuStyleCell.table.inlineEditable ) {
 
@@ -96,6 +102,9 @@ export class StyleCellDirective implements OnInit, OnDestroy, OnChanges {
     }
   }
 
+  /**
+   * Adds background and border color to edited cells
+   */
   visualizeEditedCells(){
     const table = this.ndikuStyleCell.table;
     const rowId = this.ndikuStyleCell.selectCell.rowId;

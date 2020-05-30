@@ -309,6 +309,10 @@ export class TableInlineEditService {
     return this.indexOfInArray(event.key, specialKeys) === -1;
   }
 
+  /**
+   * @param item
+   * @param array
+   */
   indexOfInArray(item: string, array: string[]): number {
     let index: number = -1;
     for (let i = 0; i < array.length; i++) {
