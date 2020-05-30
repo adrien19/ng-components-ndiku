@@ -1,16 +1,34 @@
 import { NgModule } from '@angular/core';
+import { HttpClientModule } from '@angular/common/http';
 import { TableLayoutComponent } from './table-layout.component';
-import { CommonModule, CurrencyPipe } from '@angular/common';
+import {
+  CommonModule,
+  CurrencyPipe,
+  DatePipe,
+  PercentPipe,
+} from '@angular/common';
 import { FormatCellPipe } from './table-format-cell.pipe';
 import { StyleCellDirective } from './table-style-cell.directive';
-import { MatTableModule } from '@angular/material/table';
+import { MaterialModule } from '../shared';
 
 @NgModule({
-  declarations: [TableLayoutComponent, FormatCellPipe, StyleCellDirective],
+  declarations: [
+    TableLayoutComponent,
+    FormatCellPipe,
+    StyleCellDirective
+  ],
+  imports: [
+    CommonModule,
+    HttpClientModule,
+    MaterialModule
+  ],
+  exports: [
+    HttpClientModule,
+    TableLayoutComponent,
+    FormatCellPipe,
+    StyleCellDirective,
+  ],
 
-  imports: [CommonModule, MatTableModule],
-  exports: [TableLayoutComponent, FormatCellPipe, StyleCellDirective],
-
-  providers: [CurrencyPipe],
+  providers: [CurrencyPipe, DatePipe, PercentPipe],
 })
 export class TableLayoutModule {}

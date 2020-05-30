@@ -1,32 +1,35 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Project, Person } from './fake.model';
 import { TableDataService } from './tableDataService';
-import { ColumnSetting } from 'ng-components-ndiku';
+import { ColumnSetting, TableInlineEditService, TableEntryType } from 'ng-components-ndiku';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: `app-table-demo`,
   template: `
     <div class="container-fluid">
+      <ng-container>
+        <button
+          mat-flat-button
+          color="primary"
+          (click)="clearEditedTableData()"
+        >
+          Clear Edited Table data
+        </button>
+      </ng-container>
+
       <ndiku-table-layout
-        [table]="'mat-table'"
-        [records]="projects"
+        [table]="tableConfig"
         [caption]="'NASA Projects'"
         [settings]="projectsTableConfigSettings"
         class=" tableCaption projectsTable"
       >
       </ndiku-table-layout>
       <ndiku-table-layout
-        [records]="people"
+        [table]="peapleTableConfig"
         [caption]="'NASA Astronauts'"
         [settings]="personnelSettings"
         class=" tableCaption astronautsTable"
-      >
-      </ndiku-table-layout>
-
-      <ndiku-table-layout
-        [records]="dataSource"
-        [caption]="'Sample Data'"
-        class=" tableCaption sampleDataTable"
       >
       </ndiku-table-layout>
     </div>
@@ -46,61 +49,115 @@ import { ColumnSetting } from 'ng-components-ndiku';
     `,
   ],
 })
-export class TableDemoComponent implements OnInit {
+export class TableDemoComponent implements OnInit, OnDestroy {
   projectsTableConfigSettings: ColumnSetting[] = [
     {
       primaryKey: 'name',
       header: 'Name',
+      editable: true,
     },
     {
       primaryKey: 'first_Launch',
       header: 'First Launch',
+      format: { formatType: 'date', dateFormat: 'short' },
       alternativeKeys: ['launch', 'FIRST_FLIGHT'],
+      editable: true,
     },
     {
       primaryKey: 'cost',
       header: 'Cost',
-      format: 'currency',
+      format: { formatType: 'currency', currencyCode: 'USD' },
       alternativeKeys: ['TOTAL_COST'],
+      editable: true,
     },
   ];
 
   personnelSettings: ColumnSetting[] = [
-    { primaryKey: 'name' },
-    { primaryKey: 'YEAR_JOINED', header: 'Joined' },
-    { primaryKey: 'missions' },
-    { primaryKey: 'manager' },
-    { primaryKey: 'crewWith', header: 'Crew mates' },
+    {
+      primaryKey: 'name',
+      editable: true,
+    },
+    {
+      primaryKey: 'YEAR_JOINED',
+      header: 'Joined',
+      format: { formatType: 'date', dateFormat: 'yyyy' },
+      editable: true,
+    },
+    {
+      primaryKey: 'missions',
+      editable: true,
+    },
+    {
+      primaryKey: 'manager',
+      editable: true,
+    },
+    {
+      primaryKey: 'crewWith',
+      header: 'Crew mates',
+      editable: true,
+    },
   ];
+
+  tableConfig: TableEntryType;
+  peapleTableConfig: TableEntryType;
 
   projects: Project[];
   people: Person[];
-  dataSource = ELEMENT_DATA;
 
-  constructor(private tableDataService: TableDataService) {}
+  inlineTableDataSub: Subscription;
+
+  constructor(
+    private tableDataService: TableDataService,
+    private inlineTableDataService: TableInlineEditService
+  ) {}
+
+  ngOnDestroy(): void {
+    if (this.inlineTableDataSub) {
+      this.inlineTableDataSub.unsubscribe();
+    }
+  }
 
   ngOnInit() {
     this.projects = this.tableDataService.getProjects();
     this.people = this.tableDataService.getPersonnel();
+    this.tableConfig = new TableEntryType(
+      'mat-table',
+      'projectsTable',
+      this.projects,
+      true,
+      3
+    );
+    this.peapleTableConfig = new TableEntryType(
+      'default',
+      'peapleTable',
+      this.people,
+      true,
+      5
+    );
+
+    this.inlineTableDataSub = this.inlineTableDataService.dataSource$.subscribe(
+      (data) => {
+        if (data) {
+          if (data.table.tableId === this.tableConfig.tableId) {
+            this.tableConfig = data.table;
+            this.projects = data.table.dataSource;
+            console.log(`THESE ARE RETURNED: ${data.table.dataSource[0].cost}`);
+          } else {
+            this.peapleTableConfig = data.table;
+            this.people = data.table.dataSource;
+          }
+        }
+      }
+    );
+  }
+
+  clearEditedTableData() {
+    if (this.tableConfig.hasBeenEdited(this.tableConfig.tableId)) {
+      this.tableConfig.clearEditedCells(this.tableConfig.tableId);
+    }
+    if (this.peapleTableConfig.hasBeenEdited(this.peapleTableConfig.tableId)) {
+      this.peapleTableConfig.clearEditedCells(this.peapleTableConfig.tableId);
+    }
+    this.inlineTableDataService.clearSavedDataInitiated$.next(); // send an event to clear colored edited data
   }
 }
-
-export interface PeriodicElement {
-  name: string;
-  position: number;
-  weight: number;
-  symbol: string;
-}
-
-const ELEMENT_DATA: PeriodicElement[] = [
-  { position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H' },
-  { position: 2, name: 'Helium', weight: 4.0026, symbol: 'He' },
-  { position: 3, name: 'Lithium', weight: 6.941, symbol: 'Li' },
-  { position: 4, name: 'Beryllium', weight: 9.0122, symbol: 'Be' },
-  { position: 5, name: 'Boron', weight: 10.811, symbol: 'B' },
-  { position: 6, name: 'Carbon', weight: 12.0107, symbol: 'C' },
-  { position: 7, name: 'Nitrogen', weight: 14.0067, symbol: 'N' },
-  { position: 8, name: 'Oxygen', weight: 15.9994, symbol: 'O' },
-  { position: 9, name: 'Fluorine', weight: 18.9984, symbol: 'F' },
-  { position: 10, name: 'Neon', weight: 20.1797, symbol: 'Ne' },
-];

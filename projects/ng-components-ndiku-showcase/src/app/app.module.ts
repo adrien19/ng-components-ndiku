@@ -7,7 +7,6 @@ import {
   NgComponentsNdikuModule,
   NgComponentsNdikuSelectModule,
   TableLayoutModule,
-
 } from 'ng-components-ndiku';
 
 import { CommonModule } from '@angular/common';
