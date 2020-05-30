@@ -1,4 +1,13 @@
-import { Directive, ElementRef, Input, Renderer2, OnInit, OnDestroy, OnChanges, SimpleChanges } from '@angular/core';
+import {
+  Directive,
+  ElementRef,
+  Input,
+  Renderer2,
+  OnInit,
+  OnDestroy,
+  OnChanges,
+  SimpleChanges,
+} from '@angular/core';
 import { TableType } from './table-layout-conf.model';
 import { Subscription } from 'rxjs';
 import { TableEntryType } from './tableEntryType';
@@ -9,15 +18,18 @@ export class StyleCellDirective implements OnInit, OnDestroy, OnChanges {
   @Input() ndikuStyleCell: {
     table: TableEntryType;
     contentType: string;
-    selectCell?: {rowId: number, colId: number};
+    selectCell?: { rowId: number; colId: number };
   };
   @Input() directiveCellsStates: boolean[][];
 
   cellsStatesSub: Subscription;
   clearEditedVisualsSub: Subscription;
 
-  constructor(private el: ElementRef, private renderer: Renderer2, private tableInlineEditService: TableInlineEditService ) {}
-
+  constructor(
+    private el: ElementRef,
+    private renderer: Renderer2,
+    private tableInlineEditService: TableInlineEditService
+  ) {}
 
   ngOnChanges(changes: SimpleChanges): void {
     this.visualizeEditedCells();
@@ -35,22 +47,26 @@ export class StyleCellDirective implements OnInit, OnDestroy, OnChanges {
   ngOnInit() {
     this.handlestylingUndefinedValues();
     this.visualizeEditedCells();
-    this.cellsStatesSub = this.tableInlineEditService.updateCellStyle$.subscribe((cellStates) => {
-      this.handleStylingSelectedCells();
-    });
-    this.clearEditedVisualsSub = this.tableInlineEditService.clearSavedDataInitiated$.subscribe(() => {
-      this.visualizeEditedCells();
-    });
+    this.cellsStatesSub = this.tableInlineEditService.updateCellStyle$.subscribe(
+      (cellStates) => {
+        this.handleStylingSelectedCells();
+      }
+    );
+    this.clearEditedVisualsSub = this.tableInlineEditService.clearSavedDataInitiated$.subscribe(
+      () => {
+        this.visualizeEditedCells();
+      }
+    );
   }
 
   /**
    * Styles each cell depending on its value.
    */
-  handlestylingUndefinedValues(){
+  handlestylingUndefinedValues() {
     const types = TableType;
     if (
       this.ndikuStyleCell.contentType === undefined &&
-      this.ndikuStyleCell.table.tableType ===  types.MatTable
+      this.ndikuStyleCell.table.tableType === types.MatTable
     ) {
       this.renderer.setStyle(this.el.nativeElement, 'color', '#dcdcdc');
       // this.renderer.setStyle(this.el.nativeElement, 'text-align', 'center');
@@ -74,9 +90,8 @@ export class StyleCellDirective implements OnInit, OnDestroy, OnChanges {
   /**
    * Adds border to user selected cells
    */
-  handleStylingSelectedCells(){
-    if (this.ndikuStyleCell.table.inlineEditable ) {
-
+  handleStylingSelectedCells() {
+    if (this.ndikuStyleCell.table.inlineEditable) {
       const rowId = this.ndikuStyleCell.selectCell.rowId;
       const colId = this.ndikuStyleCell.selectCell.colId;
       const tableCells = this.directiveCellsStates;
@@ -84,20 +99,38 @@ export class StyleCellDirective implements OnInit, OnDestroy, OnChanges {
       if (tableCells[rowId][colId]) {
         console.log(tableCells[rowId][colId]);
 
-        this.renderer.setStyle(this.el.nativeElement, 'border', '1px solid #698ad8');
+        this.renderer.setStyle(
+          this.el.nativeElement,
+          'border',
+          '1px solid #698ad8'
+        );
         this.renderer.addClass(this.el.nativeElement, 'cursor');
         this.renderer.setStyle(this.el.nativeElement, 'min-height', '22px');
-
-
-      }else{
+      } else {
         this.renderer.setStyle(this.el.nativeElement, 'border', 'none');
         this.renderer.removeClass(this.el.nativeElement, 'cursor');
       }
 
-      this.renderer.setStyle(this.el.nativeElement, '-webkit-user-select', 'none'); /* Webkit  */
-      this.renderer.setStyle(this.el.nativeElement, '-moz-user-select', 'none'); /* Firefox */
-      this.renderer.setStyle(this.el.nativeElement, '-ms-user-select', 'none'); /* IE 10   */
-      this.renderer.setStyle(this.el.nativeElement, '-o-user-select', 'none'); /* Currently not supported in Opera but will be soon */
+      this.renderer.setStyle(
+        this.el.nativeElement,
+        '-webkit-user-select',
+        'none'
+      ); /* Webkit  */
+      this.renderer.setStyle(
+        this.el.nativeElement,
+        '-moz-user-select',
+        'none'
+      ); /* Firefox */
+      this.renderer.setStyle(
+        this.el.nativeElement,
+        '-ms-user-select',
+        'none'
+      ); /* IE 10   */
+      this.renderer.setStyle(
+        this.el.nativeElement,
+        '-o-user-select',
+        'none'
+      ); /* Currently not supported in Opera but will be soon */
       this.renderer.setStyle(this.el.nativeElement, 'user-select', 'none');
     }
   }
@@ -105,19 +138,27 @@ export class StyleCellDirective implements OnInit, OnDestroy, OnChanges {
   /**
    * Adds background and border color to edited cells
    */
-  visualizeEditedCells(){
+  visualizeEditedCells() {
     const table = this.ndikuStyleCell.table;
     const rowId = this.ndikuStyleCell.selectCell.rowId;
     const colId = this.ndikuStyleCell.selectCell.colId;
-    if(table.hasBeenEdited(table.tableId)){
+    if (table.hasBeenEdited(table.tableId)) {
       const editedCells = table.getEditedCellsByTableId(table.tableId);
       editedCells.map((cell) => {
         if (cell.rowId === rowId && cell.colId === colId) {
-          this.renderer.setStyle(this.el.nativeElement, 'border', '1px solid #B00020');
-          this.renderer.setStyle(this.el.nativeElement, 'background', '#FFB74D');
+          this.renderer.setStyle(
+            this.el.nativeElement,
+            'border',
+            '1px solid #B00020'
+          );
+          this.renderer.setStyle(
+            this.el.nativeElement,
+            'background',
+            '#FFB74D'
+          );
         }
       });
-    }else{
+    } else {
       this.renderer.setStyle(this.el.nativeElement, 'border', 'none');
       this.renderer.setStyle(this.el.nativeElement, 'background', 'none');
     }

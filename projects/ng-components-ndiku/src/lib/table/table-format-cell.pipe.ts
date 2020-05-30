@@ -3,8 +3,22 @@ import { CurrencyPipe, DatePipe, PercentPipe } from '@angular/common';
 
 @Pipe({ name: 'formatCell' })
 export class FormatCellPipe implements PipeTransform {
-  constructor(private currencyPipe: CurrencyPipe, private datePipe: DatePipe, private percentPipe: PercentPipe) {}
-  transform(value: any, format: {formatType?: string, currencySymbol?: string, currencyCode?: string, dateFormat?: string, dateTimeZone?: string, percentFormat?: string}) {
+  constructor(
+    private currencyPipe: CurrencyPipe,
+    private datePipe: DatePipe,
+    private percentPipe: PercentPipe
+  ) {}
+  transform(
+    value: any,
+    format: {
+      formatType?: string;
+      currencySymbol?: string;
+      currencyCode?: string;
+      dateFormat?: string;
+      dateTimeZone?: string;
+      percentFormat?: string;
+    }
+  ) {
     const symbol = '';
 
     if (value === undefined) {
@@ -29,24 +43,32 @@ export class FormatCellPipe implements PipeTransform {
 
     if (format.formatType === 'currency') {
       if (format.currencySymbol && format.currencyCode) {
-        return this.currencyPipe.transform(value, format.currencyCode, format.currencySymbol);
-      }else if(format.currencyCode){
+        return this.currencyPipe.transform(
+          value,
+          format.currencyCode,
+          format.currencySymbol
+        );
+      } else if (format.currencyCode) {
         return this.currencyPipe.transform(value, format.currencyCode);
-      }else if (format.currencySymbol) {
+      } else if (format.currencySymbol) {
         return this.currencyPipe.transform(value, format.currencySymbol);
-      }else{
+      } else {
         return this.currencyPipe.transform(value);
       }
     }
 
     if (format.formatType === 'date') {
       if (format.dateFormat && format.dateTimeZone) {
-        return this.datePipe.transform(value, format.dateFormat, format.dateTimeZone);
-      } else if(format.dateFormat){
+        return this.datePipe.transform(
+          value,
+          format.dateFormat,
+          format.dateTimeZone
+        );
+      } else if (format.dateFormat) {
         return this.datePipe.transform(value, format.dateFormat);
-      }else if (format.dateTimeZone) {
+      } else if (format.dateTimeZone) {
         return this.datePipe.transform(value, format.dateTimeZone);
-      }else{
+      } else {
         return this.datePipe.transform(value);
       }
     }
@@ -54,7 +76,7 @@ export class FormatCellPipe implements PipeTransform {
     if (format.formatType === 'percent') {
       if (format.percentFormat) {
         return this.percentPipe.transform(value, format.percentFormat);
-      }else{
+      } else {
         return this.percentPipe.transform(value);
       }
     }

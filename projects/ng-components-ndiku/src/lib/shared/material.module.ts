@@ -11,16 +11,13 @@ const importedModules = [
   MatButtonModule,
   MatInputModule,
   MatSelectModule,
-  MatTableModule
+  MatTableModule,
 ];
 
 @NgModule({
-  declarations:[ClickElsewhereDirective],
+  declarations: [ClickElsewhereDirective],
   imports: importedModules,
 
-  exports: [
-    ...importedModules,
-    ClickElsewhereDirective
-  ],
+  exports: [...importedModules, ClickElsewhereDirective],
 })
 export class MaterialModule {}

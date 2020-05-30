@@ -1,6 +1,12 @@
-import { Directive, EventEmitter, ElementRef, HostListener, Output } from '@angular/core';
+import {
+  Directive,
+  EventEmitter,
+  ElementRef,
+  HostListener,
+  Output,
+} from '@angular/core';
 
-@Directive({ selector: '[clickElsewhere]' })
+@Directive({ selector: '[ndikuClickElseWhere]' })
 export class ClickElsewhereDirective {
   @Output() clickElsewhere = new EventEmitter<MouseEvent>();
 
@@ -10,11 +16,14 @@ export class ClickElsewhereDirective {
   public onDocumentClick(event: MouseEvent): void {
     const targetElement = event.target as HTMLElement;
 
-      // Check if the click was outside the element
-      if (targetElement && !this.elementRef.nativeElement.contains(targetElement)) {
-        console.log(" SUCCEESS CLICKED SOMEWHERE ELSE!!");
+    // Check if the click was outside the element
+    if (
+      targetElement &&
+      !this.elementRef.nativeElement.contains(targetElement)
+    ) {
+      console.log(' SUCCEESS CLICKED SOMEWHERE ELSE!!');
 
-         this.clickElsewhere.emit(event);
-      }
+      this.clickElsewhere.emit(event);
+    }
   }
 }
