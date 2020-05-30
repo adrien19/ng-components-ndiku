@@ -314,7 +314,7 @@ export class TableLayoutComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   @HostListener('document:keyup', ['$event'])
-  onKeyUp(event: KeyboardEvent) {
+  onKeyUp(event: KeyboardEvent): void {
     if (this.tableInEditingMode && this.tableInEditingMode.enableEditingMode) {
       event.stopImmediatePropagation();
       this.tableInlineEditService.onKeyUpTable(event);
@@ -324,12 +324,12 @@ export class TableLayoutComponent implements OnInit, OnChanges, OnDestroy {
   @HostListener('document:mousedown', ['$event'])
   onMouseDown(
     event: MouseEvent,
-    tableId: any,
-    rowId: number,
-    colId: number,
-    cellsType: string,
-    clickedTable: TableEntryType
-  ) {
+    tableId?: any,
+    rowId?: number,
+    colId?: number,
+    cellsType?: string,
+    clickedTable?: TableEntryType
+  ): void {
     if (clickedTable && clickedTable.enableEditingMode) {
       event.stopImmediatePropagation();
       const targetElement = event.target as HTMLElement;
