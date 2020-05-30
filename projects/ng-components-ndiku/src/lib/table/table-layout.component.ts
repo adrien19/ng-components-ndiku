@@ -75,7 +75,6 @@ import { TableEntryType } from './tableEntryType';
                   table: table,
                   selectCell: { rowId: i, colId: j }
                 }"
-                [directiveCellsStates]="table.tableCellStates.tableCellStates"
               >
                 {{ record[map.access(record)] | formatCell: map.format }}
                 <i></i>
@@ -152,7 +151,6 @@ import { TableEntryType } from './tableEntryType';
                 table: table,
                 selectCell: { rowId: i, colId: j }
               }"
-              [directiveCellsStates]="table.tableCellStates.tableCellStates"
             >
               {{ record[map.access(record)] | formatCell: map.format }}
               <i></i>
