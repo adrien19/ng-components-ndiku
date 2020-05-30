@@ -5,6 +5,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 import { ClickElsewhereDirective } from './clicked-else-where.directive';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 const importedModules = [
   MatAutocompleteModule,
@@ -12,6 +13,7 @@ const importedModules = [
   MatInputModule,
   MatSelectModule,
   MatTableModule,
+  MatSnackBarModule,
 ];
 
 @NgModule({

@@ -7,6 +7,9 @@ import {
   OnDestroy,
   OnChanges,
   SimpleChanges,
+  Output,
+  EventEmitter,
+  HostListener,
 } from '@angular/core';
 import { TableType } from './table-layout-conf.model';
 import { Subscription } from 'rxjs';
@@ -20,7 +23,6 @@ export class StyleCellDirective implements OnInit, OnDestroy, OnChanges {
     contentType: string;
     selectCell?: { rowId: number; colId: number };
   };
-  // @Input() directiveCellsStates: boolean[][];
 
   cellsStatesSub: Subscription;
   clearEditedVisualsSub: Subscription;
@@ -94,7 +96,8 @@ export class StyleCellDirective implements OnInit, OnDestroy, OnChanges {
     if (this.ndikuStyleCell.table.inlineEditable) {
       const rowId = this.ndikuStyleCell.selectCell.rowId;
       const colId = this.ndikuStyleCell.selectCell.colId;
-      const tableCells = this.ndikuStyleCell.table.tableCellStates.tableCellStates;//this.directiveCellsStates;
+      const tableCells = this.ndikuStyleCell.table.tableCellStates
+        .tableCellStates;
 
       if (tableCells[rowId][colId]) {
         this.renderer.setStyle(

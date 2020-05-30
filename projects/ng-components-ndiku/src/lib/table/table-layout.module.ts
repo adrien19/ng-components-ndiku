@@ -9,21 +9,24 @@ import {
 } from '@angular/common';
 import { FormatCellPipe } from './table-format-cell.pipe';
 import { StyleCellDirective } from './table-style-cell.directive';
-import { MatTableModule } from '@angular/material/table';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatButtonModule } from '@angular/material/button';
+import { MaterialModule } from '../shared';
 
 @NgModule({
-  declarations: [TableLayoutComponent, FormatCellPipe, StyleCellDirective],
-
-  imports: [CommonModule, HttpClientModule, MatTableModule, MatButtonModule],
+  declarations: [
+    TableLayoutComponent,
+    FormatCellPipe,
+    StyleCellDirective
+  ],
+  imports: [
+    CommonModule,
+    HttpClientModule,
+    MaterialModule
+  ],
   exports: [
     HttpClientModule,
     TableLayoutComponent,
     FormatCellPipe,
     StyleCellDirective,
-    MatSnackBarModule,
-    MatButtonModule,
   ],
 
   providers: [CurrencyPipe, DatePipe, PercentPipe],

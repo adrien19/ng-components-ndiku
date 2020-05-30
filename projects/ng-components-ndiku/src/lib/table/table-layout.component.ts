@@ -66,10 +66,8 @@ import { TableEntryType } from './tableEntryType';
               <td
                 *ngIf="map.editable && table.inlineEditable"
                 [id]="createCellId(table.tableId, i, j)"
-                (mousedown)="
-                  onMouseDown($event, table.tableId, i, j, map.header, table)
-                "
-                (mouseup)="onMouseUp(i, j, map.header, table)"
+                (mousedown)="onMouseDown(i, j, map.header)"
+                (mouseup)="onMouseUp(i, j, map.header)"
                 [ndikuStyleCell]="{
                   contentType: record[map.access(record)],
                   table: table,
@@ -142,10 +140,8 @@ import { TableEntryType } from './tableEntryType';
               mat-cell
               *matCellDef="let record; let i = index"
               [id]="createCellId(table.tableId, i, j)"
-              (mousedown)="
-                onMouseDown($event, table.tableId, i, j, map.header, table)
-              "
-              (mouseup)="onMouseUp(i, j, map.header, table)"
+              (mousedown)="onMouseDown(i, j, map.header)"
+              (mouseup)="onMouseUp(i, j, map.header)"
               [ndikuStyleCell]="{
                 contentType: record[map.access(record)],
                 table: table,
@@ -251,8 +247,6 @@ export class TableLayoutComponent implements OnInit, OnChanges, OnDestroy {
   @Output() editTableButtonClicked: EventEmitter<any> = new EventEmitter();
 
   types = TableType;
-  tableInEditingMode: TableEntryType;
-
   columnMaps: ColumnMap[];
   displayedColumns: any[];
   editingMode = false;
@@ -315,47 +309,22 @@ export class TableLayoutComponent implements OnInit, OnChanges, OnDestroy {
 
   @HostListener('document:keyup', ['$event'])
   onKeyUp(event: KeyboardEvent): void {
-    if (this.tableInEditingMode && this.tableInEditingMode.enableEditingMode) {
+    if (this.table && this.table.enableEditingMode) {
       event.stopImmediatePropagation();
       this.tableInlineEditService.onKeyUpTable(event);
     }
   }
 
-  @HostListener('document:mousedown', ['$event'])
-  onMouseDown(
-    event: MouseEvent,
-    tableId?: any,
-    rowId?: number,
-    colId?: number,
-    cellsType?: string,
-    clickedTable?: TableEntryType
-  ): void {
-    if (clickedTable && clickedTable.enableEditingMode) {
-      event.stopImmediatePropagation();
-      const targetElement = event.target as HTMLElement;
-
-      const elId = this.createCellId(tableId, rowId, colId);
-      const tableCellElement = document.getElementById(elId) as HTMLElement;
-
-      // Check if the click was outside the element
-      if (targetElement === tableCellElement) {
-        this.tableInEditingMode = clickedTable;
-        this.tableInlineEditService.table = clickedTable;
-        this.tableInlineEditService.columnMaps = this.columnMaps;
-        this.tableInlineEditService.onMouseDownTable(rowId, colId, cellsType);
-      } else {
-        this.enterKeyPressed();
-      }
+  onMouseDown(rowId: number, colId: number, cellsType: string): void {
+    if (this.table && this.table.enableEditingMode) {
+      this.tableInlineEditService.table = this.table;
+      this.tableInlineEditService.columnMaps = this.columnMaps;
+      this.tableInlineEditService.onMouseDownTable(rowId, colId, cellsType);
     }
   }
 
-  onMouseUp(
-    rowId: number,
-    colId: number,
-    cellsType: string,
-    clickedTable: TableEntryType
-  ) {
-    if (clickedTable && clickedTable.enableEditingMode) {
+  onMouseUp(rowId: number, colId: number, cellsType: string) {
+    if (this.table && this.table.enableEditingMode) {
       this.tableInlineEditService.onMouseUpTable(rowId, colId, cellsType);
     }
   }
@@ -388,10 +357,12 @@ export class TableLayoutComponent implements OnInit, OnChanges, OnDestroy {
   /**
    * @description Creates a Keyboard event to save or cancel a cell/cells selection
    */
-  private enterKeyPressed() {
-    const keyEventData = { isTrusted: true, key: 'Enter' };
-    const keyBoardEvent = new KeyboardEvent('keyup', keyEventData);
-    keyBoardEvent.stopImmediatePropagation();
-    this.onKeyUp(keyBoardEvent);
+  enterKeyPressed() {
+    if (this.table && this.table.enableEditingMode) {
+      const keyEventData = { isTrusted: true, key: 'Enter' };
+      const keyBoardEvent = new KeyboardEvent('keyup', keyEventData);
+      keyBoardEvent.stopImmediatePropagation();
+      this.onKeyUp(keyBoardEvent);
+    }
   }
 }
